@@ -337,12 +337,14 @@
                             <select class="form-control select" name="farmer_category" id="farmer_category"
                                 placeholder="Select Qualification" required>
                                 <option value="">{{ __('Select Category') }}</option>
-                                <option {{ $farming->farmer_category == 'Option 1' ? 'selected' : '' }} value="Option 1">
-                                    option 1</option>
-                                <option {{ $farming->farmer_category == 'Option 2' ? 'selected' : '' }} value="Option 2">
-                                    option 2</option>
-                                <option {{ $farming->farmer_category == 'Option 3' ? 'selected' : '' }} value="Option 3">
-                                    option 3</option>
+                                <option {{ $farming->farmer_category == 'General' ? 'selected' : '' }} value="General">
+                                    General</option>
+                                <option {{ $farming->farmer_category == 'SC' ? 'selected' : '' }} value="SC">
+                                    SC</option>
+                                <option {{ $farming->farmer_category == 'ST' ? 'selected' : '' }} value="ST">
+                                    ST</option>
+                                <option {{ $farming->farmer_category == 'OBC' ? 'selected' : '' }} value="OBC">
+                                    OBC</option>
                             </select>
                         </div>
                         <div class="form-group col-md-6">
