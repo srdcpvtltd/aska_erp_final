@@ -119,25 +119,24 @@
                     }
                 });
             });
-            $('#zone_id').change(function() {
-                let zone_id = $(this).val();
+            $('#village_id').change(function() {
+                let village_id = $(this).val();
                 $.ajax({
-                    url: "{{ route('admin.farmer.location.get_centers') }}",
+                    url: "{{ route('admin.farmer.location.get_zone_center') }}",
                     method: 'post',
                     data: {
-                        zone_id: zone_id,
+                        village_id: village_id,
                     },
                     headers: {
                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     },
                     success: function(response) {
-                        centers = response.centers;
-                        $('#center_id').empty();
-                        $('#center_id').append('<option  value="">Select Center</option>');
-                        for (i = 0; i < centers.length; i++) {
-                            $('#center_id').append('<option value="' + centers[i].id + '">' +
-                                centers[i].name + '</option>');
-                        }
+                        zone = response.zone;
+                        center = response.center;
+                        $('#zone_id').val(zone.id);
+                        $('#zone_name').val(zone.name);
+                        $('#center_id').val(center.id);
+                        $('#center_name').val(center.name);
                     }
                 });
             });
@@ -271,28 +270,15 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('zone_id', __('Zone'), ['class' => 'form-label']) }}
-                                <select class="form-control select" name="zone_id" id="zone_id" disabled
-                                    placeholder="Select Country">
-                                    <option value="">{{ __('Select Zone') }}</option>
-                                    @foreach ($zones as $zone)
-                                        <option {{ $farming->zone_id == $zone->id ? 'selected' : '' }}
-                                            value="{{ $zone->id }}">{{ $zone->name }}</option>
-                                    @endforeach
-                                </select>
+                                {{ Form::hidden('zone_id', $farming->zone_id, ['class' => 'form-control', 'required' => 'required']) }}
+                                {{ Form::text('', $farming->zone->name, ['class' => 'form-control', 'required' => 'required', 'id' => 'zone_name', 'readonly']) }}
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('center_id', __('Center'), ['class' => 'form-label']) }}
-                                <select class="form-control select" name="center_id" id="center_id"
-                                    placeholder="Select Center" disabled>
-                                    <option value="">{{ __('Select Center') }}</option>
-                                    @foreach ($centers as $center)
-                                        <option {{ $farming->center_id == $center->id ? 'selected' : '' }}
-                                            value="{{ $center->id }}">{{ $center->name }}</option>
-                                    @endforeach
-                                </select>
+                                {{ Form::hidden('center_id', $farming->center_id, ['class' => 'form-control', 'required' => 'required']) }}
+                                {{ Form::text('', $farming->center->name, ['class' => 'form-control', 'required' => 'required', 'id' => 'center_name', 'readonly']) }}
                             </div>
                         </div>
                         <div class="form-group col-md-6">
@@ -370,18 +356,9 @@
                             <select class="form-control select" name="irregation" id="irregation"
                                 placeholder="Select Seed Category">
                                 <option value="">{{ __('Select Irregation') }}</option>
-                                <option {{ $farming->irregation == 'Wells' ? 'selected' : '' }} value="Wells">Wells
-                                </option>
-                                <option {{ $farming->irregation == 'Tube Wells' ? 'selected' : '' }} value="Tube Wells">
-                                    Tube Wells</option>
-                                <option {{ $farming->irregation == 'Lakes' ? 'selected' : '' }} value="Lakes">Lakes
-                                </option>
-                                <option {{ $farming->irregation == 'Ponds' ? 'selected' : '' }} value="Ponds">Ponds
-                                </option>
-                                <option {{ $farming->irregation == 'Rivers' ? 'selected' : '' }} value="Rivers">Rivers
-                                </option>
-                                <option {{ $farming->irregation == 'Dams and Canals' ? 'selected' : '' }}
-                                    value="Dams and Canals">Dams and Canals</option>
+                                @foreach ($irrigations as $irrigation)
+                                    <option value="{{ $irrigation->id }}" {{ ($farming->irregation == $irrigation->id) ? 'selected':'' }}>{{ $irrigation->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="form-group col-md-2">

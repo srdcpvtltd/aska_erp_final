@@ -1,3 +1,4 @@
+@canany(['manage-project_management', 'manage-task_management'])
 <li
     class="nav-item {{ request()->routeIs('admin.projects.*') ||
     request()->routeIs('admin.tasks.*') ? 'active' : '' }}">
@@ -17,3 +18,4 @@
         </ul>
     </div>
 </li>
+@endcanany

@@ -1,5 +1,5 @@
 @canany(['manage-farmer_registration', 'manage-farmer_guarantor', 'manage-security_deposite', 'manage-allotment',
-    'manage-bank_guarantee', 'manage-reimbursement', 'manage-plot', 'manage-issue_cutting_order', 'manage-bank_detail', 'manage-seed_category'])
+    'manage-reimbursement', 'manage-plot', 'manage-issue_cutting_order', 'manage-bank_detail', 'manage-seed_category'])
     <li class="nav-item  {{ request()->routeIs('admin.farmer*') ? 'active' : '' }}   ">
         <a data-href="#" class="nav-link" data-bs-toggle="collapse" href="#farmermanagement" role="button" aria-expanded="false"
             aria-controls="company">
@@ -59,12 +59,12 @@
                     </li>
                 @endcan
                 @can('manage-seed_category')
-                <li class="nav-item">
-                    <a href="{{ route('admin.farmer.seed_category.index') }}"
-                        class="nav-link {{ request()->routeIs('admin.farmer.seed_category.*') ? 'active' : '' }}">
-                        {{ __('Seed Category') }}
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.farmer.seed_category.index') }}"
+                            class="nav-link {{ request()->routeIs('admin.farmer.seed_category.*') ? 'active' : '' }}">
+                            {{ __('Seed Category') }}
+                        </a>
+                    </li>
                 @endcan
             </ul>
         </div>

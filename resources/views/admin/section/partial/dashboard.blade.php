@@ -1,3 +1,4 @@
+@canany(['show-hr dashboard','show-farmer dashboard', 'show-account dashboard'])
 <li
     class="nav-item {{ Request::segment(2) == 'dashboard' || Request::segment(2) == 'farmer_dashboard' || Request::segment(2) == 'account_dashboard' || Request::segment(2) == 'hr_dashboard' ? 'active' : '' }} ">
     <a data-href="#" class="nav-link" data-bs-toggle="collapse" href="#dashboard" role="button" aria-expanded="false"
@@ -39,3 +40,4 @@
         </ul>
     </div>
 </li>
+@endcanany

@@ -318,10 +318,10 @@
                             <select class="form-control select" name="farmer_category" id="farmer_category"
                                 placeholder="Select Qualification" required>
                                 <option value="">{{ __('Select Category') }}</option>
-                                <option value="Option 1">General</option>
-                                <option value="Option 2">SC</option>
-                                <option value="Option 3">ST</option>
-                                <option value="Option 3">OBC</option>
+                                <option value="General">General</option>
+                                <option value="SC">SC</option>
+                                <option value="ST">ST</option>
+                                <option value="OBC">OBC</option>
                             </select>
                         </div>
                         <div class="form-group col-md-6">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Farming;
 
 use App\Http\Controllers\Controller;
 use App\Models\Bank;
+use App\Models\Bank_branch;
 use App\Models\Block;
 use App\Models\Farming;
 use App\Models\FarmingDetail;
@@ -63,6 +64,7 @@ class BankDetailsController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         if (\Auth::user()->can('create-bank_detail')) {
             try {
                 $id = $request->farming_id;
@@ -74,7 +76,6 @@ class BankDetailsController extends Controller
                     $farming->non_loan_type = $request->loan_type;
 
                     if ($request->loan_type === "Bank") {
-
                         $farming->bank = $request->bank;
                         $farming->account_number = $request->account_number;
                         $farming->ifsc_code = $request->ifsc_code;
@@ -87,7 +88,7 @@ class BankDetailsController extends Controller
                 } elseif ($request->finance_category === "Non-loan") {
 
                     $farming->finance_category = $request->finance_category;
-                    $farming->non_loan_type = $request->loan_type;
+                    $farming->non_loan_type = "Bank";
                     $farming->bank = $request->non_loan_bank;
                     $farming->account_number = $request->non_loan_account_number;
                     $farming->ifsc_code = $request->non_loan_ifsc_code;
@@ -126,8 +127,10 @@ class BankDetailsController extends Controller
         if (\Auth::user()->can('edit-bank_detail')) {
             $farmings = Farming::findorfail($id);
             $farming = Farming::all();
+            $banks = Bank::all();
+            $bank_branchs = Bank_branch::all();
 
-            return view('admin.farmer.bank_details.edit', compact('farmings', 'farming'));
+            return view('admin.farmer.bank_details.edit', compact('farmings', 'farming', 'banks', 'bank_branchs'));
         } else {
             return redirect()->back()->with('danger', 'Permission denied.');
         }
@@ -166,7 +169,7 @@ class BankDetailsController extends Controller
                 } elseif ($request->finance_category === "Non-loan") {
 
                     $farming->finance_category = $request->finance_category;
-                    $farming->non_loan_type = $request->loan_type;
+                    $farming->non_loan_type = "Bank";
                     $farming->bank = $request->non_loan_bank;
                     $farming->account_number = $request->non_loan_account_number;
                     $farming->ifsc_code = $request->non_loan_ifsc_code;

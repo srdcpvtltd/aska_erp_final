@@ -1,4 +1,4 @@
-@canany(['manage-roles', 'manage-general_settings'])
+@canany(['manage-roles', 'manage-general_settings', 'manage-irrigation', 'manage-content_management', 'manage-country', 'manage-state', 'manage-district', 'manage-block', 'manage-gram_panchyat', 'manage-village', 'manage-zone', 'manage-center', 'manage-bank', 'manage-bank_branch', 'manage-modules'])
     <li
         class="nav-item  {{ request()->routeIs('admin.roles.*') ||
         request()->routeIs('admin.notifications.*') ||
@@ -18,7 +18,7 @@
         request()->routeIs('admin.location.village.*') ||
         request()->routeIs('admin.location.zone.*') ||
         request()->routeIs('admin.location.center.*') ||
-        request()->routeIs('admin.irrigation.*') 
+        request()->routeIs('admin.irrigation.*')
             ? 'active'
             : '' }}">
         <a class="nav-link" data-bs-toggle="collapse" href="#setting" data-href="#" role="button" aria-expanded="false"
@@ -45,7 +45,7 @@
         request()->routeIs('admin.location.village.*') ||
         request()->routeIs('admin.location.zone.*') ||
         request()->routeIs('admin.location.center.*') ||
-        request()->routeIs('admin.irrigation.*') 
+        request()->routeIs('admin.irrigation.*')
             ? ''
             : 'collapse' }} "
             id="setting">
@@ -186,7 +186,6 @@
                         </div>
                     </li>
                 @endcanany
-
                 @can('manage-content_management')
                     <li class="nav-item">
                         <a href="{{ route('admin.static-page-contents.index') }}"
@@ -196,12 +195,14 @@
                         </a>
                     </li>
                 @endcan
-                <li class="nav-item">
-                    <a href="{{ route('admin.irrigation.index') }}"
-                        class="nav-link {{ request()->routeIs('admin.irrigation.*') ? 'active' : '' }}">
-                        Irrigation
-                    </a>
-                </li>
+                @can('manage-irrigation')
+                    <li class="nav-item">
+                        <a href="{{ route('admin.irrigation.index') }}"
+                            class="nav-link {{ request()->routeIs('admin.irrigation.*') ? 'active' : '' }}">
+                            Irrigation
+                        </a>
+                    </li>
+                @endcan
             </ul>
         </div>
     </li>

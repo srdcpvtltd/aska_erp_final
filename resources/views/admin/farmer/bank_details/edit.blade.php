@@ -30,6 +30,54 @@
                     $('.coperative_fields').show();
                 }
             });
+            $('#bank_detail').change(function() {
+                let bank_id = $(this).val();
+
+                $.ajax({
+                    url: "{{ route('admin.farmer.location.get_bank_branches') }}",
+                    method: 'post',
+                    data: {
+                        bank_id: bank_id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        $('#branch_detail').empty();
+                        $('#branch_detail').append('<option value="">Select Branch</option>');
+                        for (i = 0; i < response.length; i++) {
+                            $('#branch_detail').append('<option value="' + response[i].id +
+                                '">' +
+                                response[i].name + '</option>');
+                        }
+                    }
+                });
+            });
+            $('#non_loan_bank').change(function() {
+                let bank_id = $(this).val();
+
+                $.ajax({
+                    url: "{{ route('admin.farmer.location.get_bank_branches') }}",
+                    method: 'post',
+                    data: {
+                        bank_id: bank_id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        $('#non_loan_branch').empty();
+                        $('#non_loan_branch').append('<option value="">Select Branch</option>');
+                        for (i = 0; i < response.length; i++) {
+                            $('#non_loan_branch').append('<option value="' + response[i].id +
+                                '">' +
+                                response[i].name + '</option>');
+                        }
+                    }
+                });
+            });
         });
     </script>
 @endsection
@@ -91,32 +139,24 @@
                                 <div class="col-md-6 bank_detail_fields">
                                     <div class="form-group">
                                         {{ Form::label('bank', __('Bank'), ['class' => 'form-label']) }}
-                                        <select class="form-control select" name="bank" id="bank"
+                                        <select class="form-control select" name="bank" id="bank_detail"
                                             placeholder="Select Bank">
                                             <option value="">{{ __('Select Bank') }}</option>
-                                        <option value="State Bank of India (SBI)" {{ ($farmings->bank === "State Bank of India (SBI)") ? 'selected':'' }}>State Bank of India (SBI)</option>
-                                        <option value="Punjab National Bank (PNB)" {{ ($farmings->bank === "Punjab National Bank (PNB)") ? 'selected':'' }}>Punjab National Bank (PNB)</option>
-                                        <option value="Bank of Baroda (BOB)" {{ ($farmings->bank === "Bank of Baroda (BOB)") ? 'selected':'' }}>Bank of Baroda (BOB)</option>
-                                        <option value="Canara Bank" {{ ($farmings->bank === "Canara Bank") ? 'selected':'' }}>Canara Bank</option>
-                                        <option value="Union Bank of India" {{ ($farmings->bank === "Union Bank of India") ? 'selected':'' }}>Union Bank of India</option>
-                                        <option value="HDFC Bank" {{ ($farmings->bank === "HDFC Bank") ? 'selected':'' }}>HDFC Bank</option>
-                                        <option value="ICICI Bank" {{ ($farmings->bank === "ICICI Bank") ? 'selected':'' }}>ICICI Bank</option>
-                                        <option value="Axis Bank" {{ ($farmings->bank === "Axis Bank") ? 'selected':'' }}>Axis Bank</option>
-                                        <option value="Kotak Mahindra Bank" {{ ($farmings->bank === "Kotak Mahindra Bank") ? 'selected':'' }}>Kotak Mahindra Bank</option>
-                                        <option value="IndusInd Bank" {{ ($farmings->bank === "IndusInd Bank") ? 'selected':'' }}>IndusInd Bank</option>
-                                        <option value="Yes Bank" {{ ($farmings->bank === "Yes Bank") ? 'selected':'' }}>Yes Bank</option>
-                                        <option value="IDBI Bank" {{ ($farmings->bank === "IDBI Bank") ? 'selected':'' }}>IDBI Bank</option>
-                                        <option value="Central Bank of India" {{ ($farmings->bank === "Central Bank of India") ? 'selected':'' }}>Central Bank of India</option>
-                                        <option value="Indian Bank" {{ ($farmings->bank === "Indian Bank") ? 'selected':'' }}>Indian Bank</option>
-                                        <option value="Bank of India" {{ ($farmings->bank === "Bank of India") ? 'selected':'' }}>Bank of India</option>
-                                        <option value="Oriental Bank of Commerce (OBC)" {{ ($farmings->bank === "Oriental Bank of Commerce (OBC)") ? 'selected':'' }}>Oriental Bank of Commerce (OBC)
-                                        </option>
-                                        <option value="Corporation Bank" {{ ($farmings->bank === "Corporation Bank") ? 'selected':'' }}>Corporation Bank</option>
-                                        <option value="Andhra Bank" {{ ($farmings->bank === "Andhra Bank") ? 'selected':'' }}>Andhra Bank</option>
-                                        <option value="Allahabad Bank" {{ ($farmings->bank === "Allahabad Bank") ? 'selected':'' }}>Allahabad Bank</option>
-                                        <option value="Syndicate Bank" {{ ($farmings->bank === "Syndicate Bank") ? 'selected':'' }}>Syndicate Bank</option>
+                                            @foreach ($banks as $bank)
+                                                <option value="{{ $bank->id }}" {{ ($farmings->bank == $bank->id) ? 'selected':'' }}>{{ $bank->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
+                                </div>
+                                <div class="form-group col-md-6 bank_detail_fields">
+                                    {{ Form::label('branch', __('Branch'), ['class' => 'form-label']) }}
+                                    {{-- {{ Form::text('branch', $farmings->branch, ['class' => 'form-control']) }} --}}
+                                    <select class="form-control select" name="branch" id="branch_detail">
+                                        <option value="">{{ __('Select Branch') }}</option>
+                                        @foreach($bank_branchs as $bank_branch)
+                                        <option value="{{ $bank_branch->id }}" {{ ($farmings->branch == $bank_branch->id) ? 'selected':'' }}>{{ $bank_branch->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                                 <div class="form-group col-md-6 bank_detail_fields">
                                     {{ Form::label('account_number', __('Loan Account Number'), ['class' => 'form-label']) }}
@@ -125,10 +165,6 @@
                                 <div class="form-group col-md-6 bank_detail_fields">
                                     {{ Form::label('ifsc_code', __('IFSC Code'), ['class' => 'form-label']) }}
                                     {{ Form::text('ifsc_code', $farmings->ifsc_code, ['class' => 'form-control']) }}
-                                </div>
-                                <div class="form-group col-md-6 bank_detail_fields">
-                                    {{ Form::label('branch', __('Branch'), ['class' => 'form-label']) }}
-                                    {{ Form::text('branch', $farmings->branch, ['class' => 'form-control']) }}
                                 </div>
                             @endif
                         @endif
@@ -146,32 +182,24 @@
                             <div class="col-md-6 non_loan_fields">
                                 <div class="form-group">
                                     {{ Form::label('bank', __('Bank'), ['class' => 'form-label']) }}
-                                    <select class="form-control select" name="non_loan_bank" id="bank"
+                                    <select class="form-control select" name="non_loan_bank" id="non_loan_bank"
                                         placeholder="Select Bank">
                                         <option value="">{{ __('Select Bank') }}</option>
-                                        <option value="State Bank of India (SBI)" {{ ($farmings->bank === "State Bank of India (SBI)") ? 'selected':'' }}>State Bank of India (SBI)</option>
-                                        <option value="Punjab National Bank (PNB)" {{ ($farmings->bank === "Punjab National Bank (PNB)") ? 'selected':'' }}>Punjab National Bank (PNB)</option>
-                                        <option value="Bank of Baroda (BOB)" {{ ($farmings->bank === "Bank of Baroda (BOB)") ? 'selected':'' }}>Bank of Baroda (BOB)</option>
-                                        <option value="Canara Bank" {{ ($farmings->bank === "Canara Bank") ? 'selected':'' }}>Canara Bank</option>
-                                        <option value="Union Bank of India" {{ ($farmings->bank === "Union Bank of India") ? 'selected':'' }}>Union Bank of India</option>
-                                        <option value="HDFC Bank" {{ ($farmings->bank === "HDFC Bank") ? 'selected':'' }}>HDFC Bank</option>
-                                        <option value="ICICI Bank" {{ ($farmings->bank === "ICICI Bank") ? 'selected':'' }}>ICICI Bank</option>
-                                        <option value="Axis Bank" {{ ($farmings->bank === "Axis Bank") ? 'selected':'' }}>Axis Bank</option>
-                                        <option value="Kotak Mahindra Bank" {{ ($farmings->bank === "Kotak Mahindra Bank") ? 'selected':'' }}>Kotak Mahindra Bank</option>
-                                        <option value="IndusInd Bank" {{ ($farmings->bank === "IndusInd Bank") ? 'selected':'' }}>IndusInd Bank</option>
-                                        <option value="Yes Bank" {{ ($farmings->bank === "Yes Bank") ? 'selected':'' }}>Yes Bank</option>
-                                        <option value="IDBI Bank" {{ ($farmings->bank === "IDBI Bank") ? 'selected':'' }}>IDBI Bank</option>
-                                        <option value="Central Bank of India" {{ ($farmings->bank === "Central Bank of India") ? 'selected':'' }}>Central Bank of India</option>
-                                        <option value="Indian Bank" {{ ($farmings->bank === "Indian Bank") ? 'selected':'' }}>Indian Bank</option>
-                                        <option value="Bank of India" {{ ($farmings->bank === "Bank of India") ? 'selected':'' }}>Bank of India</option>
-                                        <option value="Oriental Bank of Commerce (OBC)" {{ ($farmings->bank === "Oriental Bank of Commerce (OBC)") ? 'selected':'' }}>Oriental Bank of Commerce (OBC)
-                                        </option>
-                                        <option value="Corporation Bank" {{ ($farmings->bank === "Corporation Bank") ? 'selected':'' }}>Corporation Bank</option>
-                                        <option value="Andhra Bank" {{ ($farmings->bank === "Andhra Bank") ? 'selected':'' }}>Andhra Bank</option>
-                                        <option value="Allahabad Bank" {{ ($farmings->bank === "Allahabad Bank") ? 'selected':'' }}>Allahabad Bank</option>
-                                        <option value="Syndicate Bank" {{ ($farmings->bank === "Syndicate Bank") ? 'selected':'' }}>Syndicate Bank</option>
+                                        @foreach ($banks as $bank)
+                                            <option value="{{ $bank->id }}" {{ ($farmings->bank == $bank->id) ? 'selected':'' }}>{{ $bank->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
+                            </div>
+                            <div class="form-group col-md-6 non_loan_fields">
+                                {{ Form::label('branch', __('Branch'), ['class' => 'form-label']) }}
+                                {{-- {{ Form::text('non_loan_branch', $farmings->branch, ['class' => 'form-control']) }} --}}
+                                <select class="form-control select" name="non_loan_branch" id="non_loan_branch">
+                                    <option value="">{{ __('Select Branch') }}</option>
+                                    @foreach($bank_branchs as $bank_branch)
+                                    <option value="{{ $bank_branch->id }}" {{ ($farmings->branch == $bank_branch->id) ? 'selected':'' }}>{{ $bank_branch->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="form-group col-md-6 non_loan_fields">
                                 {{ Form::label('account_number', __('Saving Account Number'), ['class' => 'form-label']) }}
@@ -180,10 +208,6 @@
                             <div class="form-group col-md-6 non_loan_fields">
                                 {{ Form::label('ifsc_code', __('IFSC Code'), ['class' => 'form-label']) }}
                                 {{ Form::text('non_loan_ifsc_code', $farmings->ifsc_code, ['class' => 'form-control']) }}
-                            </div>
-                            <div class="form-group col-md-6 non_loan_fields">
-                                {{ Form::label('branch', __('Branch'), ['class' => 'form-label']) }}
-                                {{ Form::text('non_loan_branch', $farmings->branch, ['class' => 'form-control']) }}
                             </div>
                         @endif
                     </div>

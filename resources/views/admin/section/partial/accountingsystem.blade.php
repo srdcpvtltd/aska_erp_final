@@ -1,3 +1,4 @@
+@canany(['manage-bank_account', 'manage-bank_transfer'])
 <li
     class="nav-item {{ Request::route()->getName() == 'print-setting' ||
     Request::segment(2) == 'customer' ||
@@ -81,15 +82,19 @@
                 </a>
                 <div class="{{ Request::segment(2) == 'bank-account' || Request::segment(2) == 'bank-transfer' ? '' : 'collapse' }}" id="banking">
                     <ul class="nav sub-menu">
+                        @can('manage-bank_account')
                         <li
                             class="nav-item">
                             <a class="nav-link {{ Request::route()->getName() == 'admin.bank-account.index' || Request::route()->getName() == 'admin.bank-account.create' || Request::route()->getName() == 'admin.bank-account.edit' ? ' active' : '' }}" href="{{ route('admin.bank-account.index') }}">{{ __('Account') }}</a>
                         </li>
+                        @endcan
+                        @can('manage-bank_transfer')
                         <li
                             class="nav-item">
                             <a class="nav-link {{ Request::route()->getName() == 'admin.bank-transfer.index' || Request::route()->getName() == 'admin.bank-transfer.create' || Request::route()->getName() == 'admin.bank-transfer.edit' ? ' active' : '' }}"
                                 href="{{ route('admin.bank-transfer.index') }}">{{ __('Transfer') }}</a>
                         </li>
+                        @endcan
                     </ul>
                 </div>
             </li>
@@ -237,3 +242,4 @@
         </ul>
     </div>
 </li>
+@endcanany

@@ -1,3 +1,4 @@
+@canany(['manage-company', 'manage-branch', 'manage-department', 'manage-post', 'manage-employees', 'manage-attendance', 'manage-regularization', 'manage-client', 'manage-holidays', 'manage-notice', 'manage-payroll', 'manage-payroll_setting', 'manage-advance_salary', 'manage-employee_salary', 'manage-leave_types', 'manage-leave_request', 'manage-time_leave_request', 'manage-team_meeting', 'manage-tada', 'manage-office_time', 'manage-support', 'manage-routers', 'manage-nfc', 'manage-qr'])
 <li
     class="nav-item {{ request()->routeIs('admin.company.*') ||
     request()->routeIs('admin.branch.*') ||
@@ -76,8 +77,6 @@
             @include('admin.section.partial.user')
             @include('admin.section.partial.attendance')
             @include('admin.section.partial.client')
-            @include('admin.section.partial.projectManagement')
-            @include('admin.section.partial.taskManagement')
             @include('admin.section.partial.holiday')
             @include('admin.section.partial.notice')
             @include('admin.section.partial.payroll')
@@ -91,3 +90,4 @@
         </ul>
     </div>
 </li>
+@endcanany

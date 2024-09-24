@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Farming;
 
 use App\Models\Farming;
 use App\Http\Controllers\Controller;
+use App\Models\Bank_branch;
 use App\Models\Block;
 use App\Models\Center;
 use App\Models\Country;
@@ -138,6 +139,7 @@ class FarmingController extends Controller
             $villages = Village::where('gram_panchyat_id', $farming->gram_panchyat_id)->get();
             $zones = Zone::all();
             $centers = Center::where('zone_id', $farming->zone_id)->get();
+            $irrigations = Irrigation::all();
             return view('admin.farmer.registration.edit', compact(
                 'farming',
                 'countries',
@@ -148,6 +150,7 @@ class FarmingController extends Controller
                 'villages',
                 'zones',
                 'centers',
+                'irrigations',
             ));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
@@ -282,15 +285,9 @@ class FarmingController extends Controller
 
     public function get_bank_branches(Request $request)
     {
-        dd($request->all());
-        $village = Village::findorfail($request->village_id);
-        $zone = Zone::findorfail($village->zone_id);
-        $center = Center::findorfail($village->center_id);
+        $branches = Bank_branch::where('bank_id', $request->bank_id)->get();
 
-        return response()->json([
-            'zone' => $zone,
-            'center' => $center,
-        ]);
+        return response()->json($branches);
     }
 
     public function search(Request $request)

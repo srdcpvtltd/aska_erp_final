@@ -1,4 +1,3 @@
-
 @can('manage-support')
     <li class="nav-item">
         <a

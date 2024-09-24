@@ -47,10 +47,10 @@
                                         <td>{{ $farming_detail->name }}</td>
                                         <td>{{ $farming_detail->finance_category }}</td>
                                         <td>{{ $farming_detail->non_loan_type }}</td>
-                                        <td>{{ $farming_detail->bank }}</td>
+                                        <td>{{ $farming_detail->bank_data->name }}</td>
                                         <td>{{ $farming_detail->account_number }}</td>
                                         <td>{{ $farming_detail->ifsc_code }}</td>
-                                        <td>{{ $farming_detail->branch }}</td>
+                                        <td>{{ $farming_detail->bank_branch->name }}</td>
                                         <td>{{ $farming_detail->name_of_cooperative }}</td>
                                         <td>{{ $farming_detail->cooperative_address }}</td>
                                         <td class="Action">

@@ -1,4 +1,3 @@
-
 @can('manage-team_meeting')
     <li class="nav-item">
         <a

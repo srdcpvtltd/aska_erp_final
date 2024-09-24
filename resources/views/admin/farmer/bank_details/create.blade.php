@@ -29,9 +29,8 @@
                     $('.coperative_fields').show();
                 }
             });
-            $('#bank').change(function() {
+            $('#bank_detail').change(function() {
                 let bank_id = $(this).val();
-                console.log(bank_id);
                 
                 $.ajax({
                     url: "{{ route('admin.farmer.location.get_bank_branches') }}",
@@ -43,13 +42,36 @@
                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     },
                     success: function(response) {
-                        // villages = response.villages;
-                        // $('#village_id').empty();
-                        // $('#village_id').append('<option  value="">Select Village</option>');
-                        // for (i = 0; i < villages.length; i++) {
-                        //     $('#village_id').append('<option value="' + villages[i].id + '">' +
-                        //         villages[i].name + '</option>');
-                        // }
+                        console.log(response);
+                        $('#branch_detail').empty();
+                        $('#branch_detail').append('<option value="">Select Branch</option>');
+                        for (i = 0; i < response.length; i++) {
+                            $('#branch_detail').append('<option value="' + response[i].id + '">' +
+                                response[i].name + '</option>');
+                        }
+                    }
+                });
+            });
+            $('#non_loan_bank').change(function() {
+                let bank_id = $(this).val();
+                
+                $.ajax({
+                    url: "{{ route('admin.farmer.location.get_bank_branches') }}",
+                    method: 'post',
+                    data: {
+                        bank_id: bank_id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        $('#non_loan_branch').empty();
+                        $('#non_loan_branch').append('<option value="">Select Branch</option>');
+                        for (i = 0; i < response.length; i++) {
+                            $('#non_loan_branch').append('<option value="' + response[i].id + '">' +
+                                response[i].name + '</option>');
+                        }
                     }
                 });
             });
@@ -109,7 +131,7 @@
                         <div class="col-md-6 bank_detail_fields" style="display:none;">
                             <div class="form-group">
                                 {{ Form::label('bank', __('Bank'), ['class' => 'form-label']) }}
-                                <select class="form-control select" name="bank" id="bank">
+                                <select class="form-control select" name="bank" id="bank_detail">
                                     <option value="">{{ __('Select Bank') }}</option>
                                     @foreach ($banks as $bank)
                                         <option value="{{ $bank->id }}">{{ $bank->name }}</option>
@@ -120,8 +142,8 @@
                         <div class="form-group col-md-6 bank_detail_fields" style="display:none;">
                             {{ Form::label('branch', __('Branch'), ['class' => 'form-label']) }}
                             {{-- {{ Form::text('branch', '', ['class' => 'form-control']) }} --}}
-                            <select class="form-control select" name="branch" id="branch">
-                                <option value="">{{ __('Select Bank') }}</option>
+                            <select class="form-control select" name="branch" id="branch_detail">
+                                <option value="">{{ __('Select Branch') }}</option>
                             </select>
                         </div>
                         <div class="form-group col-md-6 bank_detail_fields" style="display:none;">

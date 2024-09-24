@@ -96,4 +96,14 @@ class Farming extends Model
     {
         return $this->belongsTo(SeedCategory::class,'seed_category_id');
     }
+    
+    public function bank_data()
+    {
+        return $this->belongsTo(Bank::class,'bank');
+    }
+
+    public function bank_branch()
+    {
+        return $this->belongsTo(Bank_branch::class,'branch');
+    }
 }
