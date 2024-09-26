@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Location;
 
 use App\Http\Controllers\Controller;
 use App\Models\Center;
+use App\Models\District;
 use App\Models\GramPanchyat;
 use App\Models\Village;
 use App\Models\Zone;
@@ -35,14 +36,14 @@ class VillageController extends Controller
     public function create()
     {
         if (\Auth::user()->can('create-village')) {
-            $gram_panchyats = GramPanchyat::all()->pluck('name', 'id');
-            $gram_panchyats->prepend('Select GP', '');
+            $districts = District::all()->pluck('name', 'id');
+            $districts->prepend('Select District', '');
             $zones = Zone::all()->pluck('name', 'id');
             $zones->prepend('Select Zone', '');
             $centers = Center::all()->pluck('name', 'id');
             $centers->prepend('Select Center', '');
 
-            return view('admin.location.village.create', compact('gram_panchyats', 'zones', 'centers'));
+            return view('admin.location.village.create', compact('districts', 'zones', 'centers'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -64,7 +65,14 @@ class VillageController extends Controller
                     'zone_id' => 'required',
                     'center_id' => 'required',
                 ]);
-                Village::create($request->all());
+                // Village::create($request->all());
+                $village = new Village;
+                $village->name = $request->name;
+                $village->gram_panchyat_id = $request->gram_panchyat_id;
+                $village->zone_id = $request->zone_id;
+                $village->center_id = $request->center_id;
+                $village->save();
+
                 return redirect()->route('admin.location.village.index')->with('success', 'Village Added Successfully.');
             } catch (Exception $e) {
                 return redirect()->back()->with('error', $e->getMessage());
@@ -94,14 +102,16 @@ class VillageController extends Controller
     public function edit(Village $village)
     {
         if (\Auth::user()->can('edit-village')) {
-            $gram_panchyats = GramPanchyat::all()->pluck('name', 'id');
-            $gram_panchyats->prepend('Select GP', '');
+            $districts = District::all()->pluck('name', 'id');
+            $districts->prepend('Select District', '');
+            $grampanchyats = GramPanchyat::all()->pluck('name', 'id');
+            $grampanchyats->prepend('Select GramPanchyat', '');
             $zones = Zone::all()->pluck('name', 'id');
             $zones->prepend('Select Zone', '');
             $centers = Center::all()->pluck('name', 'id');
             $centers->prepend('Select Center', '');
 
-            return view('admin.location.village.edit', compact('village', 'gram_panchyats', 'zones', 'centers'));
+            return view('admin.location.village.edit', compact('village', 'districts', 'grampanchyats', 'zones', 'centers'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -118,7 +128,12 @@ class VillageController extends Controller
     {
         if (\Auth::user()->can('edit-village')) {
             $village = Village::find($id);
-            $village->update($request->all());
+            $village->name = $request->name;
+            $village->gram_panchyat_id = $request->gram_panchyat_id;
+            $village->zone_id = $request->zone_id;
+            $village->center_id = $request->center_id;
+            $village->update();
+            
             return redirect()->route('admin.location.village.index')->with('success', 'Village Updated Successfully.');
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));

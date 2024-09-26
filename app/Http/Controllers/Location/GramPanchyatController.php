@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Location;
 
 use App\Http\Controllers\Controller;
 use App\Models\Block;
+use App\Models\District;
 use App\Models\GramPanchyat;
 use Exception;
 use Illuminate\Http\Request;
@@ -33,9 +34,9 @@ class GramPanchyatController extends Controller
     public function create()
     {
         if (\Auth::user()->can('create-gram_panchyat')) {
-            $blocks = Block::all()->pluck('name', 'id');
-            $blocks->prepend('Select Block', '');
-            return view('admin.location.gram_panchyat.create', compact('blocks'));
+            $districts = District::all()->pluck('name', 'id');
+            $districts->prepend('Select District', '');
+            return view('admin.location.gram_panchyat.create', compact('districts'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -55,7 +56,12 @@ class GramPanchyatController extends Controller
                     'name' => 'required',
                     'block_id' => 'required',
                 ]);
-                GramPanchyat::create($request->all());
+                // GramPanchyat::create($request->all());
+                $grampanchyat = new GramPanchyat();
+                $grampanchyat->name = $request->name;
+                $grampanchyat->block_id = $request->block_id;
+                $grampanchyat->save();
+
                 return redirect()->route('admin.location.gram_panchyat.index')->with('success', 'Gram Panchyat Added Successfully.');
             } catch (Exception $e) {
                 return redirect()->back()->with('error', $e->getMessage());
@@ -85,9 +91,11 @@ class GramPanchyatController extends Controller
     public function edit(GramPanchyat $gramPanchyat)
     {
         if (\Auth::user()->can('edit-gram_panchyat')) {
+            $districts = District::all()->pluck('name', 'id');
+            $districts->prepend('Select District', '');
             $blocks = Block::all()->pluck('name', 'id');
-            $blocks->prepend('Select Block', '');
-            return view('admin.location.gram_panchyat.edit', compact('gramPanchyat', 'blocks'));
+            $blocks->prepend('Select Blocks', '');
+            return view('admin.location.gram_panchyat.edit', compact('gramPanchyat', 'districts', 'blocks'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -104,7 +112,9 @@ class GramPanchyatController extends Controller
     {
         if (\Auth::user()->can('edit-gram_panchyat')) {
             $gramPanchyat = GramPanchyat::find($id);
-            $gramPanchyat->update($request->all());
+            $gramPanchyat->name = $request->name;
+            $gramPanchyat->block_id = $request->block_id;
+            $gramPanchyat->update();
             return redirect()->route('admin.location.gram_panchyat.index')->with('success', 'Gram Panchyat Updated Successfully.');
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));

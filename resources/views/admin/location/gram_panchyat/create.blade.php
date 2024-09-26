@@ -2,7 +2,32 @@
 @section('title')
     {{ __('Create GP (Gram Panchyat)') }}
 @endsection
-
+@section('scripts')
+    <script>
+        $('#district_id').change(function() {
+            let district_id = $(this).val();
+            $.ajax({
+                url: "{{ route('admin.farmer.location.get_blocks') }}",
+                method: 'post',
+                data: {
+                    district_id: district_id,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    blocks = response.blocks;
+                    $('#block_id').empty();
+                    $('#block_id').append('<option  value="">Select Blocks</option>');
+                    for (i = 0; i < blocks.length; i++) {
+                        $('#block_id').append('<option value="' + blocks[i].id + '">' +
+                            blocks[i].name + '</option>');
+                    }
+                }
+            });
+        });
+    </script>
+@endsection
 @section('main-content')
     @include('admin.section.flash_message')
     <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
@@ -38,13 +63,18 @@
                     {{-- end for ai module --}}
                     <div class="row">
                         <div class="form-group col-md-6">
-                            {{ Form::label('name', __('Name'), ['class' => 'form-label']) }}
-                            {{ Form::text('name', '', ['class' => 'form-control', 'required' => 'required']) }}
+                            {{ Form::label('district_id', __('District'), ['class' => 'form-label']) }}<span
+                                class="text-danger">*</span>
+                            {{ Form::select('district_id', $districts, null, ['class' => 'form-control select', 'required' => 'required']) }}
                         </div>
                         <div class="form-group col-md-6">
                             {{ Form::label('block_id', __('Block'), ['class' => 'form-label']) }}<span
                                 class="text-danger">*</span>
-                            {{ Form::select('block_id', $blocks, null, ['class' => 'form-control select', 'required' => 'required']) }}
+                            {{ Form::select('block_id', ['Select Block'], null, ['class' => 'form-control select', 'required' => 'required']) }}
+                        </div>
+                        <div class="form-group col-md-6">
+                            {{ Form::label('name', __('Name'), ['class' => 'form-label']) }}
+                            {{ Form::text('name', '', ['class' => 'form-control', 'required' => 'required']) }}
                         </div>
                     </div>
                 </div>
