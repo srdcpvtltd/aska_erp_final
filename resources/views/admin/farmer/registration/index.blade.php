@@ -46,9 +46,10 @@
             <div class="card">
                 <div class="card-body table-border-style">
                     <div class="table-responsive">
-                        <table class="table datatable">
+                        <table class="table table-striped table-bordered" id="datatable">
                             <thead>
                                 <tr>
+                                    <th>{{ __('Sl No.') }}</th>
                                     <th>{{ __('Name') }}</th>
                                     <th>{{ __('G. Code') }}</th>
                                     <th>{{ __('Mobile') }}</th>
@@ -63,8 +64,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($farmings as $farming)
+                                @foreach ($farmings as $key => $farming)
                                     <tr class="font-style">
+                                        <td>{{ $key + 1 }}</td>
                                         <td>{{ $farming->name }}</td>
                                         <td>
                                             @if ($farming->g_code != null)
