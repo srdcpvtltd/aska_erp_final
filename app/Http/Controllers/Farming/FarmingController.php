@@ -86,6 +86,8 @@ class FarmingController extends Controller
                     'center_id' => 'required',
                     // 'farmer_id_2' => 'required',
                     'farmer_category' => 'required',
+                    'irregation_mode' => 'required',
+                    'irregation' => 'required',
                 ]);
                 if ($validator->fails()) {
                     return redirect()->back()->withErrors($validator);
@@ -164,7 +166,11 @@ class FarmingController extends Controller
     {
         if (\Auth::user()->can('edit-farmer_registration')) {
             $farming = Farming::find($id);
-
+            if($farming->registration_no == NULL){
+                $request->merge([
+                    'registration_no' => "ACSI" . '-' . rand(0, 9999)
+                ]);
+            }
             $farming->update($request->all());
             return redirect()->back()->with('success', 'Farming Updated Successfully.');
         } else {
@@ -288,6 +294,13 @@ class FarmingController extends Controller
         $branches = Bank_branch::where('bank_id', $request->bank_id)->get();
 
         return response()->json($branches);
+    }
+
+    public function get_irrigations(Request $request)
+    {
+        $irregation = Irrigation::where('category', $request->irregation_mode)->get();
+
+        return response()->json($irregation);
     }
 
     public function search(Request $request)

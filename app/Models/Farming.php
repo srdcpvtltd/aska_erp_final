@@ -44,6 +44,7 @@ class Farming extends Model
         'offered_area',
         'adhaarno',
         'irregation',
+        'irregation_mode',
         'non_loan_type',
         'account_no_ifsc',
         'name_of_cooperative',

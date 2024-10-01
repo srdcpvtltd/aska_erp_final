@@ -121,6 +121,7 @@
                     }
                 });
             });
+            
             $('#village_id').change(function() {
                 let village_id = $(this).val();
                 $.ajax({
@@ -139,6 +140,28 @@
                         $('#zone_name').val(zone.name);
                         $('#center_id').val(center.id);
                         $('#center_name').val(center.name);
+                    }
+                });
+            });
+            
+            $('#irregation_mode').change(function() {
+                let irregation_mode = $(this).val();
+                $.ajax({
+                    url: "{{ route('admin.farmer.location.get_irrigations') }}",
+                    method: 'post',
+                    data: {
+                        irregation_mode: irregation_mode,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        $('#irregation').empty();
+                        $('#irregation').append('<option  value="">Select Irregation</option>');
+                        for (i = 0; i < response.length; i++) {
+                            $('#irregation').append('<option value="' + response[i].id + '">' +
+                                response[i].name + '</option>');
+                        }
                     }
                 });
             });
@@ -318,10 +341,8 @@
                             <select class="form-control select" name="farmer_category" id="farmer_category"
                                 placeholder="Select Qualification" required>
                                 <option value="">{{ __('Select Category') }}</option>
-                                <option value="General">General</option>
-                                <option value="SC">SC</option>
-                                <option value="ST">ST</option>
-                                <option value="OBC">OBC</option>
+                                <option value="NORMAL">NORMAL</option>
+                                <option value="SCP">SCP</option>
                             </select>
                         </div>
                         <div class="form-group col-md-6">
@@ -339,13 +360,21 @@
                             {{ Form::label('offered_area', __('Offered Area(in Acrs.)'), ['class' => 'form-label']) }}
                             {{ Form::text('offered_area', '', ['class' => 'form-control', 'required' => 'required', 'id' => 'offered_area']) }}
                         </div>
+                        <div class="form-group col-md-6 irregation_fields">
+                            {{ Form::label('irregation', __('Mode of Irregation'), ['class' => 'form-label']) }}
+                            <select class="form-control select" name="irregation_mode" id="irregation_mode"
+                                placeholder="Select Seed Category">
+                                <option value="">{{ __('Select Irregation') }}</option>
+                                <option value="Major Irrigation">Major Irrigation</option>
+                                <option value="Medium Irrigation">Medium Irrigation</option>
+                                <option value="Minor Irrigation">Minor Irrigation</option>
+                                <option value="Other Irrigation">Other Irrigation</option>
+                            </select>
+                        </div>
                         <div class="form-group col-md-6">
                             {{ Form::label('irregation', __('Irregation'), ['class' => 'form-label']) }}
                             <select class="form-control select" name="irregation" id="irregation">
-                                <option value="">{{ __('Mode of Irregation') }}</option>
-                                @foreach ($irrigations as $irrigation)
-                                    <option value="{{ $irrigation->id }}">{{ $irrigation->name }}</option>
-                                @endforeach
+                                <option value="">{{ __('Select Irregation') }}</option>
                             </select>
                         </div>
                         <div class="form-group col-md-6">

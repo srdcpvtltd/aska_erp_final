@@ -140,6 +140,27 @@
                     }
                 });
             });
+            $('#irregation_mode').change(function() {
+                let irregation_mode = $(this).val();
+                $.ajax({
+                    url: "{{ route('admin.farmer.location.get_irrigations') }}",
+                    method: 'post',
+                    data: {
+                        irregation_mode: irregation_mode,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        $('#irregation').empty();
+                        $('#irregation').append('<option  value="">Select Irregation</option>');
+                        for (i = 0; i < response.length; i++) {
+                            $('#irregation').append('<option value="' + response[i].id + '">' +
+                                response[i].name + '</option>');
+                        }
+                    }
+                });
+            });
             $('input[type=radio][name="land_type"]').on('change', function(event) {
                 var value = $(this).val();
                 if (value == "Leased Land") {
@@ -323,14 +344,10 @@
                             <select class="form-control select" name="farmer_category" id="farmer_category"
                                 placeholder="Select Qualification" required>
                                 <option value="">{{ __('Select Category') }}</option>
-                                <option {{ $farming->farmer_category == 'General' ? 'selected' : '' }} value="General">
-                                    General</option>
-                                <option {{ $farming->farmer_category == 'SC' ? 'selected' : '' }} value="SC">
-                                    SC</option>
-                                <option {{ $farming->farmer_category == 'ST' ? 'selected' : '' }} value="ST">
-                                    ST</option>
-                                <option {{ $farming->farmer_category == 'OBC' ? 'selected' : '' }} value="OBC">
-                                    OBC</option>
+                                <option {{ $farming->farmer_category == 'NORMAL' ? 'selected' : '' }} value="NORMAL">
+                                    NORMAL</option>
+                                <option {{ $farming->farmer_category == 'SCP' ? 'selected' : '' }} value="SCP">
+                                    SCP</option>
                             </select>
                         </div>
                         <div class="form-group col-md-6">
@@ -350,6 +367,17 @@
                         <div class="form-group col-md-6">
                             {{ Form::label('offered_area', __('Offered Area'), ['class' => 'form-label']) }}
                             {{ Form::text('offered_area', $farming->offered_area, ['class' => 'form-control', 'required' => 'required']) }}
+                        </div>
+                        <div class="form-group col-md-6 irregation_fields">
+                            {{ Form::label('irregation', __('Mode of Irregation'), ['class' => 'form-label']) }}
+                            <select class="form-control select" name="irregation_mode" id="irregation_mode"
+                                placeholder="Select Seed Category">
+                                <option value="">{{ __('Select Irregation') }}</option>
+                                <option value="Major Irrigation" {{($farming->irregation_mode == "Major Irrigation") ? 'selected':''}}>Major Irrigation</option>
+                                <option value="Medium Irrigation" {{($farming->irregation_mode == "Medium Irrigation") ? 'selected':''}}>Medium Irrigation</option>
+                                <option value="Minor Irrigation" {{($farming->irregation_mode == "Minor Irrigation") ? 'selected':''}}>Minor Irrigation</option>
+                                <option value="Other Irrigation" {{($farming->irregation_mode == "Other Irrigation") ? 'selected':''}}>Other Irrigation</option>
+                            </select>
                         </div>
                         <div class="form-group col-md-6 irregation_fields">
                             {{ Form::label('irregation', __('Irregation'), ['class' => 'form-label']) }}
