@@ -97,7 +97,7 @@
                         class="nav-link {{ request()->routeIs('admin.feature.index') ? 'active' : '' }}"> Feature
                         Control</a>
                 </li>
-                @canany('manage-bank', 'manage-bank_branch')
+                @canany(['manage-bank', 'manage-bank_branch'])
                     <li class="nav-item">
                         <a class="nav-link {{ Request::segment(2) == 'banks' || Request::segment(2) == 'bank_branches' ? 'active' : '' }}"
                             data-bs-toggle="collapse" href="#bank" data-href="#" role="button" aria-expanded="false">
@@ -123,8 +123,8 @@
                         </div>
                     </li>
                 @endcanany
-                @canany('manage-country', 'manage-state', 'manage-district', 'manage-block', 'manage-gram_panchyat',
-                    'manage-village', 'manage-zone', 'manage-center')
+                @canany(['manage-country', 'manage-state', 'manage-district', 'manage-block', 'manage-gram_panchyat',
+                    'manage-village', 'manage-zone', 'manage-center'])
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.location.country.*') || request()->routeIs('admin.location.state.*') || request()->routeIs('admin.location.district.*') || request()->routeIs('admin.location.block.*') || request()->routeIs('admin.location.gram_panchyat.*') || request()->routeIs('admin.location.village.*') || request()->routeIs('admin.location.zone.*') || request()->routeIs('admin.location.center.*') ? 'active' : '' }}"
                             data-bs-toggle="collapse" href="#location" data-href="#" role="button" aria-expanded="false">
