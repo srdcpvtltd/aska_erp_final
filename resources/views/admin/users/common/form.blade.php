@@ -256,20 +256,37 @@
                     <select class="form-select" id="zone_id" name="zone_id">
                         <option value="">Select</option>
                         @foreach ($zones as $zone)
-                            <option value="{{ $zone->id }}" {{ (isset($userDetail) && $userDetail->zone_id == $zone->id) ? 'selected':'' }}>{{ $zone->name }}</option>
+                            <option value="{{ $zone->id }}"
+                                {{ isset($userDetail) && $userDetail->zone_id == $zone->id ? 'selected' : '' }}>
+                                {{ $zone->name }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col-lg-4 col-md-6 mb-3">
                     <label for="center_id" class="form-label">Center <span style="color: red">*</span></label>
                     <select class="form-select" id="center_id" name="center_id">
-                        @if (isset($userDetail) && $userDetail->center_id != NULL)
-                            @foreach($centers as $center)
-                                <option value="{{ $center->id }}" {{ ($userDetail->center_id == $center->id) ? 'selected':'' }}>{{ $center->name }}</option>
+                        @if (isset($userDetail) && $userDetail->center_id != null)
+                            @foreach ($centers as $center)
+                                <option value="{{ $center->id }}"
+                                    {{ $userDetail->center_id == $center->id ? 'selected' : '' }}>{{ $center->name }}
+                                </option>
                             @endforeach
                         @endif
                     </select>
                 </div>
+                @if (isset($users))
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <label for="assigned_user" class="form-label">Assigned To User <span
+                                style="color: red">*</span></label>
+                        <select class="form-select" id="assigned_user" name="assigned_user">
+                            @foreach ($users as $user)
+                                <option value="{{ $user->id }}"
+                                    {{ $user->id == $userDetail->created_by ? 'selected' : '' }}>{{ $user->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -390,7 +407,7 @@
     <i class="link-icon" data-feather="plus"></i> {{ isset($userDetail) ? 'Update' : 'Create' }} User
 </button>
 @section('scripts')
-@include('admin.users.common.scripts')
+    @include('admin.users.common.scripts')
     <script>
         $('#zone_id').change(function() {
             let zone_id = $(this).val();
@@ -405,7 +422,7 @@
                 },
                 success: function(response) {
                     let centers = response.centers;
-                    
+
                     $('#center_id').empty();
                     $('#center_id').append('<option  value="">Select Center</option>');
                     for (i = 0; i < centers.length; i++) {

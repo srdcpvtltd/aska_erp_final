@@ -48,6 +48,7 @@ class UserUpdateRequest extends FormRequest
             'avatar' => ['sometimes', 'file', 'mimes:jpeg,png,jpg,svg','max:5048'],
             'zone_id' => 'nullable',
             'center_id' => 'nullable',
+            'assigned_user' => 'nullable',
         ];
 
     }

@@ -32,13 +32,9 @@ class FarmingController extends Controller
     public function index()
     {
         if (\Auth::user()->can('manage-farmer_registration')) {
-            if(Auth::user()->id != 1){
             $farmings = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
-                ->where('farmings.center_id', Auth::user()->center_id)
+                ->where('farmings.created_by', Auth::user()->id)
                 ->orWhere('users.supervisor_id', Auth::user()->id)->get();
-            } else {
-                $farmings = Farming::all();
-            }
             return view('admin.farmer.registration.index', compact('farmings'));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');

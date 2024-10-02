@@ -204,8 +204,9 @@ class UserController extends Controller
                 $employeeLeaveTypes = $this->employeeLeaveTypeRepository->getAll(['id', 'leave_type_id', 'days', 'is_active'], $id);
                 $zones = Zone::all();
                 $centers = Center::all();
+                $users = User::all();
 
-                return view($this->view . 'edit', compact('companyDetail', 'roles', 'userDetail', 'leaveTypes', 'employeeLeaveTypes', 'zones', 'centers'));
+                return view($this->view . 'edit', compact('companyDetail', 'roles', 'userDetail', 'leaveTypes', 'employeeLeaveTypes', 'zones', 'centers', 'users'));
             } catch (Exception $exception) {
 
                 return redirect()->back()->with('danger', $exception->getFile());
@@ -220,6 +221,7 @@ class UserController extends Controller
         if (\Auth::user()->can('edit-employees')) {
             try {
                 $validatedData = $request->validated();
+                $validatedData['created_by'] = $validatedData['assigned_user'];
                 $accountValidatedData = $accountRequest->validated();
 
                 $leaveTypeData = $leaveRequest->validated();
