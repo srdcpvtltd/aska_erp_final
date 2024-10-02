@@ -348,6 +348,8 @@
                                     NORMAL</option>
                                 <option {{ $farming->farmer_category == 'SCP' ? 'selected' : '' }} value="SCP">
                                     SCP</option>
+                                <option {{ $farming->farmer_category == 'TASP' ? 'selected' : '' }} value="TASP">TASP
+                                </option>
                             </select>
                         </div>
                         <div class="form-group col-md-6">
@@ -373,10 +375,18 @@
                             <select class="form-control select" name="irregation_mode" id="irregation_mode"
                                 placeholder="Select Seed Category">
                                 <option value="">{{ __('Select Irregation') }}</option>
-                                <option value="Major Irrigation" {{($farming->irregation_mode == "Major Irrigation") ? 'selected':''}}>Major Irrigation</option>
-                                <option value="Medium Irrigation" {{($farming->irregation_mode == "Medium Irrigation") ? 'selected':''}}>Medium Irrigation</option>
-                                <option value="Minor Irrigation" {{($farming->irregation_mode == "Minor Irrigation") ? 'selected':''}}>Minor Irrigation</option>
-                                <option value="Other Irrigation" {{($farming->irregation_mode == "Other Irrigation") ? 'selected':''}}>Other Irrigation</option>
+                                <option value="Major Irrigation"
+                                    {{ $farming->irregation_mode == 'Major Irrigation' ? 'selected' : '' }}>Major
+                                    Irrigation</option>
+                                <option value="Medium Irrigation"
+                                    {{ $farming->irregation_mode == 'Medium Irrigation' ? 'selected' : '' }}>Medium
+                                    Irrigation</option>
+                                <option value="Minor Irrigation"
+                                    {{ $farming->irregation_mode == 'Minor Irrigation' ? 'selected' : '' }}>Minor
+                                    Irrigation</option>
+                                <option value="Other Irrigation"
+                                    {{ $farming->irregation_mode == 'Other Irrigation' ? 'selected' : '' }}>Other
+                                    Irrigation</option>
                             </select>
                         </div>
                         <div class="form-group col-md-6 irregation_fields">
@@ -385,7 +395,9 @@
                                 placeholder="Select Seed Category">
                                 <option value="">{{ __('Select Irregation') }}</option>
                                 @foreach ($irrigations as $irrigation)
-                                    <option value="{{ $irrigation->id }}" {{ ($farming->irregation == $irrigation->id) ? 'selected':'' }}>{{ $irrigation->name }}</option>
+                                    <option value="{{ $irrigation->id }}"
+                                        {{ $farming->irregation == $irrigation->id ? 'selected' : '' }}>
+                                        {{ $irrigation->name }}</option>
                                 @endforeach
                             </select>
                         </div>

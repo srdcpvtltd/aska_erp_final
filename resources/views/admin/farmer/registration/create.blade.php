@@ -341,6 +341,7 @@
                                 <option value="">{{ __('Select Category') }}</option>
                                 <option value="NORMAL">NORMAL</option>
                                 <option value="SCP">SCP</option>
+                                <option value="TASP">TASP</option>
                             </select>
                         </div>
                         <div class="form-group col-md-6">
