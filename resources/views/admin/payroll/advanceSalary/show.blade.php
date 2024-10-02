@@ -93,7 +93,7 @@
                         <h5>Advance Salary Request Detail</h5>
                     </div>
                     <div class="card-body">
-                        <table class="table table-striped table-border">
+                        <table class="data_table table table-striped table-border">
                             <tbody>
                             <tr>
                                 <td>Employee:</td>

@@ -45,7 +45,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <table class="table">
+                    <table class="data_table table">
                         <thead>
                         <tr>
                             <th class="text-left">{{ __('Items') }}</th>

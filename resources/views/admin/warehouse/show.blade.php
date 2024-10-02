@@ -16,7 +16,7 @@
             <div class="card">
                 <div class="card-body table-border-style">
                     <div class="table-responsive">
-                        <table class="table datatable">
+                        <table class="data_table table datatable">
                             <thead>
                                 <tr>
                                     <th>{{ __('Product') }}</th>

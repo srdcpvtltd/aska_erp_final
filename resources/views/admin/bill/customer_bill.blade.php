@@ -210,7 +210,7 @@
                                     <div class="font-weight-bold">{{__('Product Summary')}}</div>
                                     <small>{{__('All items here cannot be deleted.')}}</small>
                                     <div class="table-responsive mt-2">
-                                        <table class="table table-striped">
+                                        <table class="data_table table table-striped">
                                             <tr>
                                                 <th class="text-dark" data-width="40">#</th>
                                                 <th class="text-dark">{{__('Product')}}</th>
@@ -359,7 +359,7 @@
                     <h5 class="d-inline-block mb-5">{{__('Payment Summary')}}</h5>
 
                     <div class="table-responsive">
-                        <table class="table table-striped">
+                        <table class="data_table table table-striped">
                             <thead>
                             <tr>
                                 <th class="text-dark">{{__('Date')}}</th>

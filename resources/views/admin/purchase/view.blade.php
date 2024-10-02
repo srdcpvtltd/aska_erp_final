@@ -260,7 +260,7 @@
                                     <div class="font-bold mb-2">{{ __('Product Summary') }}</div>
                                     <small class="mb-2">{{ __('All items here cannot be deleted.') }}</small>
                                     <div class="table-responsive mt-3">
-                                        <table class="table ">
+                                        <table class="data_table table ">
                                             <tr>
                                                 <th class="text-dark" data-width="40">#</th>
                                                 <th class="text-dark">{{ __('Product') }}</th>
@@ -426,7 +426,7 @@
                 <div class="card-body table-border-style">
                     <h5 class=" d-inline-block mb-5">{{ __('Payment Summary') }}</h5>
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="data_table table">
                             <thead>
                                 <tr>
                                     <th class="text-dark">{{ __('Payment Receipt') }}</th>

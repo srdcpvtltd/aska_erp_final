@@ -44,7 +44,7 @@
                 <span>{{ $farming->name }}</span> Father's Name <span>{{ $farming->father_name }}</span> Village
                 <span>{{ $farming->village->name }}</span> Farmer's Nominee <span></span>.
             </p><br>
-            <table class="table table-bordered">
+            <table class="data_table table table-bordered">
                 <thead>
                     <tr>
                         <th>Sl No.</th>

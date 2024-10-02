@@ -5,7 +5,7 @@
                 <h5 class="modal-title" id="exampleModalLabel"></h5>
             </div>
             <div class="modal-body">
-                <table class="table">
+                <table class="data_table table">
                     <tbody>
                         <tr>
                             <th>Shift:</th><td class="shift"></td>

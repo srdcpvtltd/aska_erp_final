@@ -681,7 +681,7 @@
                 </div>
                 <div class="card-body table-border-style">
                     <div class="table-responsive">
-                        <table class="table mb-0" data-repeater-list="items" id="sortable-table">
+                        <table class="data_table table mb-0" data-repeater-list="items" id="sortable-table">
                             <thead>
                             <tr>
                                 <th width="20%">{{__('Items')}}</th>

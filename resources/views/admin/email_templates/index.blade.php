@@ -74,7 +74,7 @@
             <div class="card-header card-body table-border-style">
                 <h5></h5>
                 <div class="table-responsive">
-                    <table class="table" id="pc-dt-simple">
+                    <table class="data_table table" id="pc-dt-simple">
                         <thead>
                         <tr>
                             <th scope="col" class="sort" data-sort="name"> {{__('Name')}}</th>

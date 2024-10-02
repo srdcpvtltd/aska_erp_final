@@ -55,7 +55,7 @@
                                 </h5>
                             </div>
                             <div class="row mb-4">
-                                <table class="table p-2">
+                                <table class="data_table table p-2">
                                     <tr>
                                         <td>Employee Name</td> <td>{{ $payrollData['payslipData']->employee_name }}</td> <td>Joining Date</td> <td>{{ $payrollData['payslipData']->joining_date ?? 'N/A' }}</td>
                                     </tr>
@@ -114,7 +114,7 @@
                             <div class="row">
                                 <div class="col-lg-6 col-md-6 mb-4">
                                     <h4 class="mb-2">Earning</h4>
-                                    <table class="table table-bordered">
+                                    <table class="data_table table table-bordered">
                                         <tbody>
                                         <tr class="earning">
                                             <td class="d-flex align-items-center justify-content-between">
@@ -146,7 +146,7 @@
 
                                 <div class="col-lg-6 col-md-6 mb-4">
                                     <h4 class="mb-2">Deduction</h4>
-                                    <table class="table table-bordered">
+                                    <table class="data_table table table-bordered">
                                         <tbody>
                                         @php $totalDeduction = $payrollData['payslipData']->tds; @endphp
                                         @forelse($payrollData['deductions'] as $deduction)

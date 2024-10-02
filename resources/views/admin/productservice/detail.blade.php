@@ -1,6 +1,6 @@
 <div class="table-responsive">
     @if (!$products->isEmpty())
-        <table class="table">
+        <table class="data_table table">
             <thead>
                 <tr>
                     <th>{{ __('Warehouse') }}</th>

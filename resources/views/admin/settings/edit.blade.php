@@ -25,7 +25,7 @@
                         <div class="form-group">
                             @if(!empty($permissions))
                                 <h6>{{__('Assign Permission to Roles')}} </h6>
-                                <table class="table table-striped mb-0" id="dataTable-1">
+                                <table class="data_table table table-striped mb-0" id="dataTable-1">
                                     <thead>
                                     <tr>
                                         <th>{{__('Module')}} </th>

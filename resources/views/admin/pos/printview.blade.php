@@ -2,7 +2,7 @@
     $settings = Utility::settings();
 @endphp
 <div class="pt-0 pb-3 modal-body pos-module" id="printarea" >
-    <table class="table pos-module-tbl">
+    <table class="data_table table pos-module-tbl">
         <tbody>
         <div class="text-center ">
             <h3>{{$settings['company_name']}}</h3>

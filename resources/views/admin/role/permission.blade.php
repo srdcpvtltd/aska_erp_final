@@ -30,7 +30,7 @@
 
                     @csrf
                     <div>
-                        <table class="table table-flush permission-table">
+                        <table class="data_table table table-flush permission-table">
                             <thead class="thead-light">
                                 <tr>
                                     <th width="200px">{{ __('Module') }}</th>

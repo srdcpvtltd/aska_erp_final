@@ -1,27 +1,26 @@
-
-<script src="{{asset('assets/vendors/tinymce/tinymce.min.js')}}"></script>
-<script src="{{asset('assets/js/tinymce.js')}}"></script>
+<script src="{{ asset('assets/vendors/tinymce/tinymce.min.js') }}"></script>
+<script src="{{ asset('assets/js/tinymce.js') }}"></script>
 
 <script src="{{ asset('assets/jquery-validation/jquery.validate.min.js') }}"></script>
 <script src="{{ asset('assets/jquery-validation/additional-methods.min.js') }}"></script>
 
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
 
-        $('.changePassword').click(function (event) {
+        $('.changePassword').click(function(event) {
             event.preventDefault();
             let url = $(this).data('href');
             $('.modal-title').html('User Change Password');
-            $('#changePassword').attr('action',url)
+            $('#changePassword').attr('action', url)
             $('#statusUpdate').modal('show');
         });
 
-        $('.toggleStatus').change(function (event) {
+        $('.toggleStatus').change(function(event) {
             event.preventDefault();
             let status = $(this).prop('checked') == true ? 1 : 0;
             let href = $(this).attr('href');
@@ -52,19 +51,20 @@
                 showDenyButton: true,
                 confirmButtonText: `Yes`,
                 denyButtonText: `No`,
-                padding:'10px 50px 10px 50px',
+                padding: '10px 50px 10px 50px',
                 // width:'500px',
                 allowOutsideClick: false
             }).then((result) => {
                 if (result.isConfirmed) {
                     window.location.href = href;
-                }else if (result.isDenied) {
-                    (status === 0)? $(this).prop('checked', true) :  $(this).prop('checked', false)
+                } else if (result.isDenied) {
+                    (status === 0) ? $(this).prop('checked', true): $(this).prop('checked',
+                        false)
                 }
             })
         })
 
-        $('.deleteEmployee').click(function (event) {
+        $('.deleteEmployee').click(function(event) {
             event.preventDefault();
             let href = $(this).data('href');
             Swal.fire({
@@ -72,7 +72,7 @@
                 showDenyButton: true,
                 confirmButtonText: `Yes`,
                 denyButtonText: `No`,
-                padding:'10px 50px 10px 50px',
+                padding: '10px 50px 10px 50px',
                 // width:'1000px',
                 allowOutsideClick: false
             }).then((result) => {
@@ -82,7 +82,7 @@
             })
         })
 
-        $('.forceLogOut').click(function (event) {
+        $('.forceLogOut').click(function(event) {
             event.preventDefault();
             let href = $(this).data('href');
             Swal.fire({
@@ -90,7 +90,7 @@
                 showDenyButton: true,
                 confirmButtonText: `Yes`,
                 denyButtonText: `No`,
-                padding:'10px 50px 10px 50px',
+                padding: '10px 50px 10px 50px',
                 // width:'1000px',
                 allowOutsideClick: false
             }).then((result) => {
@@ -100,7 +100,7 @@
             })
         })
 
-        $('.changeWorkPlace').click(function (event) {
+        $('.changeWorkPlace').click(function(event) {
             event.preventDefault();
             let href = $(this).data('href');
             Swal.fire({
@@ -108,7 +108,7 @@
                 showDenyButton: true,
                 confirmButtonText: `Yes`,
                 denyButtonText: `No`,
-                padding:'10px 50px 10px 50px',
+                padding: '10px 50px 10px 50px',
                 // width:'1000px',
                 allowOutsideClick: false
             }).then((result) => {
@@ -120,19 +120,24 @@
 
         $('#branch').change(function() {
             let selectedBranchId = $('#branch option:selected').val();
-            let departmentId = "{{ $userDetail->department_id ?? $filterParameters['department_id'] ?? old('department_id') }}";
+            let departmentId =
+                "{{ $userDetail->department_id ?? ($filterParameters['department_id'] ?? old('department_id')) }}";
             $('#department').empty();
             $('#posts').empty();
             if (selectedBranchId) {
                 $.ajax({
                     type: 'GET',
-                    url: "{{ url('admin/departments/get-All-Departments') }}" + '/' + selectedBranchId ,
+                    url: "{{ url('admin/departments/get-All-Departments') }}" + '/' +
+                        selectedBranchId,
                 }).done(function(response) {
-                    if(!departmentId){
-                        $('#department').append('<option disabled  selected >Select Department</option>');
+                    if (!departmentId) {
+                        $('#department').append(
+                            '<option disabled  selected >Select Department</option>');
                     }
                     response.data.forEach(function(data) {
-                        $('#department').append('<option ' + ((data.id === departmentId) ? "selected" : '') + ' value="'+data.id+'" >'+capitalize(data.dept_name)+'</option>');
+                        $('#department').append('<option ' + ((data.id ===
+                                departmentId) ? "selected" : '') + ' value="' + data
+                            .id + '" >' + capitalize(data.dept_name) + '</option>');
                     });
                     departmentChange();
                 });
@@ -145,30 +150,40 @@
 
         $('#post').change(function() {
             let selectedbranchId = $('#branch option:selected').val();
-            let supervisorId = "{{ isset($userDetail)   ? $userDetail['supervisor_id'] : old('supervisor_id') }}";
-            let officeTimeId = "{{ isset($userDetail)   ? $userDetail['office_time_id'] : old('office_time_id') }}";
+            let supervisorId =
+                "{{ isset($userDetail) ? $userDetail['supervisor_id'] : old('supervisor_id') }}";
+            let officeTimeId =
+                "{{ isset($userDetail) ? $userDetail['office_time_id'] : old('office_time_id') }}";
             $('#supervisor').empty();
             $('#officeTime').empty();
             if (selectedbranchId) {
                 $.ajax({
                     type: 'GET',
-                    url: "{{ url('admin/users/get-company-employee') }}" + '/' + selectedbranchId ,
+                    url: "{{ url('admin/users/get-company-employee') }}" + '/' +
+                        selectedbranchId,
                 }).done(function(response) {
 
                     console.log(response);
-                    if(!supervisorId){
-                        $('#supervisor').append('<option value=""  selected >--Select Supervisor--</option>');
+                    if (!supervisorId) {
+                        $('#supervisor').append(
+                            '<option value=""  selected >--Select Supervisor--</option>');
                     }
                     response.employee.forEach(function(data) {
-                        $('#supervisor').append('<option ' + ((data.id === supervisorId) ? "selected" : '') + '  value="'+data.id+'">' + capitalize(data.name) + '</option>');
+                        $('#supervisor').append('<option ' + ((data.id ===
+                                supervisorId) ? "selected" : '') + '  value="' +
+                            data.id + '">' + capitalize(data.name) + '</option>');
                     });
 
-                    if(!officeTimeId){
-                        $('#officeTime').append('<option value="" selected >--Select Office Time--</option>');
+                    if (!officeTimeId) {
+                        $('#officeTime').append(
+                            '<option value="" selected >--Select Office Time--</option>');
                     }
                     response.officeTime.forEach(function(data) {
-                        $('#officeTime').append('<option ' + ((data.id === officeTimeId) ? "selected" : '') + '  value="'+data.id+'" >'+(data.opening_time)+' - '+(data.closing_time) + '</option>');
-                     });
+                        $('#officeTime').append('<option ' + ((data.id ===
+                                officeTimeId) ? "selected" : '') + '  value="' +
+                            data.id + '" >' + (data.opening_time) + ' - ' + (data
+                                .closing_time) + '</option>');
+                    });
                 });
             }
         }).trigger('change')
@@ -177,18 +192,19 @@
 
     function departmentChange() {
         let selectedDepartmentId = $('#department option:selected').val();
-        let postId = "{{ isset($userDetail)  ? $userDetail['post_id'] : old('post_id') }}";
+        let postId = "{{ isset($userDetail) ? $userDetail['post_id'] : old('post_id') }}";
         $('#post').empty();
         if (selectedDepartmentId) {
             $.ajax({
                 type: 'GET',
-                url: "{{ url('admin/posts/get-All-posts') }}" + '/' + selectedDepartmentId ,
+                url: "{{ url('admin/posts/get-All-posts') }}" + '/' + selectedDepartmentId,
             }).done(function(response) {
-                if(!postId){
+                if (!postId) {
                     $('#post').append('<option value="" selected >--Select An Option--</option>');
                 }
                 response.data.forEach(function(data) {
-                    $('#post').append('<option ' + ((data.id == postId) ? "selected" : '') + ' value="'+ data.id+'">' + capitalize(data.post_name) + '</option>');
+                    $('#post').append('<option ' + ((data.id == postId) ? "selected" : '') +
+                        ' value="' + data.id + '">' + capitalize(data.post_name) + '</option>');
                 });
             });
         }
@@ -204,58 +220,72 @@
     }
 
     $('#employeeDetail').validate({
-            rules: {
-                name: { required: true },
-                address: { required: true },
-                email: { required: true },
-                role_id: { required: true },
-                username: { required: true },
-                phone: { required: true },
+        rules: {
+            name: {
+                required: true
             },
-            messages: {
-                name: {
-                    required: "Please enter name",
-                },
-                address: {
-                    required: "Please enter address"
-                },
-                email: {
-                    required: "Please enter valid email"
-                },
-
-                role_id: {
-                    required: "Please select role"
-                },
-
-                username: {
-                    required: "Please enter username"
-                },
-
-                Phone: {
-                    required: "Please enter phone number"
-                },
+            address: {
+                required: true
             },
-            errorElement: 'span',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('div').append(error);
+            email: {
+                required: true
             },
-            highlight: function (element) {
-                $(element).addClass('is-invalid');
-                $(element).removeClass('is-valid');
-                $(element).siblings().addClass("text-danger").removeClass("text-success");
-                $(element).siblings().find('span .input-group-text').addClass("bg-danger ").removeClass("bg-success");
+            role_id: {
+                required: true
             },
-            unhighlight: function (element) {
-                $(element).removeClass('is-invalid');
-                $(element).addClass('is-valid');
-                $(element).siblings().addClass("text-success").removeClass("text-danger");
-                $(element).find('span .input-group-prepend').addClass("bg-success").removeClass("bg-danger");
-                $(element).siblings().find('span .input-group-text').addClass("bg-success").removeClass("bg-danger ");
-            }
-        });
+            username: {
+                required: true
+            },
+            phone: {
+                required: true
+            },
+        },
+        messages: {
+            name: {
+                required: "Please enter name",
+            },
+            address: {
+                required: "Please enter address"
+            },
+            email: {
+                required: "Please enter valid email"
+            },
 
-    $('#avatar').change(function(){
+            role_id: {
+                required: "Please select role"
+            },
+
+            username: {
+                required: "Please enter username"
+            },
+
+            Phone: {
+                required: "Please enter phone number"
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('div').append(error);
+        },
+        highlight: function(element) {
+            $(element).addClass('is-invalid');
+            $(element).removeClass('is-valid');
+            $(element).siblings().addClass("text-danger").removeClass("text-success");
+            $(element).siblings().find('span .input-group-text').addClass("bg-danger ").removeClass(
+                "bg-success");
+        },
+        unhighlight: function(element) {
+            $(element).removeClass('is-invalid');
+            $(element).addClass('is-valid');
+            $(element).siblings().addClass("text-success").removeClass("text-danger");
+            $(element).find('span .input-group-prepend').addClass("bg-success").removeClass("bg-danger");
+            $(element).siblings().find('span .input-group-text').addClass("bg-success").removeClass(
+                "bg-danger ");
+        }
+    });
+
+    $('#avatar').change(function() {
         const input = document.getElementById('avatar');
         const preview = document.getElementById('image-preview');
         const file = input.files[0];
@@ -445,14 +475,11 @@
                 if (input.value === '') {
                     isActiveCheckbox.checked = false;
                 } else {
-                    input.classList.remove('text-danger');  // Clear error when input is filled
-                    input.nextElementSibling.style.display = 'none';  // Ensure error message is hidden
+                    input.classList.remove('text-danger'); // Clear error when input is filled
+                    input.nextElementSibling.style.display =
+                    'none'; // Ensure error message is hidden
                 }
             });
         });
     });
-
-
-
-
 </script>

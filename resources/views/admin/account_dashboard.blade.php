@@ -361,7 +361,7 @@ $tentative_planting = App\Models\FarmingDetail::sum('tentative_harvest_quantity'
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table custom-table mb-0">
+                        <table class="data_table table custom-table mb-0">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -423,7 +423,7 @@ $tentative_planting = App\Models\FarmingDetail::sum('tentative_harvest_quantity'
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table custom-table mb-0">
+                <table class="data_table table custom-table mb-0">
                     <thead>
                         <tr>
                             <th class="w-25">Title</th>

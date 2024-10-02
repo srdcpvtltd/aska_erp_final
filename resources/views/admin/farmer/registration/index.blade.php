@@ -46,7 +46,7 @@
             <div class="card">
                 <div class="card-body table-border-style">
                     <div class="table-responsive">
-                        <table class="table table-striped table-bordered" id="datatable">
+                        <table class="table table-striped table-bordered data_table">
                             <thead>
                                 <tr>
                                     <th>{{ __('Sl No.') }}</th>

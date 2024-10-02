@@ -46,7 +46,8 @@ class UserUpdateRequest extends FormRequest
             'remarks' => 'nullable|string|max:1000',
             'workspace_type' => ['nullable', 'boolean', Rule::in([1, 0])],
             'avatar' => ['sometimes', 'file', 'mimes:jpeg,png,jpg,svg','max:5048'],
-
+            'zone_id' => 'nullable',
+            'center_id' => 'nullable',
         ];
 
     }

@@ -102,7 +102,7 @@
                     <div class="row mt-4">
                         <div class="col-md-12">
                             <div class="table-responsive mt-3">
-                                <table class="table">
+                                <table class="data_table table">
                                     <thead>
                                     <tr>
                                         <th class="text-dark" >#</th>

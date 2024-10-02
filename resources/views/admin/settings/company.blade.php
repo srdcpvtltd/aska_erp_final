@@ -4215,7 +4215,7 @@
                             </div>
                             <div class="card-body table-border-style">
                                 <div class="table-responsive">
-                                    <table class="table">
+                                    <table class="data_table table">
                                         <thead>
                                         <tr>
                                             <th>{{__('Module')}}</th>
@@ -4446,7 +4446,7 @@
                             </div>
                             <div class="card-body table-border-style">
                                 <div class="table-responsive">
-                                    <table class="table">
+                                    <table class="data_table table">
                                         <thead>
                                         <tr>
                                             <th class="w-75">{{__('IP')}}</th>

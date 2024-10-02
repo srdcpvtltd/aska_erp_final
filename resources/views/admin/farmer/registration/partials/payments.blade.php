@@ -1,5 +1,5 @@
 <div class="table-responsive mt-2">
-    <table class="table datatable">
+    <table class="data_table table datatable">
         <thead>
         <tr>
             <th>{{__('Payment Type')}}</th>

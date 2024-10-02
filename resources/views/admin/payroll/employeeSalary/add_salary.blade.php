@@ -63,7 +63,7 @@
                         </div>
 
                         <div class="row table-responsive">
-                                <table class="table border-end">
+                                <table class="data_table table border-end">
                                 <thead>
                                     <tr>
                                         <th>Salary Component</th>

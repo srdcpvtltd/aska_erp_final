@@ -357,7 +357,7 @@ $viewCheckOut = $checkOutAt ? \App\Helpers\AttendanceHelper::changeTimeFormatFor
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table custom-table mb-0">
+                        <table class="data_table table custom-table mb-0">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -419,7 +419,7 @@ $viewCheckOut = $checkOutAt ? \App\Helpers\AttendanceHelper::changeTimeFormatFor
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table custom-table mb-0">
+                <table class="data_table table custom-table mb-0">
                     <thead>
                         <tr>
                             <th class="w-25">Title</th>

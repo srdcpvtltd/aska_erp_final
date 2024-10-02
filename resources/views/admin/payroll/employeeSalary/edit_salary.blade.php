@@ -63,7 +63,7 @@
                         </div>
                         <input type="hidden" readonly name="salary_group_id" x-model="salary_group_id">
                         <div class="row table-responsive">
-                            <table class="table border-end">
+                            <table class="data_table table border-end">
                                 <thead>
                                 <tr>
                                     <th>Salary Component</th>

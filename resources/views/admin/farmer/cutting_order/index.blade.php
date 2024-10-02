@@ -225,7 +225,7 @@
             <div class="card">
                 <div class="card-body table-border-style">
                     <div class="table-responsive">
-                        <table class="table dataTable">
+                        <table class="data_table table dataTable">
                             <thead>
                                 <tr>
                                     <th>

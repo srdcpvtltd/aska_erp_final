@@ -79,7 +79,7 @@
     @yield('scripts')
     <script>
         $(document).ready(function() {
-            new DataTable('#datatable');
+            new DataTable('.data_table');
             $('.deleteBtn').click(function(event) {
                 event.preventDefault();
                 let href = $(this).data('href');

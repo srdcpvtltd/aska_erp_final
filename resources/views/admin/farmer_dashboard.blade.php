@@ -168,7 +168,7 @@ $tentative_planting = App\Models\FarmingDetail::sum('tentative_harvest_quantity'
         <div class="card card-table flex-fill">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table datatable">
+                    <table class="data_table table datatable">
                         <thead>
                             <tr>
                                 <th>{{ __('Farmer Name') }}</th>

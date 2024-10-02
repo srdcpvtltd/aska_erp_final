@@ -149,7 +149,7 @@
                         <div class="row">
                             <div class="col-lg-6 col-md-6 mb-4">
                                 <h4 class="mb-2">Earning</h4>
-                                <table class="table table-bordered">
+                                <table class="data_table table table-bordered">
                                     <tbody>
                                         <tr class="earning">
                                             <td class="d-flex align-items-center justify-content-between">
@@ -198,7 +198,7 @@
 
                             <div class="col-lg-6 col-md-6 mb-4">
                                 <h4 class="mb-2">Deduction</h4>
-                                <table class="table table-bordered">
+                                <table class="data_table table table-bordered">
                                     <tbody>
                                         @php
                                             $totalDeduction = $payrollData['payslipData']->tds;

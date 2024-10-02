@@ -121,7 +121,6 @@
                     }
                 });
             });
-            
             $('#village_id').change(function() {
                 let village_id = $(this).val();
                 $.ajax({
@@ -143,7 +142,6 @@
                     }
                 });
             });
-            
             $('#irregation_mode').change(function() {
                 let irregation_mode = $(this).val();
                 $.ajax({

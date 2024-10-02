@@ -120,7 +120,7 @@ $status = [
                             <h5>Tada Summary</h5>
                         </div>
                         <div class="card-body">
-                            <table class="table table-striped table-border">
+                            <table class="data_table table table-striped table-border">
                                 <tbody>
                                     <tr>
                                         <td>Total Expense:</td>

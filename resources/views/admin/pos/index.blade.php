@@ -128,7 +128,7 @@
                 <div class="card-body carttable cart-product-list carttable-scroll"  id="carthtml">
                     @php $total = 0 @endphp
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="data_table table">
                             <thead>
                             <tr>
                                 <th></th>

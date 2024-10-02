@@ -26,7 +26,7 @@
                 <div class="card-body table-border-style table-border-style">
                     <h5></h5>
                     <div class="table-responsive">
-                        <table class="table datatable">
+                        <table class="data_table table datatable">
                             <thead>
                                 <tr>
                                     <th>{{ __('Chart Of Account') }}</th>

@@ -14,6 +14,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Repositories\UserRepository;
 use App\Repositories\RoleRepository;
 use App\Http\Controllers\Controller;
+use App\Models\Center;
+use App\Models\Zone;
 use Laravel\Passport\TokenRepository;
 use App\Repositories\BranchRepository;
 use Illuminate\Contracts\View\Factory;
@@ -107,8 +109,9 @@ class UserController extends Controller
                 $employeeCode = AppHelper::getEmployeeCode();
 
                 $leaveTypes = $this->leaveTypeRepository->getPaidLeaveTypes();
+                $zones = Zone::all();
 
-                return view($this->view . 'create', compact('companyDetail', 'roles', 'leaveTypes', 'employeeCode'));
+                return view($this->view . 'create', compact('companyDetail', 'roles', 'leaveTypes', 'employeeCode', 'zones'));
             } catch (Exception $exception) {
                 return redirect()->back()->with('danger', $exception->getMessage());
             }
@@ -199,8 +202,10 @@ class UserController extends Controller
                 $userDetail = $this->userRepo->findUserDetailById($id, $userSelect, $userWith);
                 $leaveTypes = $this->leaveTypeRepository->getPaidLeaveTypes();
                 $employeeLeaveTypes = $this->employeeLeaveTypeRepository->getAll(['id', 'leave_type_id', 'days', 'is_active'], $id);
+                $zones = Zone::all();
+                $centers = Center::all();
 
-                return view($this->view . 'edit', compact('companyDetail', 'roles', 'userDetail', 'leaveTypes', 'employeeLeaveTypes'));
+                return view($this->view . 'edit', compact('companyDetail', 'roles', 'userDetail', 'leaveTypes', 'employeeLeaveTypes', 'zones', 'centers'));
             } catch (Exception $exception) {
 
                 return redirect()->back()->with('danger', $exception->getFile());
