@@ -50,6 +50,7 @@
                                 <tr>
                                     <th>{{ __('Sl No.') }}</th>
                                     <th>{{ __('Name') }}</th>
+                                    <th>{{ __('Block') }}</th>
                                     <th>{{ __('Gram Panchyat') }}</th>
                                     <th>{{ __('Zone') }}</th>
                                     <th>{{ __('Center') }}</th>
@@ -61,7 +62,8 @@
                                     <tr class="font-style">
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $village->name }}</td>
-                                        <td>{{ $village->gram_panchyat->name }}</td>
+                                        <td>{{ ($village->block_id != '') ? $village->block->name:'-' }}</td>
+                                        <td>{{ ($village->gram_panchyat_id != '') ? $village->gram_panchyat->name:'-' }}</td>
                                         <td>{{ ($village->zone_id != '') ? $village->zone->name:'-' }}</td>
                                         <td>{{ ($village->center_id != '') ? $village->center->name:'-' }}</td>
                                         <td class="Action">

@@ -115,7 +115,7 @@
                         <div class="form-group col-md-6">
                             {{ Form::label('block_id', __('Block'), ['class' => 'form-label']) }}<span
                                 class="text-danger">*</span>
-                            {{ Form::select('block_id', ['Select Block'], null, ['class' => 'form-control select', 'required' => 'required']) }}
+                            {{ Form::select('block_id', $blocks, null, ['class' => 'form-control select', 'required' => 'required']) }}
                         </div>
                         <div class="form-group col-md-6">
                             {{ Form::label('gram_panchyat_id', __('Gram Panchyat'), ['class' => 'form-label']) }}<span

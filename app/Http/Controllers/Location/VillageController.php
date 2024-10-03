@@ -11,6 +11,7 @@ use App\Models\Zone;
 use Exception;
 use Illuminate\Http\Request;
 use App\Exports\VillagesExport;
+use App\Models\Block;
 use Maatwebsite\Excel\Facades\Excel;
 
 class VillageController extends Controller
@@ -66,10 +67,12 @@ class VillageController extends Controller
                     'gram_panchyat_id' => 'required',
                     'zone_id' => 'required',
                     'center_id' => 'required',
+                    'block_id' => 'required',
                 ]);
                 // Village::create($request->all());
                 $village = new Village;
                 $village->name = $request->name;
+                $village->block_id = $request->block_id;
                 $village->gram_panchyat_id = $request->gram_panchyat_id;
                 $village->zone_id = $request->zone_id;
                 $village->center_id = $request->center_id;
@@ -106,6 +109,8 @@ class VillageController extends Controller
         if (\Auth::user()->can('edit-village')) {
             $districts = District::all()->pluck('name', 'id');
             $districts->prepend('Select District', '');
+            $blocks = Block::all()->pluck('name', 'id');
+            $blocks->prepend('Select Block', '');
             $grampanchyats = GramPanchyat::all()->pluck('name', 'id');
             $grampanchyats->prepend('Select GramPanchyat', '');
             $zones = Zone::all()->pluck('name', 'id');
@@ -113,7 +118,7 @@ class VillageController extends Controller
             $centers = Center::all()->pluck('name', 'id');
             $centers->prepend('Select Center', '');
 
-            return view('admin.location.village.edit', compact('village', 'districts', 'grampanchyats', 'zones', 'centers'));
+            return view('admin.location.village.edit', compact('village', 'districts', 'blocks', 'grampanchyats', 'zones', 'centers'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -131,6 +136,7 @@ class VillageController extends Controller
         if (\Auth::user()->can('edit-village')) {
             $village = Village::find($id);
             $village->name = $request->name;
+            $village->block_id = $request->block_id;
             $village->gram_panchyat_id = $request->gram_panchyat_id;
             $village->zone_id = $request->zone_id;
             $village->center_id = $request->center_id;
@@ -157,10 +163,5 @@ class VillageController extends Controller
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
-    }
-
-    public function export()
-    {
-        return Excel::download(new VillagesExport, 'villages.xlsx');
     }
 }

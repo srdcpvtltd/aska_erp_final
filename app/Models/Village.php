@@ -11,6 +11,11 @@ class Village extends Model
 
     protected $guarded = [];
 
+    public function block()
+    {
+        return $this->belongsTo(Block::class,'block_id');
+    }
+
     public function gram_panchyat()
     {
         return $this->belongsTo(GramPanchyat::class,'gram_panchyat_id');

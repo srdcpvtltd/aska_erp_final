@@ -737,7 +737,6 @@ Route::group([
         //irrigation
         Route::resource('irrigation', IrrigationController::class);
         Route::get('irrigation/{id}/destroy', [IrrigationController::class, 'destroy'])->name('irrigation.destroy');
-        Route::get('/export-villages', [VillageController::class, 'export'])->name('export.villages');
     });
 });
 
