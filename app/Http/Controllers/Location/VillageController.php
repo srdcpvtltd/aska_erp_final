@@ -10,6 +10,8 @@ use App\Models\Village;
 use App\Models\Zone;
 use Exception;
 use Illuminate\Http\Request;
+use App\Exports\VillagesExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class VillageController extends Controller
 {
@@ -155,5 +157,10 @@ class VillageController extends Controller
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
+    }
+
+    public function export()
+    {
+        return Excel::download(new VillagesExport, 'villages.xlsx');
     }
 }

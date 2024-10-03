@@ -2,6 +2,27 @@
 @section('title')
     {{ __('GP (Gram Panchyat)') }}
 @endsection
+@section('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
+<script>
+    document.getElementById('exportButton').addEventListener('click', function() {
+        // Select the HTML table element
+        var table = document.getElementById('gp_datatable'); // Replace with your DataTable's ID
+        
+        // Create a new workbook
+        var wb = XLSX.utils.book_new();
+
+        // Convert the table to a worksheet
+        var ws = XLSX.utils.table_to_sheet(table);
+
+        // Append the worksheet to the workbook
+        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+        // Export the workbook to an Excel file
+        XLSX.writeFile(wb, 'Grampanchyat.xlsx');
+    });
+</script>
+@endsection
 @section('main-content')
     @include('admin.section.flash_message')
     <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
@@ -10,6 +31,8 @@
             <li class="breadcrumb-item">{{ __('GP (Gram Panchyat)') }}</li>
         </ol>
         <div class="float-end">
+            <button id="exportButton" class="btn btn-success">Export</button>
+
             @can('create-gram_panchyat')
                 <a href="{{ route('admin.location.gram_panchyat.create') }}" title="{{ __('Add') }}" class="btn btn-primary">
                     Add
@@ -22,7 +45,7 @@
             <div class="card">
                 <div class="card-body table-border-style">
                     <div class="table-responsive">
-                        <table class="data_table table datatable">
+                        <table class="data_table table datatable" id="gp_datatable">
                             <thead>
                                 <tr>
                                     <th>{{ __('SL No.') }}</th>
