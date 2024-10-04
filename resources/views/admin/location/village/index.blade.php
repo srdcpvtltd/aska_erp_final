@@ -45,7 +45,7 @@
             <div class="card">
                 <div class="card-body table-border-style">
                     <div class="table-responsive">
-                        <table class="data_table table datatable" id="village_datatable">
+                        <table class=" table datatable" id="village_datatable">
                             <thead>
                                 <tr>
                                     <th>{{ __('Sl No.') }}</th>
