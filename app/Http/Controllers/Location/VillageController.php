@@ -69,13 +69,15 @@ class VillageController extends Controller
                     'center_id' => 'required',
                     'block_id' => 'required',
                 ]);
-                // Village::create($request->all());
+
                 $village = new Village;
                 $village->name = $request->name;
+                $village->district_id = $request->district_id;
                 $village->block_id = $request->block_id;
                 $village->gram_panchyat_id = $request->gram_panchyat_id;
                 $village->zone_id = $request->zone_id;
                 $village->center_id = $request->center_id;
+                $village->km = $request->km;
                 $village->save();
 
                 return redirect()->route('admin.location.village.index')->with('success', 'Village Added Successfully.');
@@ -138,10 +140,12 @@ class VillageController extends Controller
         if (\Auth::user()->can('edit-village')) {
             $village = Village::find($id);
             $village->name = $request->name;
+            $village->district_id = $request->district_id;
             $village->block_id = $request->block_id;
             $village->gram_panchyat_id = $request->gram_panchyat_id;
             $village->zone_id = $request->zone_id;
             $village->center_id = $request->center_id;
+            $village->km = $request->km;
             $village->update();
             
             return redirect()->route('admin.location.village.index')->with('success', 'Village Updated Successfully.');
