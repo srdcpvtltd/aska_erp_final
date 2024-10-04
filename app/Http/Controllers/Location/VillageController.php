@@ -25,7 +25,11 @@ class VillageController extends Controller
     {
         if (\Auth::user()->can('manage-village')) {
             $villages = Village::all();
-            return view('admin.location.village.index', compact('villages'));
+            $blocks = Block::all()->pluck('name', 'id');
+            $blocks->prepend('Select Blocks', '');
+            $zones = Zone::all()->pluck('name', 'id');
+            $zones->prepend('Select Zones', '');
+            return view('admin.location.village.index', compact('villages','blocks','zones'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -169,5 +173,30 @@ class VillageController extends Controller
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
+    }
+
+    public function search_filter(Request $request)
+    {
+        $villages = Village::where(function($query) use ($request) {
+            if ($request->block_id != '') {
+                $query->where('block_id', $request->block_id);
+            }
+            if ($request->grampanchyat_id != '') {
+                $query->Where('gram_panchyat_id', $request->grampanchyat_id);
+            }
+            if ($request->zone_id != '') {
+                $query->Where('zone_id', $request->zone_id);
+            }
+            if ($request->center_id != '') {
+                $query->Where('center_id', $request->center_id);
+            }
+        })->get();
+
+        $blocks = Block::all()->pluck('name', 'id');
+        $blocks->prepend('Select Blocks', '');
+        $zones = Zone::all()->pluck('name', 'id');
+        $zones->prepend('Select Zones', '');
+
+        return view('admin.location.village.index', compact('villages','blocks','zones'));
     }
 }
