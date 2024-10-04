@@ -483,9 +483,10 @@ Route::group([
                 //registration
                 Route::get('farming_registration/validate/{id}', [FarmingController::class, 'validateProfile'])->name('farming_registration.validate');
                 Route::resource('farming_registration', FarmingController::class);
-                Route::post('search_filter', [FarmingController::class, 'search'])->name('farming_registration.search_filter');
+                Route::post('farming_registration/search_filter', [FarmingController::class, 'search'])->name('farming_registration.search_filter');
                 Route::get('farming_registration/{id}/destroy', [FarmingController::class, 'destroy'])->name('farming_registration.destroy');
                 Route::post('registration_id', [FarmingController::class, 'registration_id'])->name('registration_id');
+                Route::post('search_filter', [FarmingController::class, 'search_filter'])->name('search_filter');
 
                 //guarantor
                 Route::resource('guarantor', GuarantorController::class);
