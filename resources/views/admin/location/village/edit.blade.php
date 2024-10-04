@@ -142,9 +142,8 @@
                             {{ Form::select('center_id', $centers, null, ['class' => 'form-control select', 'required' => 'required']) }}
                         </div>
                         <div class="form-group col-md-6">
-                            {{ Form::label('km', __('KM'), ['class' => 'form-label']) }}<span
-                                class="text-danger">*</span>
-                            {{ Form::text('km', '', ['class' => 'form-control', 'required' => 'required']) }}
+                            {{ Form::label('km', __('KM'), ['class' => 'form-label']) }}
+                            {{ Form::text('km', null, ['class' => 'form-control']) }}
                         </div>
                     </div>
                 </div>
