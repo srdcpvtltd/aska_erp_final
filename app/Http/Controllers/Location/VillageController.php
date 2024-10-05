@@ -123,10 +123,8 @@ class VillageController extends Controller
             $zones->prepend('Select Zone', '');
             $centers = Center::all()->pluck('name', 'id');
             $centers->prepend('Select Center', '');
-            $blk = GramPanchyat::find($village->gram_panchyat_id);
-            $dstct = Block::find($blk->block_id);
 
-            return view('admin.location.village.edit', compact('village', 'districts', 'blocks', 'grampanchyats', 'zones', 'centers','blk', 'dstct'));
+            return view('admin.location.village.edit', compact('village', 'districts', 'blocks', 'grampanchyats', 'zones', 'centers'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
