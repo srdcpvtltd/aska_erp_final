@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,7 +36,8 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel"></h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
                         <div class="modal-body"></div>
                     </div>
@@ -80,27 +82,27 @@
     <script>
         $(document).ready(function() {
             new DataTable('.data_table');
-            $('.deleteBtn').click(function(event) {
+            $(document).on('click', '.deleteBtn', function(event) {
                 event.preventDefault();
                 let href = $(this).data('href');
                 console.log(href);
 
                 Swal.fire({
-                    title: 'Are you sure you want to Delete ?',
+                    title: 'Are you sure you want to delete?',
                     showDenyButton: true,
-                    confirmButtonText: `Yes`,
-                    denyButtonText: `No`,
+                    confirmButtonText: 'Yes',
+                    denyButtonText: 'No',
                     padding: '10px 50px 10px 50px',
-                    // width:'1000px',
                     allowOutsideClick: false
                 }).then((result) => {
                     if (result.isConfirmed) {
                         window.location.href = href;
                     }
-                })
+                });
             });
         });
     </script>
     @yield('attendanceScripts')
 </body>
+
 </html>

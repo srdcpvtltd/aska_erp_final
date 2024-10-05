@@ -43,7 +43,7 @@
             data.forEach(function(row) {
                 var filteredRow = Object.values(row).filter(function(value, index) {
                     return index !== actionColumnIndex && index !==
-                    statusColumnIndex; // Exclude "Action" and "Status" columns by index
+                        statusColumnIndex; // Exclude "Action" and "Status" columns by index
                 });
                 ws_data.push(filteredRow); // Add filtered row to ws_data
             });
@@ -285,7 +285,7 @@
                                                     @endcan
                                                     @can('delete-farmer_registration')
                                                         <li>
-                                                            <a class="deleteBtn"
+                                                            <a href="#" class="deleteBtn"
                                                                 data-href="{{ route('admin.farmer.farming_registration.destroy', $farming->id) }}"
                                                                 data-bs-toggle="tooltip" title="{{ __('Delete') }}">
                                                                 <i class="link-icon" data-feather="delete"></i>

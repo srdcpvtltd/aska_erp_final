@@ -171,8 +171,7 @@
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $village->name }}</td>
                                         <td>{{ $village->block_id != '' ? $village->block->name : '-' }}</td>
-                                        <td>{{ $village->gram_panchyat_id != '' ? $village->gram_panchyat->name : '-' }}
-                                        </td>
+                                        <td>{{ $village->gram_panchyat_id != '' ? $village->gram_panchyat->name : '-' }}</td>
                                         <td>{{ $village->zone_id != '' ? $village->zone->name : '-' }}</td>
                                         <td>{{ $village->center_id != '' ? $village->center->name : '-' }}</td>
                                         <td class="Action">
