@@ -200,7 +200,7 @@
                         </div>
                         <div class="form-group col-md-6">
                             {{ Form::label('mobile', __('Mobile'), ['class' => 'form-label']) }}
-                            {{ Form::number('mobile', $farming->mobile, ['class' => 'form-control', 'required' => 'required']) }}
+                            {{ Form::number('mobile', $farming->mobile, ['class' => 'form-control']) }}
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
@@ -282,11 +282,11 @@
                         </div>
                         <div class="form-group col-md-6">
                             {{ Form::label('post_office', __('Post Office'), ['class' => 'form-label']) }}
-                            {{ Form::text('post_office', $farming->post_office, ['class' => 'form-control', 'required' => 'required']) }}
+                            {{ Form::text('post_office', $farming->post_office, ['class' => 'form-control']) }}
                         </div>
                         <div class="form-group col-md-6">
                             {{ Form::label('police_station', __('Police Station'), ['class' => 'form-label']) }}
-                            {{ Form::text('police_station', $farming->police_station, ['class' => 'form-control', 'required' => 'required']) }}
+                            {{ Form::text('police_station', $farming->police_station, ['class' => 'form-control']) }}
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
@@ -308,8 +308,7 @@
                         </div>
                         <div class="form-group col-md-6">
                             {{ Form::label('gender', __('Gender'), ['class' => 'form-label']) }}
-                            <select class="form-control select" name="gender" id="gender" placeholder="Select Gender"
-                                required>
+                            <select class="form-control select" name="gender" id="gender" placeholder="Select Gender">
                                 <option value="">{{ __('Select Gender') }}</option>
                                 <option {{ $farming->gender == 'Male' ? 'selected' : '' }} value="Male">
                                     {{ __('Male') }}</option>
@@ -320,7 +319,7 @@
                         <div class="form-group col-md-6">
                             {{ Form::label('qualification', __('Qualification'), ['class' => 'form-label']) }}
                             <select class="form-control select" name="qualification" id="qualification"
-                                placeholder="Select Qualification" required>
+                                placeholder="Select Qualification">
                                 <option value="">{{ __('Select Qualification') }}</option>
                                 <option {{ $farming->qualification == '10th Standard' ? 'selected' : '' }}
                                     value="10th Standard">{{ __('10th Standard') }}</option>
@@ -342,7 +341,7 @@
                         <div class="form-group col-md-6">
                             {{ Form::label('farmer category', __('Farmer Category'), ['class' => 'form-label']) }}
                             <select class="form-control select" name="farmer_category" id="farmer_category"
-                                placeholder="Select Qualification" required>
+                                placeholder="Select Qualification">
                                 <option value="">{{ __('Select Category') }}</option>
                                 <option {{ $farming->farmer_category == 'NORMAL' ? 'selected' : '' }} value="NORMAL">
                                     NORMAL</option>
@@ -368,7 +367,7 @@
                         @endif
                         <div class="form-group col-md-6">
                             {{ Form::label('offered_area', __('Offered Area'), ['class' => 'form-label']) }}
-                            {{ Form::text('offered_area', $farming->offered_area, ['class' => 'form-control', 'required' => 'required']) }}
+                            {{ Form::text('offered_area', $farming->offered_area, ['class' => 'form-control']) }}
                         </div>
                         <div class="form-group col-md-6 irregation_fields">
                             {{ Form::label('irregation', __('Mode of Irregation'), ['class' => 'form-label']) }}
