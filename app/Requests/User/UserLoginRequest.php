@@ -28,9 +28,9 @@ class UserLoginRequest extends FormRequest
         return [
             'username' => 'required|string|max:80',
             'password' => 'required',
-            'fcm_token' => 'required|string',
-            'device_type' => ['required', 'string', Rule::in(User::DEVICE_TYPE)],
-            'uuid' => ['required', 'string'],
+            // 'fcm_token' => 'required|string',
+            // 'device_type' => ['required', 'string', Rule::in(User::DEVICE_TYPE)],
+            // 'uuid' => ['required', 'string'],
         ];
 
     }

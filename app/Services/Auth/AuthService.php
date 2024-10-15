@@ -15,7 +15,7 @@ class AuthService
     private AppSettingRepository $appSettingRepo;
 
 
-    public function __construct(UserRepository $userRepo,AppSettingRepository $appSettingRepo)
+    public function __construct(UserRepository $userRepo, AppSettingRepository $appSettingRepo)
     {
         $this->userRepo = $userRepo;
         $this->appSettingRepo = $appSettingRepo;
@@ -50,8 +50,8 @@ class AuthService
             }
 
             return array(
-                'credential'=> $credential,
-                'user'=> $user
+                'credential' => $credential,
+                'user' => $user
             );
         } catch (Exception $exception) {
             throw $exception;
@@ -60,35 +60,34 @@ class AuthService
 
     public function updateUserLoginDetail($validatedData)
     {
-        try{
-            $update['uuid'] = $validatedData['uuid'];
-            $update['fcm_token'] = $validatedData['fcm_token'];
-            $update['device_type'] = $validatedData['device_type'];
+        try {
+            // $update['uuid'] = $validatedData['uuid'];
+            // $update['fcm_token'] = $validatedData['fcm_token'];
+            // $update['device_type'] = $validatedData['device_type'];
             $update['logout_status'] = User::LOGOUT_STATUS['approve'];
             $userDetail = $this->userRepo->findUserDetailById($validatedData['id']);
-            if(!$userDetail){
-                throw new Exception('User Detail Not Found',404);
+            if (!$userDetail) {
+                throw new Exception('User Detail Not Found', 404);
             }
             $slug = 'authorize-login';
             $authorizeLogin = $this->appSettingRepo->findAppSettingDetailBySlug($slug);
-            if($authorizeLogin && $authorizeLogin->status == 1){
+            if ($authorizeLogin && $authorizeLogin->status == 1) {
 
-                if($userDetail->logout_status == User::LOGOUT_STATUS['pending']){
-                    throw new Exception('Log Out Request Still Pending, Please Contact Administrator !!',401);
+                if ($userDetail->logout_status == User::LOGOUT_STATUS['pending']) {
+                    throw new Exception('Log Out Request Still Pending, Please Contact Administrator !!', 401);
                 }
-                if($userDetail->uuid){
-                    throw new Exception('Please Log Out From Another Device',401);
+                if ($userDetail->uuid) {
+                    throw new Exception('Please Log Out From Another Device', 401);
                 }
             }
 
 
             DB::beginTransaction();
-                $this->userRepo->update($userDetail,$update);
+            $this->userRepo->update($userDetail, $update);
             DB::commit();
-        }catch(Exception $e){
+        } catch (Exception $e) {
             DB::rollBack();
             throw $e;
         }
     }
-
 }

@@ -1,35 +1,36 @@
 <?php
 
-use App\Http\Controllers\Api\AdvanceSalaryApiController;
-use App\Http\Controllers\Api\AttendanceApiController;
-use App\Http\Controllers\Api\DashboardApiController;
-use App\Http\Controllers\Api\EmployeePayrollApiController;
-use App\Http\Controllers\Api\HolidayApiController;
-use App\Http\Controllers\Api\LeaveApiController;
-use App\Http\Controllers\Api\LeaveTypeApiController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\NfcApiController;
-use App\Http\Controllers\Api\NoticeApiController;
-use App\Http\Controllers\Api\NotificationApiController;
-use App\Http\Controllers\Api\ProjectApiController;
-use App\Http\Controllers\Api\ProjectManagementDashboardApiController;
-use App\Http\Controllers\Api\PushNotificationController;
-use App\Http\Controllers\Api\StaticPageContentApiController;
-use App\Http\Controllers\Api\SupportApiController;
+use App\Http\Controllers\Api\FarmerController;
 use App\Http\Controllers\Api\TadaApiController;
 use App\Http\Controllers\Api\TaskApiController;
-use App\Http\Controllers\Api\TaskChecklistApiController;
+use App\Http\Controllers\Api\LeaveApiController;
+use App\Http\Controllers\Api\NoticeApiController;
+use App\Http\Controllers\Api\HolidayApiController;
+use App\Http\Controllers\Api\ProjectApiController;
+use App\Http\Controllers\Api\SupportApiController;
+use App\Http\Controllers\Api\DashboardApiController;
+use App\Http\Controllers\Api\LeaveTypeApiController;
+use App\Http\Controllers\Api\Auth\AuthApiController;
+use App\Http\Controllers\Api\AttendanceApiController;
 use App\Http\Controllers\Api\TaskCommentApiController;
 use App\Http\Controllers\Api\TeamMeetingApiController;
 use App\Http\Controllers\Api\UserProfileApiController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\Auth\AuthApiController;
+use App\Http\Controllers\Api\NotificationApiController;
+use App\Http\Controllers\Api\PushNotificationController;
+use App\Http\Controllers\Api\AdvanceSalaryApiController;
+use App\Http\Controllers\Api\TaskChecklistApiController;
+use App\Http\Controllers\Api\EmployeePayrollApiController;
+use App\Http\Controllers\Api\StaticPageContentApiController;
+use App\Http\Controllers\Api\ProjectManagementDashboardApiController;
 
 /**   user login **/
-Route::post('login', [AuthApiController::class,'login']);
+Route::post('login', [AuthApiController::class, 'login']);
 
 Route::get('team-meetings/{id}', [TeamMeetingApiController::class, 'findTeamMeetingDetail']);
-Route::group([
-    'middleware' => ['auth:api','permission']
+Route::group([ 
+    'middleware' => ['auth:api', 'permission']
 ], function () {
 
     /**   user logout **/
@@ -66,7 +67,7 @@ Route::group([
      */
     Route::post('employees/check-out', [AttendanceApiController::class, 'employeeCheckOut']);
     Route::get('employees/attendance-detail', [AttendanceApiController::class, 'getEmployeeAllAttendanceDetailOfTheMonth']);
-    Route::post('employees/attendance',[AttendanceApiController::class, 'employeeAttendance']);
+    Route::post('employees/attendance', [AttendanceApiController::class, 'employeeAttendance']);
 
     /** Leave Request Routes **/
     Route::get('leave-types', [LeaveTypeApiController::class, 'getAllLeaveTypeWithEmployeeLeaveRecord']);
@@ -121,21 +122,26 @@ Route::group([
     Route::get('employee/tada/delete-attachment/{attachmentId}', [TadaApiController::class, 'deleteTadaAttachment']);
 
     /** Advance Salary */
-    Route::get('employee/advance-salaries-lists',[AdvanceSalaryApiController::class,'getEmployeesAdvanceSalaryDetailLists']);
-    Route::post('employee/advance-salaries/store',[AdvanceSalaryApiController::class,'store']);
-    Route::get('employee/advance-salaries-detail/{id}',[AdvanceSalaryApiController::class,'getEmployeeAdvanceSalaryDetailById']);
-    Route::post('employee/advance-salaries-detail/update',[AdvanceSalaryApiController::class,'updateDetail']);
+    Route::get('employee/advance-salaries-lists', [AdvanceSalaryApiController::class, 'getEmployeesAdvanceSalaryDetailLists']);
+    Route::post('employee/advance-salaries/store', [AdvanceSalaryApiController::class, 'store']);
+    Route::get('employee/advance-salaries-detail/{id}', [AdvanceSalaryApiController::class, 'getEmployeeAdvanceSalaryDetailById']);
+    Route::post('employee/advance-salaries-detail/update', [AdvanceSalaryApiController::class, 'updateDetail']);
 
     /** Nfc  */
     Route::post('nfc/store', [NfcApiController::class, 'save']);
 
     /** Push Notification */
-    Route::post('employee/push',[PushNotificationController::class,'sendPushNotification']);
+    Route::post('employee/push', [PushNotificationController::class, 'sendPushNotification']);
 
     /** Payslip */
-    Route::post('employee/payslip',[EmployeePayrollApiController::class, 'getPayrollList']);
-    Route::get('employee/payslip/{id}',[EmployeePayrollApiController::class, 'getEmployeePayslipDetailById']);
+    Route::post('employee/payslip', [EmployeePayrollApiController::class, 'getPayrollList']);
+    Route::get('employee/payslip/{id}', [EmployeePayrollApiController::class, 'getEmployeePayslipDetailById']);
 
+    // Famers APIs
+    Route::group([
+        'prefix' => 'farmer',
+        'as' => 'farmer.',
+    ], function () {
+        Route::post('register',[FarmerController::class,'register']);
+    });
 });
-
-
