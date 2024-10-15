@@ -215,7 +215,7 @@ Route::group([
         //Banks
         Route::resource('banks', BankController::class);
         Route::get('banks/{id}/destroy', [BankController::class, 'destroy'])->name('banks.destroy');
-        
+
         //bank_branches
         Route::resource('bank_branches', BankBranchController::class);
         Route::get('bank_branches/{id}/destroy', [BankBranchController::class, 'destroy'])->name('bank_branches.destroy');
@@ -527,7 +527,7 @@ Route::group([
                 //Bank Details
                 Route::resource('bank_details', BankDetailsController::class);
                 Route::get('bank_details/{id}/destroy', [BankDetailsController::class, 'destroy'])->name('bank_details.destroy');
-                
+
                 //cutting order
                 Route::post('update_cutting_order', [CuttingOrderController::class, 'updateCuttingOrder'])->name('farming.update_cutting_order');
                 Route::resource('cutting_order', CuttingOrderController::class);
@@ -538,24 +538,25 @@ Route::group([
         Route::group(
             [
                 'prefix' => 'location',
-                'as'=>'location.',
-            ], function () {
-                Route::resource('country',CountryController::class);
-                Route::get('country/{id}/destroy',[CountryController::class, 'destroy'])->name('country.destroy');
-                Route::resource('state',StateController::class);
-                Route::get('state/{id}/destroy',[StateController::class, 'destroy'])->name('state.destroy');
-                Route::resource('district',DistrictController::class);
-                Route::get('district/{id}/destroy',[DistrictController::class, 'destroy'])->name('district.destroy');
-                Route::resource('block',BlockController::class);
-                Route::get('block/{id}/destroy',[BlockController::class, 'destroy'])->name('block.destroy');
-                Route::resource('gram_panchyat',GramPanchyatController::class);
-                Route::get('gram_panchyat/{id}/destroy',[GramPanchyatController::class, 'destroy'])->name('gram_panchyat.destroy');
-                Route::resource('village',VillageController::class);
-                Route::get('village/{id}/destroy',[VillageController::class, 'destroy'])->name('village.destroy');
-                Route::resource('zone',ZoneController::class);
-                Route::get('zone/{id}/destroy',[ZoneController::class, 'destroy'])->name('zone.destroy');
-                Route::resource('center',CenterController::class);
-                Route::get('center/{id}/destroy',[CenterController::class, 'destroy'])->name('center.destroy');
+                'as' => 'location.',
+            ],
+            function () {
+                Route::resource('country', CountryController::class);
+                Route::get('country/{id}/destroy', [CountryController::class, 'destroy'])->name('country.destroy');
+                Route::resource('state', StateController::class);
+                Route::get('state/{id}/destroy', [StateController::class, 'destroy'])->name('state.destroy');
+                Route::resource('district', DistrictController::class);
+                Route::get('district/{id}/destroy', [DistrictController::class, 'destroy'])->name('district.destroy');
+                Route::resource('block', BlockController::class);
+                Route::get('block/{id}/destroy', [BlockController::class, 'destroy'])->name('block.destroy');
+                Route::resource('gram_panchyat', GramPanchyatController::class);
+                Route::get('gram_panchyat/{id}/destroy', [GramPanchyatController::class, 'destroy'])->name('gram_panchyat.destroy');
+                Route::resource('village', VillageController::class);
+                Route::get('village/{id}/destroy', [VillageController::class, 'destroy'])->name('village.destroy');
+                Route::resource('zone', ZoneController::class);
+                Route::get('zone/{id}/destroy', [ZoneController::class, 'destroy'])->name('zone.destroy');
+                Route::resource('center', CenterController::class);
+                Route::get('center/{id}/destroy', [CenterController::class, 'destroy'])->name('center.destroy');
             }
         );
 
@@ -653,11 +654,18 @@ Route::group([
 
         //account system
         Route::resource('bank-account', BankAccountController::class);
-        Route::get('bank-account/{id}/destroy', [BankAccountController::class,'destroy'])->name('bank-account.destroy');
+        Route::get('bank-account/{id}/destroy', [BankAccountController::class, 'destroy'])->name('bank-account.destroy');
         Route::resource('bank-transfer', BankTransferController::class);
         Route::get('bank-transfer/{id}/destroy', [BankTransferController::class, 'destroy'])->name('bank-transfer.destroy');
+        
+        //customer
         Route::get('customer/{id}/show', [CustomerController::class, 'show'])->name('customer.show');
         Route::resource('customer', CustomerController::class);
+        Route::get('export/customer', [CustomerController::class, 'export'])->name('customer.export');
+        Route::get('customer/{id}/destroy', [CustomerController::class, 'destroy'])->name('customer.destroy');
+        Route::get('import/customer/file', [CustomerController::class, 'importFile'])->name('customer.file.import');
+        Route::post('import/customer', [CustomerController::class, 'import'])->name('customer.import');
+        
         //proposal
         Route::get('proposal/{id}/status/change', [ProposalController::class, 'statusChange'])->name('proposal.status.change');
         Route::get('proposal/{id}/convert', [ProposalController::class, 'convert'])->name('proposal.convert');
@@ -686,6 +694,7 @@ Route::group([
         Route::get('invoice/items', [InvoiceController::class, 'items'])->name('invoice.items');
         Route::resource('invoice', InvoiceController::class);
         Route::get('invoice/create/{cid}', [InvoiceController::class, 'create'])->name('invoice.create');
+        Route::get('/customer/invoice/{id}/', [InvoiceController::class, 'invoiceLink'])->name('invoice.link.copy');
         //revenue
         Route::get('revenue/index', [RevenueController::class, 'index'])->name('revenue.index');
         Route::resource('revenue', RevenueController::class);
