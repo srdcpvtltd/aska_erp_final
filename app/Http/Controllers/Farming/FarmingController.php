@@ -326,7 +326,7 @@ class FarmingController extends Controller
             ->join('users', 'users.id', '=', 'farmings.created_by')
             ->where(function ($query) use ($request) {
                 $query->where('farmings.created_by', Auth::user()->id);
-                    // ->orWhere('users.supervisor_id', Auth::user()->id);
+                // ->orWhere('users.supervisor_id', Auth::user()->id);
 
                 if (!empty($request->block_id)) {
                     $query->where('farmings.block_id', $request->block_id);
