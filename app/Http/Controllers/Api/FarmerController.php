@@ -26,11 +26,10 @@ class FarmerController extends Controller
                 'registration_no' => "ACSI" . '-' . rand(0, 9999)
             ]);
             $farming = Farming::create($request->all());
-            // dd($farming);
             if ($farming) {
                 DB::commit();
                 return response()->json([
-                    "message" => "Record Created Successfully",
+                    "message" => "Record Created Successfully.",
                     "code" => 200
                 ]);
             } else {
@@ -44,6 +43,107 @@ class FarmerController extends Controller
             return response()->json([
                 "message" => $e->getMessage(),
                 'code' => 500
+            ]);
+        }
+    }
+
+    public function delete_farmer(Request $request)
+    {
+        try {
+            $farmar_id = $request->id;
+            $farming = Farming::find($farmar_id);
+            if (!$farming) {
+                return response()->json([
+                    "message" => "No record found in this id",
+                    "code" => 500
+                ], 200);
+            }
+            $result = $farming->delete();
+            if ($result) {
+                return response()->json([
+                    "message" => "Record Deleted Successfully",
+                    "code" => 200
+                ]);
+            } else {
+                return response()->json([
+                    "message" => "Record Not found",
+                    "code" => 500
+                ], 200);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                "message" => $e->getMessage(),
+                "code" => 500
+            ]);
+        }
+    }
+
+    public function update_farmer(Request $request)
+    {
+        try {
+            $id = $request->id;
+            $farming = Farming::find($id);
+            if (!$farming) {
+                return response()->json([
+                    "message" => "Please verify the ID and try again.",
+                    "code" => 500
+                ]);
+            }
+            if ($farming->registration_no == NULL) {
+                $request->merge([
+                    'registration_no' => "ACSI" . '-' . rand(0, 9999)
+                ]);
+            }
+            $result = $farming->update($request->all());
+            if ($result) {
+                return response()->json([
+                    "message" => "Record updated successfully.",
+                    "code" => 200
+                ], 200);
+            } else {
+                return response()->json([
+                    "message" => "We encountered an issue while updating the record. Please try again",
+                    "code" => 500
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                "message" => $e->getMessage(),
+                "code" => 500
+            ]);
+        }
+    }
+
+    public function retrive_farmers()
+    {
+        try {
+            $farmer_data = Farming::with(['block', 'state', 'district'])
+                ->get()->map(function ($items) {
+                    $data = $items->toArray();
+                    $data['state_name'] = $items->state->name ?? null;
+                    $data['district_name'] = $items->district->name ?? null;
+                    $data['block_name'] = $items->block->name ?? null;
+                    unset($data['district']);
+                    unset($data['state']);
+                    unset($data['block']);
+                    return $data;
+                });
+
+            if ($farmer_data->isEmpty()) {
+                return response()->json([
+                    "message" => "No data found",
+                    "code" => 500
+                ]);
+            } else {
+                return response()->json([
+                    "data" => $farmer_data,
+                    "code" => 200
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                "message" => $e->getMessage(),
+                "code" => 500
             ]);
         }
     }
