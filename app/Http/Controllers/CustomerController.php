@@ -25,7 +25,7 @@ class CustomerController extends Controller
     {
         $data['invoiceChartData'] = \Auth::user()->invoiceChartData();
 
-        return view('customer.dashboard', $data);
+        return view('admin.customer.dashboard', $data);
     }
 
     public function index()
@@ -34,11 +34,11 @@ class CustomerController extends Controller
         {
             $customers = Customer::where('created_by', \Auth::user()->creatorId())->get();
 
-            return view('customer.index', compact('customers'));
+            return view('admin.customer.index', compact('customers'));
         }
         else
         {
-            return redirect()->back()->with('error', __('Permission denied.'));
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
@@ -48,11 +48,11 @@ class CustomerController extends Controller
         {
             $customFields = CustomField::where('created_by', '=', \Auth::user()->creatorId())->where('module', '=', 'customer')->get();
 
-            return view('customer.create', compact('customFields'));
+            return view('admin.customer.create', compact('customFields'));
         }
         else
         {
-            return redirect()->back()->with('error', __('Permission denied.'));
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
@@ -74,7 +74,7 @@ class CustomerController extends Controller
             if($validator->fails())
             {
                 $messages = $validator->getMessageBag();
-                return redirect()->route('customer.index')->with('error', $messages->first());
+                return redirect()->route('admin.customer.index')->with('danger', $messages->first());
             }
 
             $objCustomer    = \Auth::user();
@@ -126,11 +126,11 @@ class CustomerController extends Controller
                     Utility::send_twilio_msg($request->contact,'new_customer', $customerNotificationArr);
                 }
 
-            return redirect()->route('customer.index')->with('success', __('Customer successfully created.'));
+            return redirect()->route('admin.customer.index')->with('success', __('Customer successfully created.'));
         }
         else
         {
-            return redirect()->back()->with('error', __('Permission denied.'));
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
@@ -140,7 +140,7 @@ class CustomerController extends Controller
         $id       = \Crypt::decrypt($ids);
         $customer = Customer::find($id);
 
-        return view('customer.show', compact('customer'));
+        return view('admin.customer.show', compact('customer'));
     }
 
 
@@ -153,11 +153,11 @@ class CustomerController extends Controller
 
             $customFields = CustomField::where('created_by', '=', \Auth::user()->creatorId())->where('module', '=', 'customer')->get();
 
-            return view('customer.edit', compact('customer', 'customFields'));
+            return view('admin.customer.edit', compact('customer', 'customFields'));
         }
         else
         {
-            return redirect()->back()->with('error', __('Permission denied.'));
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
@@ -179,7 +179,7 @@ class CustomerController extends Controller
             {
                 $messages = $validator->getMessageBag();
 
-                return redirect()->route('customer.index')->with('error', $messages->first());
+                return redirect()->route('admin.customer.index')->with('danger', $messages->first());
             }
 
             $customer->name             = $request->name;
@@ -205,33 +205,35 @@ class CustomerController extends Controller
 
             CustomField::saveData($customer, $request->customField);
 
-            return redirect()->route('customer.index')->with('success', __('Customer successfully updated.'));
+            return redirect()->route('admin.customer.index')->with('success', __('Customer successfully updated.'));
         }
         else
         {
-            return redirect()->back()->with('error', __('Permission denied.'));
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
 
-    public function destroy(Customer $customer)
+    public function destroy($id)
     {
         if(\Auth::user()->can('delete customer'))
         {
-            if($customer->created_by == \Auth::user()->creatorId())
+            $customer = Customer::where('id',$id);
+
+            if($customer->first()->created_by == \Auth::user()->creatorId())
             {
                 $customer->delete();
 
-                return redirect()->route('customer.index')->with('success', __('Customer successfully deleted.'));
+                return redirect()->route('admin.customer.index')->with('success', __('Customer successfully deleted.'));
             }
             else
             {
-                return redirect()->back()->with('error', __('Permission denied.'));
+                return redirect()->back()->with('danger', __('Permission denied.'));
             }
         }
         else
         {
-            return redirect()->back()->with('error', __('Permission denied.'));
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
@@ -252,7 +254,7 @@ class CustomerController extends Controller
 
         $request->session()->invalidate();
 
-        return redirect()->route('customer.login');
+        return redirect()->route('admin.customer.login');
     }
 
     public function payment(Request $request)
@@ -279,11 +281,11 @@ class CustomerController extends Controller
             }
             $payments = $query->get();
 
-            return view('customer.payment', compact('payments', 'category'));
+            return view('admin.customer.payment', compact('payments', 'category'));
         }
         else
         {
-            return redirect()->back()->with('error', __('Permission denied.'));
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
@@ -311,11 +313,11 @@ class CustomerController extends Controller
             }
             $transactions = $query->get();
 
-            return view('customer.transaction', compact('transactions', 'category'));
+            return view('admin.customer.transaction', compact('transactions', 'category'));
         }
         else
         {
-            return redirect()->back()->with('error', __('Permission denied.'));
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
@@ -325,7 +327,7 @@ class CustomerController extends Controller
         $userDetail->customField = CustomField::getData($userDetail, 'customer');
         $customFields            = CustomField::where('created_by', '=', \Auth::user()->creatorId())->where('module', '=', 'customer')->get();
 
-        return view('customer.profile', compact('userDetail', 'customFields'));
+        return view('admin.customer.profile', compact('userDetail', 'customFields'));
     }
 
     public function editprofile(Request $request)
@@ -449,7 +451,7 @@ class CustomerController extends Controller
 
     public function importFile()
     {
-        return view('customer.import');
+        return view('admin.customer.import');
     }
 
     public function import(Request $request)
@@ -465,7 +467,7 @@ class CustomerController extends Controller
         {
             $messages = $validator->getMessageBag();
 
-            return redirect()->back()->with('error', $messages->first());
+            return redirect()->route('admin.customer.index')->with('danger', $messages->first());
         }
 
         $customers = (new CustomerImport())->toArray(request()->file('file'))[0];
@@ -542,7 +544,7 @@ class CustomerController extends Controller
             \Session::put('errorArray', $errorRecord);
         }
 
-        return redirect()->back()->with($data['status'], $data['msg']);
+        return redirect()->route('admin.customer.index')->with($data['status'], $data['msg']);
     }
 
 

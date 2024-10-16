@@ -291,4 +291,29 @@ class User extends Authenticatable
         return $this->role->name === 'user' ? 1 : 0;
     }
 
+    public function customerNumberFormat($number)
+    {
+        $settings = Utility::settings();
+
+        return $settings["customer_prefix"] . sprintf("%05d", $number);
+    }
+
+    public function proposalNumberFormat($number)
+    {
+        $settings = Utility::settings();
+
+        return $settings["proposal_prefix"] . sprintf("%05d", $number);
+    }
+
+    public function invoiceNumberFormat($number)
+    {
+        $settings = Utility::settings();
+
+        return $settings["invoice_prefix"] . sprintf("%05d", $number);
+    }
+
+    public function countCustomers()
+    {
+        return Customer::where('created_by', '=', $this->creatorId())->count();
+    }
 }

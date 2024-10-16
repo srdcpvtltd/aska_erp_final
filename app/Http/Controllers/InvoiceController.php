@@ -67,7 +67,7 @@ class InvoiceController extends Controller
             }
             $invoices = $query->get();
 
-            return view('invoice.index', compact('invoices', 'customer', 'status'));
+            return view('admin.invoice.index', compact('invoices', 'customer', 'status'));
         }
         else
         {
@@ -89,7 +89,7 @@ class InvoiceController extends Controller
             $product_services = ProductService::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $product_services->prepend('--', '');
 
-            return view('invoice.create', compact('customers', 'invoice_number', 'product_services', 'category', 'customFields', 'customerId'));
+            return view('admin.invoice.create', compact('customers', 'invoice_number', 'product_services', 'category', 'customFields', 'customerId'));
         }
         else
         {
@@ -101,7 +101,7 @@ class InvoiceController extends Controller
     {
         $customer = Customer::where('id', '=', $request->id)->first();
 
-        return view('invoice.customer_detail', compact('customer'));
+        return view('admin.invoice.customer_detail', compact('customer'));
     }
 
     public function product(Request $request)
@@ -216,7 +216,7 @@ class InvoiceController extends Controller
                 $status = Utility::WebhookCall($webhook['url'],$parameter,$webhook['method']);
                 if($status == true)
                 {
-                    return redirect()->route('invoice.index', $invoice->id)->with('success', __('Invoice successfully created.'));
+                    return redirect()->route('admin.invoice.index', $invoice->id)->with('success', __('Invoice successfully created.'));
                 }
                 else
                 {
@@ -224,7 +224,7 @@ class InvoiceController extends Controller
                 }
             }
 
-            return redirect()->route('invoice.index', $invoice->id)->with('success', __('Invoice successfully created.'));
+            return redirect()->route('admin.invoice.index', $invoice->id)->with('success', __('Invoice successfully created.'));
         }
         else
         {
@@ -248,7 +248,7 @@ class InvoiceController extends Controller
             $invoice->customField = CustomField::getData($invoice, 'invoice');
             $customFields         = CustomField::where('created_by', '=', \Auth::user()->creatorId())->where('module', '=', 'invoice')->get();
 
-            return view('invoice.edit', compact('customers', 'product_services', 'invoice', 'invoice_number', 'category', 'customFields'));
+            return view('admin.invoice.edit', compact('customers', 'product_services', 'invoice', 'invoice_number', 'category', 'customFields'));
         }
         else
         {
@@ -274,7 +274,7 @@ class InvoiceController extends Controller
                 if ($validator->fails()) {
                     $messages = $validator->getMessageBag();
 
-                    return redirect()->route('invoice.index')->with('error', $messages->first());
+                    return redirect()->route('admin.invoice.index')->with('error', $messages->first());
                 }
                 $invoice->customer_id    = $request->customer_id;
                 $invoice->issue_date     = $request->issue_date;
@@ -339,7 +339,7 @@ class InvoiceController extends Controller
 
                 }
 
-                return redirect()->route('invoice.index')->with('success', __('Invoice successfully updated.'));
+                return redirect()->route('admin.invoice.index')->with('success', __('Invoice successfully updated.'));
             } else {
                 return redirect()->back()->with('error', __('Permission denied.'));
             }
@@ -382,7 +382,7 @@ class InvoiceController extends Controller
                 $invoice->customField = CustomField::getData($invoice, 'invoice');
                 $customFields         = CustomField::where('created_by', '=', \Auth::user()->creatorId())->where('module', '=', 'invoice')->get();
 
-                return view('invoice.view', compact('invoice', 'customer', 'iteams', 'invoicePayment', 'customFields', 'user'));
+                return view('admin.invoice.view', compact('invoice', 'customer', 'iteams', 'invoicePayment', 'customFields', 'user'));
             }
             else
             {
@@ -420,7 +420,7 @@ class InvoiceController extends Controller
 
                 InvoiceProduct::where('invoice_id', '=', $invoice->id)->delete();
                 $invoice->delete();
-                return redirect()->route('invoice.index')->with('success', __('Invoice successfully deleted.'));
+                return redirect()->route('admin.invoice.index')->with('success', __('Invoice successfully deleted.'));
             }
             else
             {
@@ -472,7 +472,7 @@ class InvoiceController extends Controller
             }
             $invoices = $query->get();
 
-            return view('invoice.index', compact('invoices', 'status'));
+            return view('admin.invoice.index', compact('invoices', 'status'));
         }
         else
         {
@@ -490,11 +490,11 @@ class InvoiceController extends Controller
             $iteams   = $invoice->items;
             if($user->type == 'super admin')
             {
-                return view('invoice.view', compact('invoice', 'customer', 'iteams', 'user'));
+                return view('admin.invoice.view', compact('invoice', 'customer', 'iteams', 'user'));
             }
             elseif($user->type == 'company')
             {
-                return view('invoice.customer_invoice', compact('invoice', 'customer', 'iteams', 'user'));
+                return view('admin.invoice.customer_invoice', compact('invoice', 'customer', 'iteams', 'user'));
             }
         }
         else
@@ -517,7 +517,7 @@ class InvoiceController extends Controller
             $invoice->invoice = \Auth::user()->invoiceNumberFormat($invoice->invoice_id);
 
             $invoiceId    = Crypt::encrypt($invoice->id);
-            $invoice->url = route('invoice.pdf', $invoiceId);
+            $invoice->url = route('admin.invoice.pdf', $invoiceId);
 
             Utility::updateUserBalance('customer', $customer->id, $invoice->getTotal(), 'credit');
 
@@ -551,7 +551,7 @@ class InvoiceController extends Controller
             $invoice->invoice = \Auth::user()->invoiceNumberFormat($invoice->invoice_id);
 
             $invoiceId    = Crypt::encrypt($invoice->id);
-            $invoice->url = route('invoice.pdf', $invoiceId);
+            $invoice->url = route('admin.invoice.pdf', $invoiceId);
             $customerArr = [
 
                 'customer_name'=> $customer->name,
@@ -582,7 +582,7 @@ class InvoiceController extends Controller
             $categories = ProductServiceCategory::where('created_by', '=', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $accounts   = BankAccount::select('*', \DB::raw("CONCAT(bank_name,' ',holder_name) AS name"))->where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
 
-            return view('invoice.payment', compact('customers', 'categories', 'accounts', 'invoice'));
+            return view('admin.invoice.payment', compact('customers', 'categories', 'accounts', 'invoice'));
         }
         else
         {
@@ -832,7 +832,7 @@ class InvoiceController extends Controller
         $invoice->invoice = \Auth::user()->invoiceNumberFormat($invoice->invoice_id);
 
         $invoiceId    = Crypt::encrypt($invoice->id);
-        $invoice->url = route('invoice.pdf', $invoiceId);
+        $invoice->url = route('admin.invoice.pdf', $invoiceId);
 
         try
         {
@@ -1001,7 +1001,7 @@ class InvoiceController extends Controller
         else{
             $img          = asset($logo . '/' . (isset($company_logo) && !empty($company_logo) ? $company_logo : 'logo-dark.png'));
         }
-        return view('invoice.templates.' . $template, compact('invoice', 'preview', 'color', 'img', 'settings', 'customer', 'font_color', 'customFields'));
+        return view('admin.invoice.templates.' . $template, compact('invoice', 'preview', 'color', 'img', 'settings', 'customer', 'font_color', 'customFields'));
     }
 
     public function invoice($invoice_id)
@@ -1110,7 +1110,7 @@ class InvoiceController extends Controller
             $color      = '#' . $settings['invoice_color'];
             $font_color = Utility::getFontColor($color);
 
-            return view('invoice.templates.' . $settings['invoice_template'], compact('invoice', 'color', 'settings', 'customer', 'img', 'font_color', 'customFields'));
+            return view('admin.invoice.templates.' . $settings['invoice_template'], compact('invoice', 'color', 'settings', 'customer', 'img', 'font_color', 'customFields'));
         }
         else
         {
@@ -1195,7 +1195,7 @@ class InvoiceController extends Controller
 
         $company_payment_setting = Utility::getCompanyPaymentSetting($user_id);
 
-        return view('invoice.customer_invoice', compact('settings','invoice', 'customer', 'iteams', 'invoicePayment', 'customFields', 'user','company_payment_setting'));
+        return view('admin.invoice.customer_invoice', compact('settings','invoice', 'customer', 'iteams', 'invoicePayment', 'customFields', 'user','company_payment_setting'));
         }
         else
         {
