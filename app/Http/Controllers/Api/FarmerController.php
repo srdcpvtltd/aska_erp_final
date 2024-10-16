@@ -7,6 +7,7 @@ use App\Http\Requests\Api\FarmerRegistrationRequest;
 use App\Models\Farming;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -117,7 +118,10 @@ class FarmerController extends Controller
     public function retrive_farmers()
     {
         try {
-            $farmer_data = Farming::with(['block', 'state', 'district'])
+            $farmer_data = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
+                ->where('farmings.created_by', Auth::user()->id)
+                ->orWhere('users.supervisor_id', Auth::user()->id)
+                ->orderBy('id', 'desc')
                 ->get()->map(function ($items) {
                     $data = $items->toArray();
                     $data['state_name'] = $items->state->name ?? null;

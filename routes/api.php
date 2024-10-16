@@ -22,9 +22,11 @@ use App\Http\Controllers\Api\PushNotificationController;
 use App\Http\Controllers\Api\AdvanceSalaryApiController;
 use App\Http\Controllers\Api\TaskChecklistApiController;
 use App\Http\Controllers\Api\EmployeePayrollApiController;
+use App\Http\Controllers\Api\FarmingDetailsController;
 use App\Http\Controllers\Api\GuarantorController;
 use App\Http\Controllers\Api\StaticPageContentApiController;
 use App\Http\Controllers\Api\ProjectManagementDashboardApiController;
+use App\Http\Requests\Api\FarmingDetailsRequest;
 
 /**   user login **/
 Route::post('login', [AuthApiController::class, 'login']);
@@ -147,6 +149,7 @@ Route::group([
         Route::post('delete', [FarmerController::class, 'delete_farmer']);
         Route::post('update', [FarmerController::class, 'update_farmer']);
         Route::get('retrive', [FarmerController::class, 'retrive_farmers']);
+
         Route::group(([
             'prefix' => 'guarantor',
             'as' => 'guarantor.'
@@ -155,6 +158,16 @@ Route::group([
             Route::post('delete', [GuarantorController::class, 'delete_guarantor']);
             Route::get('retrive', [GuarantorController::class, 'retrive_guarantor']);
             Route::post('update', [GuarantorController::class, 'update_guarentor']);
+        });
+
+        Route::group([
+            'prefix' => 'farming-details',
+            'as' => 'farming-details.'
+        ], function () {
+            Route::post('create', [FarmingDetailsController::class, 'store_farmingDetails']);
+            Route::post('delete', [FarmingDetailsController::class, 'delete_farmingDetails']);
+            Route::post('update', [FarmingDetailsController::class, 'update_farmingDetails']);
+            Route::get('retrive', [FarmingDetailsController::class, 'retrive_farmingDetails']);
         });
     });
 });

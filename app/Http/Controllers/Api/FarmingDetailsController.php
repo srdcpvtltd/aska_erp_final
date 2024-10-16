@@ -3,26 +3,22 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\GuarantorRequest;
-use App\Models\Farming;
-use App\Models\Guarantor;
+use App\Http\Requests\Api\FarmingDetailsRequest;
+use App\Models\FarmingDetail;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class GuarantorController extends Controller
+class FarmingDetailsController extends Controller
 {
-    public function create_guarantor(GuarantorRequest $request)
+    public function store_farmingDetails(FarmingDetailsRequest $request)
     {
         DB::beginTransaction();
         try {
             $request->validated();
-            $request->merge([
-                'created_by' => Auth::user()->id
-            ]);
-            $guarantor = Guarantor::create($request->all());
-            if ($guarantor) {
+            $farming_details = FarmingDetail::create($request->all());
+            if ($farming_details) {
                 DB::commit();
                 return response()->json([
                     "message" => "Record Created Successfully.",
@@ -34,7 +30,6 @@ class GuarantorController extends Controller
                     "code" => 500
                 ]);
             }
-            DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -44,18 +39,18 @@ class GuarantorController extends Controller
         }
     }
 
-    public function delete_guarantor(Request $request)
+    public function delete_farmingDetails(Request $request)
     {
         try {
-            $guarantor_id = $request->id;
-            $guarantor = Guarantor::find($guarantor_id);
-            if (!$guarantor) {
+            $id = $request->id;
+            $farmer_details = FarmingDetail::find($id);
+            if (!$farmer_details) {
                 return response()->json([
                     "message" => "No record found in this id",
                     "code" => 500
                 ], 200);
             }
-            $result = $guarantor->delete();
+            $result = $farmer_details->delete();
             if ($result) {
                 return response()->json([
                     "message" => "Record Deleted Successfully",
@@ -75,11 +70,11 @@ class GuarantorController extends Controller
         }
     }
 
-    public function update_guarentor(Request $request)
+    public function update_farmingDetails(Request $request)
     {
         try {
             $id = $request->id;
-            $guarantor = Guarantor::find($id);
+            $guarantor = FarmingDetail::find($id);
             if (!$guarantor) {
                 return response()->json([
                     "message" => "Please verify the ID and try again.",
@@ -106,31 +101,24 @@ class GuarantorController extends Controller
         }
     }
 
-    public function retrive_guarantor()
+    public function retrive_farmingDetails()
     {
         try {
-            $farmer_data = Guarantor::where('created_by', Auth::user()->id)
-                ->with(['block', 'village', 'district'])
+            $farmer_details = FarmingDetail::where('created_by', Auth::user()->id)
+                // ->orWhereHas('users',function ($query) {
+                //     $query->where('supervisor_id', Auth::user()->id);
+                // })
                 ->orderBy('id', 'desc')
-                ->get()->map(function ($items) {
-                    $data = $items->toArray();
-                    $data['village_name'] = $items->village->name ?? null;
-                    $data['district_name'] = $items->district->name ?? null;
-                    $data['block_name'] = $items->block->name ?? null;
-                    unset($data['district']);
-                    unset($data['village']);
-                    unset($data['block']);
-                    return $data;
-                });
+                ->get();
 
-            if ($farmer_data->isEmpty()) {
+            if ($farmer_details->isEmpty()) {
                 return response()->json([
                     "message" => "No data found",
                     "code" => 500
-                ]);
+                ]); 
             } else {
                 return response()->json([
-                    "data" => $farmer_data,
+                    "data" => $farmer_details,
                     "code" => 200
                 ]);
             }
