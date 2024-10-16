@@ -74,4 +74,70 @@ class GuarantorController extends Controller
             ]);
         }
     }
+
+    public function update_guarentor(Request $request)
+    {
+        try {
+            $id = $request->id;
+            $guarantor = Guarantor::find($id);
+            if (!$guarantor) {
+                return response()->json([
+                    "message" => "Please verify the ID and try again.",
+                    "code" => 500
+                ]);
+            }
+            $result = $guarantor->update($request->all());
+            if ($result) {
+                return response()->json([
+                    "message" => "Record updated successfully.",
+                    "code" => 200
+                ], 200);
+            } else {
+                return response()->json([
+                    "message" => "We encountered an issue while updating the record. Please try again",
+                    "code" => 500
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                "message" => $e->getMessage(),
+                "code" => 500
+            ]);
+        }
+    }
+
+    public function retrive_guarantor()
+    {
+        try {
+            $farmer_data = Guarantor::with(['block', 'village', 'district'])
+                ->orderBy('id', 'desc')
+                ->get()->map(function ($items) {
+                    $data = $items->toArray();
+                    $data['village_name'] = $items->village->name ?? null;
+                    $data['district_name'] = $items->district->name ?? null;
+                    $data['block_name'] = $items->block->name ?? null;
+                    unset($data['district']);
+                    unset($data['village']);
+                    unset($data['block']);
+                    return $data;
+                });
+
+            if ($farmer_data->isEmpty()) {
+                return response()->json([
+                    "message" => "No data found",
+                    "code" => 500
+                ]);
+            } else {
+                return response()->json([
+                    "data" => $farmer_data,
+                    "code" => 200
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                "message" => $e->getMessage(),
+                "code" => 500
+            ]);
+        }
+    }
 }

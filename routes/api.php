@@ -154,7 +154,7 @@ Route::group([
             Route::post('create', [GuarantorController::class, 'create_guarantor']);
             Route::post('delete', [GuarantorController::class, 'delete_guarantor']);
             Route::get('retrive', [GuarantorController::class, 'retrive_guarantor']);
-            Route::post('update', [GuarantorController::class, 'update_guarantor']);
+            Route::post('update', [GuarantorController::class, 'update_guarentor']);
         });
     });
 });
