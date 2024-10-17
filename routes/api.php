@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\UserProfileApiController;
 use App\Http\Controllers\Api\NotificationApiController;
 use App\Http\Controllers\Api\PushNotificationController;
 use App\Http\Controllers\Api\AdvanceSalaryApiController;
+use App\Http\Controllers\Api\BankDetailsController;
 use App\Http\Controllers\Api\TaskChecklistApiController;
 use App\Http\Controllers\Api\EmployeePayrollApiController;
 use App\Http\Controllers\Api\FarmingDetailsController;
@@ -168,6 +169,16 @@ Route::group([
             Route::post('delete', [FarmingDetailsController::class, 'delete_farmingDetails']);
             Route::post('update', [FarmingDetailsController::class, 'update_farmingDetails']);
             Route::get('retrive', [FarmingDetailsController::class, 'retrive_farmingDetails']);
+        });
+
+        Route::group([
+            'prefix' => 'bank-details',
+            'as' => 'bank-details.'
+        ], function () {
+            Route::post('store', [BankDetailsController::class, 'update_bankDetails']);
+            Route::post('delete', [BankDetailsController::class, 'delete_bankDetails']);
+            Route::post('update', [BankDetailsController::class, 'update_bankDetails']);
+            Route::get('retrive', [BankDetailsController::class, 'retriveFarmerBankDetails']);
         });
     });
 });
