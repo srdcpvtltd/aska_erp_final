@@ -300,11 +300,11 @@ class AttendanceController extends Controller
             $this->userRepository->updateUserOnlineStatus($userDetail, 1);
 
             DB::commit();
-            AppHelper::sendNotificationToAuthorizedUser(
-                'Check In Notification',
-                ucfirst($userDetail->name) . ' checked in at  ' . AttendanceHelper::changeTimeFormatForAttendanceView($checkInAttendance->check_in_at),
-                $permissionKeyForNotification
-            );
+            // AppHelper::sendNotificationToAuthorizedUser(
+            //     'Check In Notification',
+            //     ucfirst($userDetail->name) . ' checked in at  ' . AttendanceHelper::changeTimeFormatForAttendanceView($checkInAttendance->check_in_at),
+            //     $permissionKeyForNotification
+            // );
             return $checkInAttendance;
         } catch (Exception $exception) {
             DB::rollBack();

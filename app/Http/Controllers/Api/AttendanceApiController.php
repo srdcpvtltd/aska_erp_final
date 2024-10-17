@@ -2,40 +2,39 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enum\EmployeeAttendanceTypeEnum;
+use Exception;
+use Carbon\Carbon;
 use App\Helpers\AppHelper;
+use Illuminate\Http\Request;
+use App\Services\Nfc\NfcService;
 use App\Helpers\AttendanceHelper;
+use Illuminate\Http\JsonResponse;
+use App\Services\Qr\QrCodeService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\SMPush\SMPushHelper;
 use App\Http\Controllers\Controller;
 use App\Repositories\UserRepository;
-use App\Requests\Attendance\AttendanceCheckInRequest;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Validation\Rules\Enum;
+use App\Enum\EmployeeAttendanceTypeEnum;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
+use App\Services\Attendance\AttendanceService;
+use App\Resources\Attendance\TodayAttendanceResource;
 use App\Requests\Attendance\AttendanceCheckOutRequest;
 use App\Resources\Attendance\EmployeeAttendanceDetailCollection;
 use App\Resources\Attendance\MonthlyEmployeeAttendanceResource;
-use App\Resources\Attendance\TodayAttendanceResource;
-use App\Services\Attendance\AttendanceService;
-use App\Services\Nfc\NfcService;
-use App\Services\Qr\QrCodeService;
-use Carbon\Carbon;
-use Exception;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rules\Enum;
-use Illuminate\Validation\ValidationException;
+use App\Http\Requests\Api\AttendanceCheckInRequest as ApiAttendanceCheckInRequest;
 
 class AttendanceApiController extends Controller
 {
-    public function __construct(protected AttendanceService $attendanceService, protected QrCodeService $qrCodeService, protected NfcService $nfcService)
-    {}
+    public function __construct(protected AttendanceService $attendanceService, protected QrCodeService $qrCodeService, protected NfcService $nfcService) {}
 
     public function getEmployeeAllAttendanceDetailOfTheMonth(Request $request): JsonResponse
     {
-        try{
+        try {
             $isBsEnabled = AppHelper::ifDateInBsEnabled();
 
             $filterParameter['month'] = $request->month ?? null;
@@ -56,12 +55,7 @@ class AttendanceApiController extends Controller
                 $year = date('Y');
                 $month = $filterParameter['month'] ?? date('m');
             }
-
-
-
             $attendanceSummary = AttendanceHelper::getMonthlyDetail($filterParameter['user_id'], $isBsEnabled, $year, $month);
-
-
 
             $returnData['user_detail'] = [
                 'user_id' => $attendanceDetail->id,
@@ -124,7 +118,7 @@ class AttendanceApiController extends Controller
                     'success' => false,
                     'message' => 'Validation failed',
                     'errors' => $validator->errors()->toArray()
-                ],422);
+                ], 422);
             }
 
             $validatedData = $validator->validated();
@@ -134,38 +128,34 @@ class AttendanceApiController extends Controller
             $validatedData['user_id'] = $userDetail['id'];
             $validatedData['company_id'] = $userDetail['company_id'];
             $userLock = Cache::get('user_lock_' . $userDetail->id);
-            if($userLock){
+            if ($userLock) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Another attendance request is already in progress.',
                 ], 409);
             }
 
-            Cache::put('user_lock_' . $userDetail->id, true,now()->addMinutes(5));
+            Cache::put('user_lock_' . $userDetail->id, true, now()->addMinutes(5));
             $message = '';
             $data = [];
 
-            if ($validatedData['attendance_type'] == EmployeeAttendanceTypeEnum::nfc->value)
-            {
+            if ($validatedData['attendance_type'] == EmployeeAttendanceTypeEnum::nfc->value) {
                 $nfcData = $this->nfcService->verifyNfc($validatedData['identifier']);
 
                 if (!$nfcData) {
                     throw new Exception('Invalid NFC token or NFC is not available', 400);
                 }
-            } elseif ($validatedData['attendance_type'] == EmployeeAttendanceTypeEnum::qr->value)
-            {
+            } elseif ($validatedData['attendance_type'] == EmployeeAttendanceTypeEnum::qr->value) {
                 $attendanceQr = $this->qrCodeService->verifyQr($validatedData['identifier']);
 
                 if (!$attendanceQr) {
 
                     throw new Exception('Invalid QR or QR is not available', 400);
                 }
-
-            } elseif ($validatedData['attendance_type'] == EmployeeAttendanceTypeEnum::wifi->value)
-            {
+            } elseif ($validatedData['attendance_type'] == EmployeeAttendanceTypeEnum::wifi->value) {
                 $coordinate = $this->attendanceService->newAuthorizeAttendance($validatedData['router_bssid'], $validatedData['user_id']);
 
-                if(!is_null($coordinate)){
+                if (!is_null($coordinate)) {
                     $validatedData['latitude'] = $coordinate['latitude'];
                     $validatedData['longitude'] = $coordinate['longitude'];
                 }
@@ -174,7 +164,7 @@ class AttendanceApiController extends Controller
             }
 
             // check today's attendance data
-            $select = ['id', 'user_id','check_out_at', 'check_in_at'];
+            $select = ['id', 'user_id', 'check_out_at', 'check_in_at'];
             $userTodayCheckInDetail = $this->attendanceService->findEmployeeTodayAttendanceDetail($validatedData['user_id'], $select);
 
 
@@ -213,7 +203,6 @@ class AttendanceApiController extends Controller
 
                 $permissionKeyForNotification = 'employee_check_in';
                 $displayMessage = 'Check in successful';
-
             }
 
             $data = new TodayAttendanceResource($attendanceData);
@@ -227,9 +216,6 @@ class AttendanceApiController extends Controller
             DB::commit();
             Cache::forget('user_lock_' . $userDetail->id);
             return AppHelper::sendSuccessResponse($displayMessage, $data);
-
-
-
         } catch (Exception $exception) {
             DB::rollBack();
             Cache::forget('user_lock_' . $userDetail->id);
@@ -239,11 +225,11 @@ class AttendanceApiController extends Controller
 
     /**
      * @Deprecated Don't use this now
-    */
-    public function employeeCheckIn(AttendanceCheckInRequest $request): JsonResponse
+     */
+    public function employeeCheckIn(ApiAttendanceCheckInRequest $request): JsonResponse
     {
         try {
-            $permissionKeyForNotification = 'employee_check_in';
+            $permissionKeyForNotification = 'manage-employee_check_in';
             $userDetail = auth()->user();
 
             $validatedData = $request->validated();
@@ -257,11 +243,11 @@ class AttendanceApiController extends Controller
             $checkIn = $this->attendanceService->employeeCheckIn($validatedData);
             $data = new TodayAttendanceResource($checkIn);
 
-            AppHelper::sendNotificationToAuthorizedUser(
-                'Check In Notification',
-                ucfirst(auth()->user()->name) . ' checked in at ' . AttendanceHelper::changeTimeFormatForAttendanceView($checkIn->check_in_at),
-                $permissionKeyForNotification
-            );
+            // AppHelper::sendNotificationToAuthorizedUser(
+            //     'Check In Notification',
+            //     ucfirst(auth()->user()->name) . ' checked in at ' . AttendanceHelper::changeTimeFormatForAttendanceView($checkIn->check_in_at),
+            //     $permissionKeyForNotification
+            // );
             return AppHelper::sendSuccessResponse('Check In Successful', $data);
         } catch (Exception $exception) {
             return AppHelper::sendErrorResponse($exception->getMessage(), $exception->getCode());
@@ -284,19 +270,15 @@ class AttendanceApiController extends Controller
             $data = new TodayAttendanceResource($checkOut);
             $workedTime = AttendanceHelper::getEmployeeWorkedTimeInHourAndMinute($checkOut);
 
-            AppHelper::sendNotificationToAuthorizedUser(
-                'Check Out Notification',
-                ucfirst(auth()->user()->name) . ' has checked out at ' . AttendanceHelper::changeTimeFormatForAttendanceView($checkOut->check_out_at) . ' and has worked for '
-                . $workedTime,
-                $permissionKeyForNotification
-
-            );
+            // AppHelper::sendNotificationToAuthorizedUser(
+            //     'Check Out Notification',
+            //     ucfirst(auth()->user()->name) . ' has checked out at ' . AttendanceHelper::changeTimeFormatForAttendanceView($checkOut->check_out_at) . ' and has worked for '
+            //         . $workedTime,
+            //     $permissionKeyForNotification
+            // );
             return AppHelper::sendSuccessResponse('Check out Successful', $data);
         } catch (Exception $exception) {
             return AppHelper::sendErrorResponse($exception->getMessage(), $exception->getCode());
         }
     }
-
-
-
 }
