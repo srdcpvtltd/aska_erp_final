@@ -336,7 +336,7 @@
                         </div>
                         <div class="form-group col-md-6">
                             {{ Form::label('plot_number', __('Plot Number'), ['class' => 'form-label']) }}
-                            {{ Form::text('plot_number', $plot_number, ['class' => 'form-control', 'required' => 'required', 'readonly']) }}
+                            {{ Form::text('plot_number', '', ['class' => 'form-control', 'required' => 'required']) }}
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
