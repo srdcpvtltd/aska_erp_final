@@ -2,7 +2,7 @@
 @section('title')
     {{ $emailTemplate->name }}
 @endsection
-@push('css-page')
+@section('styles')
     <link rel="stylesheet" href="{{asset('css/summernote/summernote-bs4.css')}}">
 @endsection
 

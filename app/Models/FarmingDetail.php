@@ -23,14 +23,16 @@ class FarmingDetail extends Model
         'type',
         'planting_category',
         'block_id',
-        'can_field_block_id',
+        'can_field_center_id',
+        'can_field_zone_id',
         'gram_panchyat_id',
-        'can_field_gram_panchyat_id',
         'village_id',
         'can_field_village_id',
         'zone_id',
         'center_id',
-        'is_cutting_order'
+        'is_cutting_order',
+        'irregation_mode',
+        'irregation'
     ];
     
     public function farming()

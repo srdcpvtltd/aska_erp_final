@@ -32,6 +32,7 @@ class AuthApiController
      */
     public function login(UserLoginRequest $request): JsonResponse
     {
+        
         try {
             DB::beginTransaction();
             $validatedData = $request->validated();

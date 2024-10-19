@@ -474,6 +474,7 @@ Route::group([
                 Route::post('location/get_blocks', [FarmingController::class, 'getBlocks'])->name('location.get_blocks');
                 Route::post('location/get_gram_panchyats', [FarmingController::class, 'getGramPanchyats'])->name('location.get_gram_panchyats');
                 Route::post('location/get_villages', [FarmingController::class, 'getVillages'])->name('location.get_villages');
+                Route::post('center/get_villages', [FarmingController::class, 'get_center_Villages'])->name('center.get_villages');
                 Route::post('location/get_centers', [FarmingController::class, 'getCenters'])->name('location.get_centers');
                 Route::post('location/get_country_state', [FarmingController::class, 'get_country_state'])->name('location.get_country_state');
                 Route::post('location/get_zone_center', [FarmingController::class, 'get_zone_center'])->name('location.get_zone_center');
@@ -519,6 +520,7 @@ Route::group([
 
                 //plot details
                 Route::post('get_detail', [FarmingDetailController::class, 'getFarmingDetail'])->name('farming.get_detail');
+                Route::post('getDetail', [FarmingDetailController::class, 'get_FarmingDetail'])->name('get_detail');
                 Route::post('servey_data', [FarmingDetailController::class, 'servey_data'])->name('servey_data');
                 Route::post('farming_detail_data', [FarmingDetailController::class, 'getFarmingDetailData'])->name('farming_detail_data');
                 Route::resource('farming_detail', FarmingDetailController::class);
@@ -657,7 +659,7 @@ Route::group([
         Route::get('bank-account/{id}/destroy', [BankAccountController::class, 'destroy'])->name('bank-account.destroy');
         Route::resource('bank-transfer', BankTransferController::class);
         Route::get('bank-transfer/{id}/destroy', [BankTransferController::class, 'destroy'])->name('bank-transfer.destroy');
-        
+
         //customer
         Route::get('customer/{id}/show', [CustomerController::class, 'show'])->name('customer.show');
         Route::resource('customer', CustomerController::class);
@@ -665,7 +667,7 @@ Route::group([
         Route::get('customer/{id}/destroy', [CustomerController::class, 'destroy'])->name('customer.destroy');
         Route::get('import/customer/file', [CustomerController::class, 'importFile'])->name('customer.file.import');
         Route::post('import/customer', [CustomerController::class, 'import'])->name('customer.import');
-        
+
         //proposal
         Route::get('proposal/{id}/status/change', [ProposalController::class, 'statusChange'])->name('proposal.status.change');
         Route::get('proposal/{id}/convert', [ProposalController::class, 'convert'])->name('proposal.convert');
@@ -695,6 +697,14 @@ Route::group([
         Route::resource('invoice', InvoiceController::class);
         Route::get('invoice/create/{cid}', [InvoiceController::class, 'create'])->name('invoice.create');
         Route::get('/customer/invoice/{id}/', [InvoiceController::class, 'invoiceLink'])->name('invoice.link.copy');
+
+        Route::get('invoice/{id}/credit-note', [CreditNoteController::class, 'create'])->name('invoice.credit.note');
+        Route::post('invoice/{id}/credit-note', [CreditNoteController::class, 'store'])->name('invoice.credit.note');
+        Route::get('invoice/{id}/credit-note/edit/{cn_id}', [CreditNoteController::class, 'edit'])->name('invoice.edit.credit.note');
+        Route::post('invoice/{id}/credit-note/edit/{cn_id}', [CreditNoteController::class, 'update'])->name('invoice.edit.credit.note');
+        Route::delete('invoice/{id}/credit-note/delete/{cn_id}', [CreditNoteController::class, 'destroy'])->name('invoice.delete.credit.note');
+        Route::get('invoice/pdf/{id}', [InvoiceController::class, 'invoice'])->name('invoice.pdf');
+
         //revenue
         Route::get('revenue/index', [RevenueController::class, 'index'])->name('revenue.index');
         Route::resource('revenue', RevenueController::class);
@@ -748,6 +758,11 @@ Route::group([
         Route::resource('irrigation', IrrigationController::class);
         Route::get('irrigation/{id}/destroy', [IrrigationController::class, 'destroy'])->name('irrigation.destroy');
         Route::post('search_filter', [VillageController::class, 'search_filter'])->name('village.search_filter');
+
+        //export
+        Route::get('export/invoice', [InvoiceController::class, 'export'])->name('invoice.export');
+        Route::get('export/proposal', [ProposalController::class, 'export'])->name('proposal.export');
+        Route::get('export/bill', [BillController::class, 'export'])->name('bill.export');
     });
 });
 

@@ -231,6 +231,13 @@ class FarmingController extends Controller
             'villages' => $villages,
         ]);
     }
+    public function get_center_Villages(Request $request)
+    {
+        $villages = Village::where('center_id', $request->center_id)->get();
+        return response()->json([
+            'villages' => $villages,
+        ]);
+    }
     public function getCenters(Request $request)
     {
         $centers = Center::where('zone_id', $request->zone_id)->get();

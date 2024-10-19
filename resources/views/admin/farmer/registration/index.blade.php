@@ -257,7 +257,7 @@
                                         </td>
                                         <td class="Action">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                                @if ($farming->is_validate)
+                                                @if ($farming->is_validate != 0)
                                                     @can('show-farmer_registration')
                                                         <li class="me-2">
                                                             <a
@@ -267,7 +267,7 @@
                                                         </li>
                                                     @endcan
                                                 @else
-                                                    @if ($farming->created_by != Auth::user()->id)
+                                                    @if ($farming->created_by == Auth::user()->id)
                                                         <li class="me-2">
                                                             <a href="{{ route('admin.farmer.farming_registration.validate', $farming->id) }}"
                                                                 data-bs-toggle="tooltip" title="{{ __('Validate') }}">
