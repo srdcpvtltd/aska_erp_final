@@ -41,8 +41,7 @@ class PurchaseController extends Controller
 
             return view('admin.purchase.index', compact('purchases', 'status', 'vender'));
         } else {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
@@ -143,8 +142,7 @@ class PurchaseController extends Controller
 
             return redirect()->route('admin.purchase.index', $purchase->id)->with('success', __('Purchase successfully created.'));
         } else {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
@@ -173,12 +171,10 @@ class PurchaseController extends Controller
 
                 return view('admin.purchase.view', compact('purchase', 'vendor', 'iteams', 'purchasePayment'));
             } else {
-                            return redirect()->back()->with('danger', __('Permission denied.'));
-
+                return redirect()->back()->with('danger', __('Permission denied.'));
             }
         } else {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
@@ -289,12 +285,10 @@ class PurchaseController extends Controller
 
                 return redirect()->route('admin.purchase.index')->with('success', __('Purchase successfully updated.'));
             } else {
-                            return redirect()->back()->with('danger', __('Permission denied.'));
-
+                return redirect()->back()->with('danger', __('Permission denied.'));
             }
         } else {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
@@ -353,12 +347,10 @@ class PurchaseController extends Controller
 
                 return redirect()->route('admin.purchase.index')->with('success', __('Purchase successfully deleted.'));
             } else {
-                            return redirect()->back()->with('danger', __('Permission denied.'));
-
+                return redirect()->back()->with('danger', __('Permission denied.'));
             }
         } else {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
@@ -498,8 +490,7 @@ class PurchaseController extends Controller
 
             return view('admin.purchase.templates.' . $settings['purchase_template'], compact('purchase', 'color', 'settings', 'vendor', 'img', 'font_color'));
         } else {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 

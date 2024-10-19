@@ -257,7 +257,7 @@
                                         </td>
                                         <td class="Action">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                                @if ($farming->is_validate)
+                                                @if ($farming->is_validate != 0)
                                                     @can('show-farmer_registration')
                                                         <li class="me-2">
                                                             <a

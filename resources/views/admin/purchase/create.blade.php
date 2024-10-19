@@ -331,10 +331,6 @@
 
             $('.totalAmount').html((parseFloat(subTotal)).toFixed(2));
             $('.totalDiscount').html(totalItemDiscountPrice.toFixed(2));
-
-
-
-
         })
 
         var vendorId = '{{ $vendorId }}';
@@ -362,8 +358,8 @@
     </nav>
     <div class="row">
         {{ Form::open(['route' => 'admin.purchase.store', 'method' =>'POST', 'class' => 'w-100']) }}
+        <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
         <div class="col-12">
-            <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -375,8 +371,6 @@
                             <div id="vender_detail" class="d-none">
                             </div>
                         </div>
-
-
                         <div class="col-md-6">
                             <div class="row">
                                 <div class="col-md-6">
@@ -397,21 +391,15 @@
                                     <div class="form-group">
                                         {{ Form::label('purchase_date', __('Purchase Date'), ['class' => 'form-label']) }}
                                         {{ Form::date('purchase_date', null, ['class' => 'form-control', 'required' => 'required']) }}
-
                                     </div>
                                 </div>
-
-
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         {{ Form::label('purchase_number', __('Purchase Number'), ['class' => 'form-label']) }}
                                         <input type="text" class="form-control" value="{{ $purchase_number }}" readonly>
-
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
@@ -435,7 +423,7 @@
                 </div>
                 <div class="card-body table-border-style">
                     <div class="table-responsive">
-                        <table class="data_table table mb-0" data-repeater-list="items" id="sortable-table">
+                        <table class="table mb-0">
                             <thead>
                                 <tr>
                                     <th>{{ __('Items') }}</th>

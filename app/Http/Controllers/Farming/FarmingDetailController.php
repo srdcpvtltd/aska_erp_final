@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Farming;
 use App\Models\FarmingDetail;
 use App\Http\Controllers\Controller;
 use App\Models\Block;
+use App\Models\Center;
 use App\Models\Farming;
 use App\Models\GramPanchyat;
+use App\Models\Irrigation;
 use App\Models\SeedCategory;
 use App\Models\Village;
+use App\Models\Zone;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,7 +51,7 @@ class FarmingDetailController extends Controller
                 ->OrderBy('id', 'DESC')
                 ->first();
 
-            $blocks = Block::all();
+            $zones = Zone::all();
 
             if (!empty($farming_details)) {
                 $plot_number = "00" . $farming_details->plot_number + 1;
@@ -56,7 +59,7 @@ class FarmingDetailController extends Controller
                 $plot_number = "001";
             }
             $seed_categories = SeedCategory::all();
-            return view('admin.farmer.farming_detail.create', compact('farmings', 'seed_categories', 'plot_number', 'blocks'));
+            return view('admin.farmer.farming_detail.create', compact('farmings', 'seed_categories', 'plot_number', 'zones'));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
         }
@@ -110,10 +113,15 @@ class FarmingDetailController extends Controller
                 ->where('farmings.created_by', Auth::user()->id)
                 ->orWhere('users.supervisor_id', Auth::user()->id)->get();
             $seed_categories = SeedCategory::all();
-            $blocks = Block::all();
-            $gp = GramPanchyat::all();
-            $village = Village::all();
-            return view('admin.farmer.farming_detail.edit', compact('farming_detail', 'farmings', 'seed_categories', 'blocks', 'gp', 'village'));
+            $zones = Zone::all();
+            $centers = Center::where('zone_id', $farming_detail->can_field_zone_id)->get();
+            $village = Village::where('center_id', $farming_detail->can_field_center_id)->where('zone_id', $farming_detail->can_field_zone_id)->get();
+            if($farming_detail->irregation_mode != null){
+                $irrigations = Irrigation::where('category', $farming_detail->irregation_mode)->get();
+            } else {
+                $irrigations = Irrigation::all();
+            }
+            return view('admin.farmer.farming_detail.edit', compact('farming_detail', 'farmings', 'seed_categories', 'zones', 'centers', 'village', 'irrigations'));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
         }
@@ -182,6 +190,51 @@ class FarmingDetailController extends Controller
             'villageHtml' => $villageHtml,
             'zoneHtml' => $zoneHtml,
             'centerHtml' => $centerHtml,
+        ]);
+    }
+
+    public function get_FarmingDetail(Request $request)
+    {
+        $farming = Farming::where('old_g_code',$request->g_code)->first();
+
+        $farmerHtml = $blockHtml = $gpHtml = $villageHtml = $zoneHtml = $centerHtml = '';
+        if ($farming->id) {
+            $farmerHtml = '<option value="' . $farming->id . '"selected>' . $farming->name . '</option>';
+        }
+        if ($farming->block) {
+            $blockHtml = '<option value="' . $farming->block->id . '"selected>' . $farming->block->name . '</option>';
+        }
+        if ($farming->gram_panchyat) {
+            $gpHtml = '<option value="' . $farming->gram_panchyat->id . '"selected>' . $farming->gram_panchyat->name . '</option>';
+        }
+        if ($farming->village) {
+            $villageHtml = '<option value="' . $farming->village->id . '"selected>' . $farming->village->name . '</option>';
+        }
+        if ($farming->zone) {
+            $zoneHtml = '<option value="' . $farming->zone->id . '"selected>' . $farming->zone->name . '</option>';
+        }
+        if ($farming->center) {
+            $centerHtml = '<option value="' . $farming->center->id . '" selected>' . $farming->center->name . '</option>';
+        }
+        
+        //can field
+        $zone = Zone::all();
+        $center = Center::where('zone_id', $farming->zone_id)->get();
+        $village = Village::where('center_id', $farming->center_id)->where('zone_id', $farming->zone_id)->get();
+
+        return response()->json([
+            'farmerHtml' => $farmerHtml,
+            'blockHtml' => $blockHtml,
+            'gpHtml' => $gpHtml,
+            'villageHtml' => $villageHtml,
+            'zoneHtml' => $zoneHtml,
+            'centerHtml' => $centerHtml,
+            'zone' => $zone,
+            'zone_id' => $farming->zone_id,
+            'center' => $center,
+            'center_id' => $farming->center_id,
+            'village' => $village,
+            'village_id' => $farming->village_id,
         ]);
     }
     public function getFarmingDetailData(Request $request)
