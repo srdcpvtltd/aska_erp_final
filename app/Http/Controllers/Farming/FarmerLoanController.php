@@ -97,7 +97,7 @@ class FarmerLoanController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit($id) 
     {
         if (\Auth::user()->can('edit-allotment')) {
             $farmings = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')

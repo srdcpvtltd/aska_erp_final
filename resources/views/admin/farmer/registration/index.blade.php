@@ -267,7 +267,7 @@
                                                         </li>
                                                     @endcan
                                                 @else
-                                                    @if ($farming->created_by != Auth::user()->id)
+                                                    @if ($farming->created_by == Auth::user()->id)
                                                         <li class="me-2">
                                                             <a href="{{ route('admin.farmer.farming_registration.validate', $farming->id) }}"
                                                                 data-bs-toggle="tooltip" title="{{ __('Validate') }}">

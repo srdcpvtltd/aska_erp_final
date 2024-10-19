@@ -55,56 +55,56 @@ class Farming extends Model
 
     public function country()
     {
-        return $this->belongsTo(Country::class,'country_id');
+        return $this->belongsTo(Country::class, 'country_id');
+    }
+
+    public function farming_payment()
+    {
+        return $this->hasMany(FarmingPayment::class, 'country_id');
     }
 
     public function state()
     {
-        return $this->belongsTo(State::class,'state_id');
+        return $this->belongsTo(State::class, 'state_id');
     }
 
     public function district()
     {
-        return $this->belongsTo(District::class,'district_id');
+        return $this->belongsTo(District::class, 'district_id');
     }
 
     public function block()
     {
-        return $this->belongsTo(Block::class,'block_id');
+        return $this->belongsTo(Block::class, 'block_id');
     }
 
     public function gram_panchyat()
     {
-        return $this->belongsTo(GramPanchyat::class,'gram_panchyat_id');
+        return $this->belongsTo(GramPanchyat::class, 'gram_panchyat_id');
     }
-    
+
     public function village()
     {
-        return $this->belongsTo(Village::class,'village_id');
-    } 
+        return $this->belongsTo(Village::class, 'village_id');
+    }
 
     public function zone()
     {
-        return $this->belongsTo(Zone::class,'zone_id');
+        return $this->belongsTo(Zone::class, 'zone_id');
     }
 
     public function center()
     {
-        return $this->belongsTo(Center::class,'center_id');
+        return $this->belongsTo(Center::class, 'center_id');
     }
 
-    public function seed_category()
-    {
-        return $this->belongsTo(SeedCategory::class,'seed_category_id');
-    }
-    
     public function bank_data()
     {
-        return $this->belongsTo(Bank::class,'bank');
+        return $this->belongsTo(Bank::class, 'bank');
     }
 
     public function bank_branch()
     {
-        return $this->belongsTo(Bank_branch::class,'branch');
+        return $this->belongsTo(Bank_branch::class, 'branch');
     }
 }

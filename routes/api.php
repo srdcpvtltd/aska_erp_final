@@ -27,6 +27,7 @@ use App\Http\Controllers\Api\FarmingDetailsController;
 use App\Http\Controllers\Api\GuarantorController;
 use App\Http\Controllers\Api\StaticPageContentApiController;
 use App\Http\Controllers\Api\ProjectManagementDashboardApiController;
+use App\Http\Controllers\Api\SecurityDepositeController;
 use App\Http\Requests\Api\FarmingDetailsRequest;
 
 /**   user login **/
@@ -146,11 +147,13 @@ Route::group([
         'prefix' => 'farmer',
         'as' => 'farmer.',
     ], function () {
+        //Farmer CRUD
         Route::post('register', [FarmerController::class, 'register']);
         Route::post('delete', [FarmerController::class, 'delete_farmer']);
         Route::post('update', [FarmerController::class, 'update_farmer']);
         Route::get('retrive', [FarmerController::class, 'retrive_farmers']);
 
+        //Farmer CRUD for guarantor
         Route::group(([
             'prefix' => 'guarantor',
             'as' => 'guarantor.'
@@ -161,6 +164,7 @@ Route::group([
             Route::post('update', [GuarantorController::class, 'update_guarentor']);
         });
 
+        //Farmer CRUD for farming-details
         Route::group([
             'prefix' => 'farming-details',
             'as' => 'farming-details.'
@@ -171,6 +175,7 @@ Route::group([
             Route::get('retrive', [FarmingDetailsController::class, 'retrive_farmingDetails']);
         });
 
+        //Farmer CRUD for bank-details
         Route::group([
             'prefix' => 'bank-details',
             'as' => 'bank-details.'
@@ -179,6 +184,17 @@ Route::group([
             Route::post('delete', [BankDetailsController::class, 'delete_bankDetails']);
             Route::post('update', [BankDetailsController::class, 'update_bankDetails']);
             Route::get('retrive', [BankDetailsController::class, 'retriveFarmerBankDetails']);
+        });
+
+        //Farmer CRUD for Security Deposite
+        Route::group([
+            'prefix' => 'security-deposite',
+            'as' => 'security-deposite.'
+        ], function () {
+            Route::post('store', [SecurityDepositeController::class, 'store_deposites']);
+            Route::post('delete', [SecurityDepositeController::class, 'delete_deposites']);
+            Route::post('update', [SecurityDepositeController::class, 'update_deposites']);
+            Route::get('retrive', [SecurityDepositeController::class, 'retriveFarmerBankDetails']);
         });
     });
 });
