@@ -20,16 +20,20 @@ use App\Http\Controllers\Api\UserProfileApiController;
 use App\Http\Controllers\Api\NotificationApiController;
 use App\Http\Controllers\Api\PushNotificationController;
 use App\Http\Controllers\Api\AdvanceSalaryApiController;
+use App\Http\Controllers\Api\BankDetailsController;
 use App\Http\Controllers\Api\TaskChecklistApiController;
 use App\Http\Controllers\Api\EmployeePayrollApiController;
+use App\Http\Controllers\Api\FarmingDetailsController;
+use App\Http\Controllers\Api\GuarantorController;
 use App\Http\Controllers\Api\StaticPageContentApiController;
 use App\Http\Controllers\Api\ProjectManagementDashboardApiController;
+use App\Http\Requests\Api\FarmingDetailsRequest;
 
 /**   user login **/
 Route::post('login', [AuthApiController::class, 'login']);
 
 Route::get('team-meetings/{id}', [TeamMeetingApiController::class, 'findTeamMeetingDetail']);
-Route::group([ 
+Route::group([
     'middleware' => ['auth:api', 'permission']
 ], function () {
 
@@ -142,6 +146,39 @@ Route::group([
         'prefix' => 'farmer',
         'as' => 'farmer.',
     ], function () {
-        Route::post('register',[FarmerController::class,'register']);
+        Route::post('register', [FarmerController::class, 'register']);
+        Route::post('delete', [FarmerController::class, 'delete_farmer']);
+        Route::post('update', [FarmerController::class, 'update_farmer']);
+        Route::get('retrive', [FarmerController::class, 'retrive_farmers']);
+
+        Route::group(([
+            'prefix' => 'guarantor',
+            'as' => 'guarantor.'
+        ]), function () {
+            Route::post('create', [GuarantorController::class, 'create_guarantor']);
+            Route::post('delete', [GuarantorController::class, 'delete_guarantor']);
+            Route::get('retrive', [GuarantorController::class, 'retrive_guarantor']);
+            Route::post('update', [GuarantorController::class, 'update_guarentor']);
+        });
+
+        Route::group([
+            'prefix' => 'farming-details',
+            'as' => 'farming-details.'
+        ], function () {
+            Route::post('create', [FarmingDetailsController::class, 'store_farmingDetails']);
+            Route::post('delete', [FarmingDetailsController::class, 'delete_farmingDetails']);
+            Route::post('update', [FarmingDetailsController::class, 'update_farmingDetails']);
+            Route::get('retrive', [FarmingDetailsController::class, 'retrive_farmingDetails']);
+        });
+
+        Route::group([
+            'prefix' => 'bank-details',
+            'as' => 'bank-details.'
+        ], function () {
+            Route::post('store', [BankDetailsController::class, 'update_bankDetails']);
+            Route::post('delete', [BankDetailsController::class, 'delete_bankDetails']);
+            Route::post('update', [BankDetailsController::class, 'update_bankDetails']);
+            Route::get('retrive', [BankDetailsController::class, 'retriveFarmerBankDetails']);
+        });
     });
 });

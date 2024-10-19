@@ -247,7 +247,7 @@ class FarmingDetailController extends Controller
             'farmer_name' => $farmer->name
         ]);
     }
-    public function servey_data(Request $request) 
+    public function servey_data(Request $request)
     {
         if (\Auth::user()->can('edit-plot')) {
             $farming_detail = FarmingDetail::find($request->id);

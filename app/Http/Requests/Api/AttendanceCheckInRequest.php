@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Requests\Attendance;
+namespace App\Http\Requests\Api;
 
-
-use App\Helpers\AppHelper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class AttendanceCheckInRequest extends FormRequest
 {
@@ -21,7 +21,7 @@ class AttendanceCheckInRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function rules()
     {
@@ -34,15 +34,12 @@ class AttendanceCheckInRequest extends FormRequest
         ];
     }
 
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'Validation Error',
+            'errors' => $validator->errors(),
+            'code' => 422
+        ], 422));
+    }
 }
-
-
-
-
-
-
-
-
-
-
-

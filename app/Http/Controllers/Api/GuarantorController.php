@@ -3,31 +3,26 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\FarmerRegistrationRequest;
+use App\Http\Requests\Api\GuarantorRequest;
 use App\Models\Farming;
+use App\Models\Guarantor;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
-class FarmerController extends Controller
+class GuarantorController extends Controller
 {
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function register(FarmerRegistrationRequest $request)
+    public function create_guarantor(GuarantorRequest $request)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $request->validated();
-            // Log::info($validatdData);
             $request->merge([
-                'registration_no' => "ACSI" . '-' . rand(0, 9999)
+                'created_by' => Auth::user()->id
             ]);
-            $farming = Farming::create($request->all());
-            if ($farming) {
+            $guarantor = Guarantor::create($request->all());
+            if ($guarantor) {
                 DB::commit();
                 return response()->json([
                     "message" => "Record Created Successfully.",
@@ -39,6 +34,7 @@ class FarmerController extends Controller
                     "code" => 500
                 ]);
             }
+            DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -48,18 +44,18 @@ class FarmerController extends Controller
         }
     }
 
-    public function delete_farmer(Request $request)
+    public function delete_guarantor(Request $request)
     {
         try {
-            $farmar_id = $request->id;
-            $farming = Farming::find($farmar_id);
-            if (!$farming) {
+            $guarantor_id = $request->id;
+            $guarantor = Guarantor::find($guarantor_id);
+            if (!$guarantor) {
                 return response()->json([
                     "message" => "No record found in this id",
                     "code" => 500
                 ], 200);
             }
-            $result = $farming->delete();
+            $result = $guarantor->delete();
             if ($result) {
                 return response()->json([
                     "message" => "Record Deleted Successfully",
@@ -79,23 +75,18 @@ class FarmerController extends Controller
         }
     }
 
-    public function update_farmer(Request $request)
+    public function update_guarentor(Request $request)
     {
         try {
             $id = $request->id;
-            $farming = Farming::find($id);
-            if (!$farming) {
+            $guarantor = Guarantor::find($id);
+            if (!$guarantor) {
                 return response()->json([
                     "message" => "Please verify the ID and try again.",
                     "code" => 500
                 ]);
             }
-            if ($farming->registration_no == NULL) {
-                $request->merge([
-                    'registration_no' => "ACSI" . '-' . rand(0, 9999)
-                ]);
-            }
-            $result = $farming->update($request->all());
+            $result = $guarantor->update($request->all());
             if ($result) {
                 return response()->json([
                     "message" => "Record updated successfully.",
@@ -115,20 +106,19 @@ class FarmerController extends Controller
         }
     }
 
-    public function retrive_farmers()
+    public function retrive_guarantor()
     {
         try {
-            $farmer_data = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
-                ->where('farmings.created_by', Auth::user()->id)
-                ->orWhere('users.supervisor_id', Auth::user()->id)
+            $farmer_data = Guarantor::where('created_by', Auth::user()->id)
+                ->with(['block', 'village', 'district'])
                 ->orderBy('id', 'desc')
                 ->get()->map(function ($items) {
                     $data = $items->toArray();
-                    $data['state_name'] = $items->state->name ?? null;
+                    $data['village_name'] = $items->village->name ?? null;
                     $data['district_name'] = $items->district->name ?? null;
                     $data['block_name'] = $items->block->name ?? null;
                     unset($data['district']);
-                    unset($data['state']);
+                    unset($data['village']);
                     unset($data['block']);
                     return $data;
                 });

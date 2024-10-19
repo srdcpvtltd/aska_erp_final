@@ -3,31 +3,22 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\FarmerRegistrationRequest;
-use App\Models\Farming;
+use App\Http\Requests\Api\FarmingDetailsRequest;
+use App\Models\FarmingDetail;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
-class FarmerController extends Controller
+class FarmingDetailsController extends Controller
 {
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function register(FarmerRegistrationRequest $request)
+    public function store_farmingDetails(FarmingDetailsRequest $request)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $request->validated();
-            // Log::info($validatdData);
-            $request->merge([
-                'registration_no' => "ACSI" . '-' . rand(0, 9999)
-            ]);
-            $farming = Farming::create($request->all());
-            if ($farming) {
+            $farming_details = FarmingDetail::create($request->all());
+            if ($farming_details) {
                 DB::commit();
                 return response()->json([
                     "message" => "Record Created Successfully.",
@@ -48,18 +39,18 @@ class FarmerController extends Controller
         }
     }
 
-    public function delete_farmer(Request $request)
+    public function delete_farmingDetails(Request $request)
     {
         try {
-            $farmar_id = $request->id;
-            $farming = Farming::find($farmar_id);
-            if (!$farming) {
+            $id = $request->id;
+            $farmer_details = FarmingDetail::find($id);
+            if (!$farmer_details) {
                 return response()->json([
                     "message" => "No record found in this id",
                     "code" => 500
                 ], 200);
             }
-            $result = $farming->delete();
+            $result = $farmer_details->delete();
             if ($result) {
                 return response()->json([
                     "message" => "Record Deleted Successfully",
@@ -79,23 +70,18 @@ class FarmerController extends Controller
         }
     }
 
-    public function update_farmer(Request $request)
+    public function update_farmingDetails(Request $request)
     {
         try {
             $id = $request->id;
-            $farming = Farming::find($id);
-            if (!$farming) {
+            $guarantor = FarmingDetail::find($id);
+            if (!$guarantor) {
                 return response()->json([
                     "message" => "Please verify the ID and try again.",
                     "code" => 500
                 ]);
             }
-            if ($farming->registration_no == NULL) {
-                $request->merge([
-                    'registration_no' => "ACSI" . '-' . rand(0, 9999)
-                ]);
-            }
-            $result = $farming->update($request->all());
+            $result = $guarantor->update($request->all());
             if ($result) {
                 return response()->json([
                     "message" => "Record updated successfully.",
@@ -115,32 +101,24 @@ class FarmerController extends Controller
         }
     }
 
-    public function retrive_farmers()
+    public function retrive_farmingDetails()
     {
         try {
-            $farmer_data = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
-                ->where('farmings.created_by', Auth::user()->id)
-                ->orWhere('users.supervisor_id', Auth::user()->id)
+            $farmer_details = FarmingDetail::where('created_by', Auth::user()->id)
+                // ->orWhereHas('users',function ($query) {
+                //     $query->where('supervisor_id', Auth::user()->id);
+                // })
                 ->orderBy('id', 'desc')
-                ->get()->map(function ($items) {
-                    $data = $items->toArray();
-                    $data['state_name'] = $items->state->name ?? null;
-                    $data['district_name'] = $items->district->name ?? null;
-                    $data['block_name'] = $items->block->name ?? null;
-                    unset($data['district']);
-                    unset($data['state']);
-                    unset($data['block']);
-                    return $data;
-                });
+                ->get();
 
-            if ($farmer_data->isEmpty()) {
+            if ($farmer_details->isEmpty()) {
                 return response()->json([
                     "message" => "No data found",
                     "code" => 500
-                ]);
+                ]); 
             } else {
                 return response()->json([
-                    "data" => $farmer_data,
+                    "data" => $farmer_details,
                     "code" => 200
                 ]);
             }

@@ -119,12 +119,12 @@ class AppHelper
     public static function getAuthUserBranchId()
     {
         $user = auth()->user();
-        if(!$user){
-            throw new Exception('unauthenticated',401);
+        if (!$user) {
+            throw new Exception('unauthenticated', 401);
         }
         $branchId = optional($user)->branch_id;
         if (!$branchId) {
-            throw new Exception('User Branch Id Not Found',400);
+            throw new Exception('User Branch Id Not Found', 400);
         }
         return $branchId;
     }
@@ -249,7 +249,7 @@ class AppHelper
             'month' => (int)($explodedData[1]),
             'day' => $explodedData[2]
         ];
-        return $data['day'] . ' '.AppHelper::MONTHS[$data['month']]['np']. ' ' . $data['year'];
+        return $data['day'] . ' ' . AppHelper::MONTHS[$data['month']]['np'] . ' ' . $data['year'];
     }
 
 
@@ -269,7 +269,7 @@ class AppHelper
         $monthName = $_nepaliDate->getNepaliMonth($dateInAd['month']);
         $weekDayName = $_nepaliDate->getDayOfTheWeek($dateInAd['weekday']);
 
-        return  $dateInAd['day']. ' ' . $monthName . ' '. $dateInAd['year'] . ' ('.$weekDayName.')';
+        return  $dateInAd['day'] . ' ' . $monthName . ' ' . $dateInAd['year'] . ' (' . $weekDayName . ')';
     }
 
     public static function getNepaliDay($date): string
@@ -358,10 +358,10 @@ class AppHelper
     {
         $explodedData = explode('-', $date);
         $date = [
-                'year' => $explodedData[0],
-                'month' => $explodedData[1],
-                'day' => $explodedData[2]
-            ];
+            'year' => $explodedData[0],
+            'month' => $explodedData[1],
+            'day' => $explodedData[2]
+        ];
         $dateInAd = (new DateConverter())->nepToEng($date['year'], $date['month'], $date['day']);
         return $dateInAd['year'] . '-' . $dateInAd['month'] . '-' . $dateInAd['date'];
     }
@@ -411,13 +411,13 @@ class AppHelper
 
     public static function getTheme()
     {
-//        if (Cache::has('theme')){
-//            return Cache::get('theme');
-//        } else {
-//            $getTheme = AppSetting::select('status')->where('slug','dark-theme')->first();
-//            $theme = $getTheme->status ? 'light' : 'dark' ;
-//            Cache::forever('theme', $theme);
-//        }
+        //        if (Cache::has('theme')){
+        //            return Cache::get('theme');
+        //        } else {
+        //            $getTheme = AppSetting::select('status')->where('slug','dark-theme')->first();
+        //            $theme = $getTheme->status ? 'light' : 'dark' ;
+        //            Cache::forever('theme', $theme);
+        //        }
         return $theme = 'light';
     }
 
@@ -434,35 +434,36 @@ class AppHelper
     public static function getDaysToFindDatesForShiftNotification()
     {
         $key = 'attendance_notify';
-        return GeneralSetting::where('key',$key)->value('value') ?? 0;
+        return GeneralSetting::where('key', $key)->value('value') ?? 0;
     }
 
     public static function getAllRoleIdsWithGivenPermission($permissionKey)
     {
-        return DB::table('permission_roles')
+        // dd($permissionKey);
+        return DB::table('role_has_permissions')
             ->leftJoin('permissions', function ($query) {
-                $query->on('permission_roles.permission_id', '=', 'permissions.id');
+                $query->on('role_has_permissions.permission_id', '=', 'permissions.id');
             })
             ->Join('roles', function ($query) {
-                $query->on('roles.id', '=', 'permission_roles.role_id')
-                    ->where('roles.is_active',self::IS_ACTIVE);
+                $query->on('roles.id', '=', 'role_has_permissions.role_id');
             })
-            ->where('permissions.permission_key', $permissionKey)
-            ->pluck('permission_roles.role_id')
+            ->where('permissions.name', $permissionKey)
+            ->pluck('role_has_permissions.role_id')
             ->toArray();
     }
 
     public static function sendNotificationToAuthorizedUser($title, $message, $permissionKey): void
     {
         $roleIds =  AppHelper::getAllRoleIdsWithGivenPermission($permissionKey);
-        if(!empty($roleIds)){
-            SMPushHelper::sendNotificationToAuthorizedUsers($title, $message,$roleIds);
+        // dd($roleIds);
+        if (!empty($roleIds)) {
+            SMPushHelper::sendNotificationToAuthorizedUsers($title, $message, $roleIds);
         }
     }
 
-    public static function sendNotificationToDepartmentHead($title, $message,$departmentId): void
+    public static function sendNotificationToDepartmentHead($title, $message, $departmentId): void
     {
-        $department = Department::where('id',$departmentId)->first();
+        $department = Department::where('id', $departmentId)->first();
 
         if (!$department) {
             throw new Exception('Department not found', 404);
@@ -470,8 +471,8 @@ class AppHelper
 
         $departmentHeadId = $department->dept_head_id;
 
-        if(isset($departmentHeadId)){
-            SMPushHelper::sendNotificationToDepartmentHead($title, $message,$departmentHeadId);
+        if (isset($departmentHeadId)) {
+            SMPushHelper::sendNotificationToDepartmentHead($title, $message, $departmentHeadId);
         }
     }
 
@@ -494,17 +495,19 @@ class AppHelper
     public static function getMaxAllowedAdvanceSalaryLimit()
     {
         $key = 'advance_salary_limit';
-        return GeneralSetting::where('key',$key)->value('value') ?? 0;
+        return GeneralSetting::where('key', $key)->value('value') ?? 0;
     }
 
 
-    public static function getNepaliMonthName($month){
+    public static function getNepaliMonthName($month)
+    {
         $_nepaliDate = new NepaliDate();
 
         return $_nepaliDate->getNepaliMonth($month);
     }
 
-    public static function getMonthYear($date){
+    public static function getMonthYear($date)
+    {
 
         if (self::ifDateInBsEnabled()) {
             $_nepaliDate = new NepaliDate();
@@ -513,42 +516,40 @@ class AppHelper
 
             $month = $_nepaliDate->getNepaliMonth($dateInAd['month']);
             $year = $dateInAd['year'];
-
-        }else{
-            $date = date('Y-m-d',strtotime($date));
+        } else {
+            $date = date('Y-m-d', strtotime($date));
             // Extract day, month, and year
             $day = date('d', strtotime($date));
             $month = date('F', strtotime($date));
             $year = date('Y', strtotime($date));
         }
 
-        return $month .' '. $year;
+        return $month . ' ' . $year;
     }
 
 
     public static function getEmployeeCodePrefix()
     {
         $key = 'employee_code_prefix';
-        return GeneralSetting::where('key',$key)->value('value') ?? '';
+        return GeneralSetting::where('key', $key)->value('value') ?? '';
     }
 
-    public static function getEmployeeCode(){
+    public static function getEmployeeCode()
+    {
         $user = User::orderBy('created_at', 'desc')->first('employee_code');
 
         $prefix = self::getEmployeeCodePrefix();
 
-        $code = $prefix.'-'.str_pad( 1, 5, '0', STR_PAD_LEFT);
+        $code = $prefix . '-' . str_pad(1, 5, '0', STR_PAD_LEFT);
 
-        if(isset($user) && $user->employee_code){
+        if (isset($user) && $user->employee_code) {
 
-            $codeNumber = explode("-",$user->employee_code);
+            $codeNumber = explode("-", $user->employee_code);
 
-            $codeId = (int)$codeNumber[1] +1;
-            $code = $prefix.'-'.str_pad( $codeId, 5, '0', STR_PAD_LEFT);
-
+            $codeId = (int)$codeNumber[1] + 1;
+            $code = $prefix . '-' . str_pad($codeId, 5, '0', STR_PAD_LEFT);
         }
         return $code;
-
     }
     public static function getUserShift()
     {
@@ -557,9 +558,9 @@ class AppHelper
             throw new Exception('unauthenticated', 401);
         }
 
-        $shift = User::select('office_times.opening_time','office_times.closing_time','office_times.checkin_before','office_times.checkout_before','office_times.checkin_after','office_times.checkout_after')
-            ->leftJoin('office_times','users.office_time_id','office_times.id')
-            ->where('users.id',$user->id)->first();
+        $shift = User::select('office_times.opening_time', 'office_times.closing_time', 'office_times.checkin_before', 'office_times.checkout_before', 'office_times.checkin_after', 'office_times.checkout_after')
+            ->leftJoin('office_times', 'users.office_time_id', 'office_times.id')
+            ->where('users.id', $user->id)->first();
 
         return $shift;
     }
@@ -570,7 +571,7 @@ class AppHelper
         if (self::ifDateInBsEnabled()) {
             $date = self::getDayMonthYearFromDate($date);
             $dateInBs = (new DateConverter())->engToNep($date['year'], $date['month'], $date['day']);
-            return  $dateInBs['month'] .'/'.$dateInBs['date'] . '/' . $dateInBs['year'];
+            return  $dateInBs['month'] . '/' . $dateInBs['date'] . '/' . $dateInBs['year'];
         }
         return date('Y-m-d', strtotime($date));
     }
@@ -578,7 +579,7 @@ class AppHelper
     public static function getEnglishDate($date): string
     {
         if (self::ifDateInBsEnabled()) {
-          return self::nepToEngDateInYmdFormat($date);
+            return self::nepToEngDateInYmdFormat($date);
         }
         return $date;
     }
@@ -600,7 +601,7 @@ class AppHelper
                 '11' => 'Falgun',
                 '12' => 'Chaitra'
             ];
-        }else{
+        } else {
             $months =  [
                 '1' => 'January',
                 '2' => 'February',
@@ -625,7 +626,6 @@ class AppHelper
     {
         $converter = new DateConverter();
         return $converter->getCurrentMonthAndYearInNepali();
-
     }
 
     public static function getweeksList($year)
@@ -657,8 +657,8 @@ class AppHelper
 
                 // Add week details to the array
                 $weeks[] = [
-                    'week_value' => $weekStartDate->format('Y-m-d') .' to '. $weekEndDate->format('Y-m-d'),
-                    'week' => self::timeLeaverequestDate($weekStartDate->format('Y-m-d')) .' to '.self::timeLeaverequestDate($weekEndDate->format('Y-m-d')),
+                    'week_value' => $weekStartDate->format('Y-m-d') . ' to ' . $weekEndDate->format('Y-m-d'),
+                    'week' => self::timeLeaverequestDate($weekStartDate->format('Y-m-d')) . ' to ' . self::timeLeaverequestDate($weekEndDate->format('Y-m-d')),
                 ];
 
                 $i++;
@@ -666,7 +666,6 @@ class AppHelper
                 // Move to the next Sunday to start the next week
                 $startDate->modify('next sunday');
             }
-
         } else {
 
 
@@ -689,17 +688,14 @@ class AppHelper
                 $weekEndDate->modify('+6 days'); // Set end date of the week to 6 days after the start
 
                 $weeks[] = [
-                    'week_value' => $weekStartDate->format('Y-m-d') .' to '. $weekEndDate->format('Y-m-d'),
-                    'week' => $weekStartDate->format('Y-m-d').' to '.$weekEndDate->format('Y-m-d'),
+                    'week_value' => $weekStartDate->format('Y-m-d') . ' to ' . $weekEndDate->format('Y-m-d'),
+                    'week' => $weekStartDate->format('Y-m-d') . ' to ' . $weekEndDate->format('Y-m-d'),
                 ];
 
                 $startDate->modify('+1 week'); // Move to the next week
             }
-
-
         }
         return $weeks;
-
     }
 
     public static function getStartEndDateForLeaveCalendar()
@@ -709,18 +705,18 @@ class AppHelper
             $nepaliDate = self::getCurrentYearMonth();
 
             $startMonth = self::findAdDatesFromNepaliMonthAndYear($nepaliDate['year'], $nepaliDate['month']);
-            if($nepaliDate['month'] == 12){
-                $year = $nepaliDate['year'] +1;
+            if ($nepaliDate['month'] == 12) {
+                $year = $nepaliDate['year'] + 1;
                 $month = 1;
-            }else{
+            } else {
                 $year = $nepaliDate['year'];
                 $month = $nepaliDate['month'] + 1;
             }
             $endMonth = self::findAdDatesFromNepaliMonthAndYear($year, $month);
 
             $date['start_date'] = $startMonth['start_date'];
-            $date['end_date'] =$endMonth['end_date'];
-        }else{
+            $date['end_date'] = $endMonth['end_date'];
+        } else {
             $startMonth = \Illuminate\Support\Carbon::now()->startOfMonth();
             $date['start_date'] = $startMonth->firstOfMonth()->format('Y-m-d');
             $endMonth = Carbon::now()->startOfMonth()->addMonth(1);
@@ -734,7 +730,7 @@ class AppHelper
         if (self::check24HoursTimeAppSetting()) {
             return date('H:i', strtotime($time));
         } else {
-           return date('h:i A', strtotime($time));
+            return date('h:i A', strtotime($time));
         }
     }
 
@@ -752,5 +748,4 @@ class AppHelper
 
         return isset($hasPermission);
     }
-
 }

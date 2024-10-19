@@ -12,6 +12,9 @@ use App\Models\SeedCategory;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
+use function PHPUnit\Framework\isEmpty;
 
 class BankDetailsController extends Controller
 {
@@ -25,10 +28,10 @@ class BankDetailsController extends Controller
         if (\Auth::user()->can('manage-bank_detail')) {
             $farmings = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
                 ->where('farmings.is_validate', 1)
+                ->where('farmings.bank', '!=', null)
                 ->where('farmings.created_by', Auth::user()->id)
                 ->orWhere('users.supervisor_id', Auth::user()->id)
                 ->get();
-
             return view('admin.farmer.bank_details.index', compact('farmings'));
         } else {
             return redirect()->back()->with('danger', 'Permission denied.');
@@ -64,7 +67,6 @@ class BankDetailsController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         if (\Auth::user()->can('create-bank_detail')) {
             try {
                 $id = $request->farming_id;
