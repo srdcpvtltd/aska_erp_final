@@ -130,7 +130,6 @@ class FarmingPaymentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd($request->all());
         if (\Auth::user()->can('edit-security_deposite')) {
             $farmingPayment = FarmingPayment::find($id);
             $farmingPayment->farming_id = $request->farming_id;
@@ -240,9 +239,9 @@ class FarmingPaymentController extends Controller
     {
         $farmer = Farming::find($request->farmer_id);
 
-        return response()->json([
-            'registration_id' => $farmer->registration_no,
-            'g_code' => $farmer->g_code
+            return response()->json([
+                'registration_id' => $farmer->registration_no,
+                'g_code' => $farmer->g_code
         ]);
     }
 }

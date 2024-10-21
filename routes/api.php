@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\GuarantorController;
 use App\Http\Controllers\Api\StaticPageContentApiController;
 use App\Http\Controllers\Api\ProjectManagementDashboardApiController;
 use App\Http\Controllers\Api\SecurityDepositeController;
+use App\Http\Controllers\Api\SeedCatagoryController;
 use App\Http\Requests\Api\AllotmentRequest;
 use App\Http\Requests\Api\FarmingDetailsRequest;
 
@@ -207,6 +208,16 @@ Route::group([
             Route::post('delete', [AllotmentController::class, 'delete_loanAllotment']);
             Route::post('update', [AllotmentController::class, 'update_loanAllotment']);
             Route::get('retrive', [AllotmentController::class, 'retrive_loanAllotments']);
+        });
+
+        Route::group([
+            'prefix' => 'seed-category',
+            'as' => 'seed-category.'
+        ], function () {
+            Route::post('store', [SeedCatagoryController::class, 'store_seedCategory']);
+            Route::post('delete', [SeedCatagoryController::class, 'delete_seedCategory']);
+            Route::post('update', [SeedCatagoryController::class, 'update_seedCategory']);
+            Route::get('retrive', [SeedCatagoryController::class, 'retrive_seedCategory']);
         });
     });
 });
