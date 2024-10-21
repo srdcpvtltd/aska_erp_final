@@ -63,6 +63,11 @@ class Farming extends Model
         return $this->hasMany(FarmingPayment::class, 'country_id');
     }
 
+    public function farmer_loan()
+    {
+        return $this->hasMany(FarmerLoan::class);
+    }
+
     public function state()
     {
         return $this->belongsTo(State::class, 'state_id');

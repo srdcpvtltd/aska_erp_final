@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\UserProfileApiController;
 use App\Http\Controllers\Api\NotificationApiController;
 use App\Http\Controllers\Api\PushNotificationController;
 use App\Http\Controllers\Api\AdvanceSalaryApiController;
+use App\Http\Controllers\Api\AllotmentController;
 use App\Http\Controllers\Api\BankDetailsController;
 use App\Http\Controllers\Api\TaskChecklistApiController;
 use App\Http\Controllers\Api\EmployeePayrollApiController;
@@ -28,6 +29,7 @@ use App\Http\Controllers\Api\GuarantorController;
 use App\Http\Controllers\Api\StaticPageContentApiController;
 use App\Http\Controllers\Api\ProjectManagementDashboardApiController;
 use App\Http\Controllers\Api\SecurityDepositeController;
+use App\Http\Requests\Api\AllotmentRequest;
 use App\Http\Requests\Api\FarmingDetailsRequest;
 
 /**   user login **/
@@ -186,7 +188,7 @@ Route::group([
             Route::get('retrive', [BankDetailsController::class, 'retriveFarmerBankDetails']);
         });
 
-        //Farmer CRUD for Security Deposite
+        //Farmer Security deposit CRUD for Security Deposite
         Route::group([
             'prefix' => 'security-deposite',
             'as' => 'security-deposite.'
@@ -195,6 +197,16 @@ Route::group([
             Route::post('delete', [SecurityDepositeController::class, 'delete_deposites']);
             Route::post('update', [SecurityDepositeController::class, 'update_deposites']);
             Route::get('retrive', [SecurityDepositeController::class, 'retriveFarmerBankDetails']);
+        });
+        //Farmer Allotment CRUD for Security Deposite
+        Route::group([
+            'prefix' => 'loan-allotment',
+            'as' => 'loan-allotment.'
+        ], function () {
+            Route::post('store', [AllotmentController::class, 'store_loanAllotment']);
+            Route::post('delete', [AllotmentController::class, 'delete_loanAllotment']);
+            Route::post('update', [AllotmentController::class, 'update_loanAllotment']);
+            Route::get('retrive', [AllotmentController::class, 'retrive_loanAllotments']);
         });
     });
 });

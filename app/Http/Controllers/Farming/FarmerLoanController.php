@@ -52,6 +52,7 @@ class FarmerLoanController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request->all());
         if (\Auth::user()->can('create-allotment')) {
             try {
                 $this->validate($request, [
