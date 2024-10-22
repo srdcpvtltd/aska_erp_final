@@ -496,6 +496,7 @@
                                 <option value="Major Irrigation" {{ $farming_detail->irregation_mode == 'Major Irrigation' ? 'selected':'' }}>Major Irrigation</option>
                                 <option value="Medium Irrigation" {{ $farming_detail->irregation_mode == 'Medium Irrigation' ? 'selected':'' }}>Medium Irrigation</option>
                                 <option value="Minor Irrigation" {{ $farming_detail->irregation_mode == 'Minor Irrigation' ? 'selected':'' }}>Minor Irrigation</option>
+                                <option value="Bore Well" {{ $farming_detail->irregation_mode == 'Bore Well' ? 'selected':'' }}>Bore Well</option>
                                 <option value="Other Irrigation" {{ $farming_detail->irregation_mode == 'Other Irrigation' ? 'selected':'' }}>Other Irrigation</option>
                             </select>
                         </div>
