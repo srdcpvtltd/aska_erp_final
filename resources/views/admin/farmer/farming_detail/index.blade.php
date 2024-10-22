@@ -126,7 +126,7 @@
                                     <tr class="font-style">
                                         <td>{{ @$farming_detail->farming->name }}</td>
                                         <td>{{ $farming_detail->plot_number }}</td>
-                                        <td>{{ floatval($farming_detail->area_in_acar) }}</td>
+                                        <td>{{ number_format($farming_detail->area_in_acar, 2) }}</td>
                                         <td>{{ $farming_detail->date_of_harvesting }}</td>
                                         <td>{{ $farming_detail->tentative_harvest_quantity }}</td>
                                         <td>{{ @$farming_detail->seed_category->name }}</td>
