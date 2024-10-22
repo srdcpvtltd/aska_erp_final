@@ -388,10 +388,10 @@
                         </div> --}}
                         <div class="col-md-6">
                             <div class="form-group">
-                                {{ Form::label('seed_category_id', __('Seed Category'), ['class' => 'form-label']) }}
+                                {{ Form::label('seed_category_id', __('Seed Variety'), ['class' => 'form-label']) }}
                                 <select class="form-control select" name="seed_category_id" id="seed_category_id" required
                                     placeholder="Select Seed Category">
-                                    <option value="">{{ __('Select Seed Category') }}</option>
+                                    <option value="">{{ __('Select Seed Variety') }}</option>
                                     @foreach ($seed_categories as $seed_category)
                                         <option value="{{ $seed_category->id }}">{{ $seed_category->name }}</option>
                                     @endforeach
@@ -401,7 +401,7 @@
                         <div class="form-group col-md-6">
                             {{ Form::label('type', __('Planting Type'), ['class' => 'form-label']) }} <br>
                             <input name="type" type="radio" value="Plant"> Plant
-                            <input name="type" type="radio" value="Ratun"> Ratun
+                            <input name="type" type="radio" value="Ratun"> Ratoon
                         </div>
                         <div class="form-group col-md-6" id="planting_category">
                             {{ Form::label('type', __('Planting Category'), ['class' => 'form-label']) }}
