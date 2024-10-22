@@ -10,6 +10,7 @@
         $(document).ready(function() {
             $('input[type=radio][name="finance_category"]').on('change', function(event) {
                 var value = $(this).val();
+                console.log(value);
                 if (value == "Non-loan") {
                     $('.finance_category_fields').hide();
                     $('.coperative_fields').hide();
@@ -161,7 +162,7 @@
                             <input type="radio" name="finance_category" value="Non-loan"
                                 {{ $farmings->finance_category === 'Non-loan' ? 'checked' : '' }}> Non-loan
                         </div>
-                        @if ($farmings->finance_category === 'Loan')
+                        {{-- @if ($farmings->finance_category === 'Loan') --}}
                             <div class="col-md-6 finance_category_fields">
                                 <div class="form-group">
                                     {{ Form::label('loan_type', __('Loan Type'), ['class' => 'form-label']) }}
@@ -176,7 +177,7 @@
                                     </select>
                                 </div>
                             </div>
-                            @if ($farmings->non_loan_type === 'Bank')
+                            {{-- @if ($farmings->non_loan_type === 'Bank') --}}
                                 <div class="col-md-6 bank_detail_fields">
                                     <div class="form-group">
                                         {{ Form::label('bank', __('Bank'), ['class' => 'form-label']) }}
@@ -211,9 +212,9 @@
                                     {{ Form::label('ifsc_code', __('IFSC Code'), ['class' => 'form-label']) }}
                                     {{ Form::text('ifsc_code', $farmings->ifsc_code, ['class' => 'form-control']) }}
                                 </div>
-                            @endif
-                        @endif
-                        @if ($farmings->non_loan_type === 'Co-Operative')
+                            {{-- @endif
+                        @endif --}}
+                        {{-- @if ($farmings->non_loan_type === 'Co-Operative') --}}
                             <div class="form-group col-md-6 coperative_fields">
                                 {{ Form::label('name_of_cooperative', __('Co-Operative Name'), ['class' => 'form-label']) }}
                                 {{ Form::text('name_of_cooperative', $farmings->name_of_cooperative, ['class' => 'form-control']) }}
@@ -222,8 +223,8 @@
                                 {{ Form::label('cooperative_address', __('Co-Operative Branch'), ['class' => 'form-label']) }}
                                 {{ Form::text('cooperative_address', $farmings->cooperative_address, ['class' => 'form-control']) }}
                             </div>
-                        @endif
-                        @if ($farmings->finance_category === 'Non-loan')
+                        {{-- @endif --}}
+                        {{-- @if ($farmings->finance_category === 'Non-loan') --}}
                             <div class="col-md-6 non_loan_fields">
                                 <div class="form-group">
                                     {{ Form::label('bank', __('Bank'), ['class' => 'form-label']) }}
@@ -258,7 +259,7 @@
                                 {{ Form::label('ifsc_code', __('IFSC Code'), ['class' => 'form-label']) }}
                                 {{ Form::text('non_loan_ifsc_code', $farmings->ifsc_code, ['class' => 'form-control']) }}
                             </div>
-                        @endif
+                        {{-- @endif --}}
                     </div>
                 </div>
             </div>

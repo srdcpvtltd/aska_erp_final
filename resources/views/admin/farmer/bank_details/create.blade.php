@@ -7,6 +7,28 @@
     <script src="{{ asset('js/jquery.repeater.min.js') }}"></script>
     <script>
         $(document).ready(function() {
+            $('#g_code').keyup(function() {
+                let g_code = $(this).val();
+                $.ajax({
+                    url: "{{ route('admin.farmer.get_detail') }}",
+                    method: 'post',
+                    data: {
+                        g_code: g_code,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        console.log(response.farmerHtml);
+                        $('#farming_id').empty();
+                        if (response.farmerHtml) {
+                            $('#farming_id').append(response.farmerHtml);
+                        } else {
+                            $('#farming_id').append('<option  value="">Select Farmer</option>');
+                        }
+                    }
+                });
+            });
             $('input[type=radio][name="finance_category"]').on('change', function(event) {
                 var value = $(this).val();
                 if (value == "Non-loan") {
@@ -141,6 +163,12 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
+                                {{ Form::label('g_code', __('G_Code'), ['class' => 'form-label']) }}
+                                {{ Form::text('g_code', null, ['class' => 'form-control', 'required' => 'required']) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 {{ Form::label('farming_id', __('Select Farmer'), ['class' => 'form-label']) }}
                                 <select class="form-control select" name="farming_id" id="farming_id" required
                                     placeholder="Select Farmer">
@@ -151,7 +179,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group col-md-2">
+                        <div class="form-group col-md-6">
                             {{ Form::label('finance_category', __('Finance Category'), ['class' => 'form-label']) }}
                             <br>
                             <input type="radio" name="finance_category" value="Loan"> Loan

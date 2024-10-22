@@ -13,7 +13,6 @@
 
             $('#g_code').keyup(function() {
                 let g_code = $(this).val();
-                console.log(g_code);
                 $.ajax({
                     url: "{{ route('admin.farmer.get_detail') }}",
                     method: 'post',
@@ -29,27 +28,27 @@
                         if (response.farmerHtml) {
                             $('#farming_id').append(response.farmerHtml);
                         } else {
-                            $('#farming_id').append('<option  value="">Select Farmer</option>');
+                            $('#farming_id').append('<option value="">Select Farmer</option>');
                         }
                         $('#block_id').empty();
                         if (response.blockHtml) {
                             $('#block_id').append(response.blockHtml);
                         } else {
-                            $('#block_id').append('<option  value="">Select Block</option>');
+                            $('#block_id').append('<option value="">Select Block</option>');
                         }
                         $('#gram_panchyat_id').empty();
                         if (response.gpHtml) {
                             $('#gram_panchyat_id').append(response.gpHtml);
                         } else {
                             $('#gram_panchyat_id').append(
-                                '<option  value="">Select Gram Panchyat</option>');
+                                '<option value="">Select Gram Panchyat</option>');
                         }
                         $('#village_id').empty();
                         if (response.villageHtml) {
                             $('#village_id').append(response.villageHtml);
                         } else {
                             $('#village_id').append(
-                                '<option  value="">Select Village</option>');
+                                '<option value="">Select Village</option>');
                         }
                         $('#zone_id').empty();
                         if (response.zoneHtml) {
@@ -65,7 +64,7 @@
                         }
 
                         $('#can_field_zone_id').empty();
-                        if (response.zone_id) {
+                        if (response.zone_id != null) {
                             $('#can_field_zone_id').append(
                                 '<option value="">Select Zone</option>');
                             for (i = 0; i < response.zone.length; i++) {
@@ -81,7 +80,7 @@
                         }
 
                         $('#can_field_center_id').empty();
-                        if (response.center_id) {
+                        if (response.center_id != null) {
                             $('#can_field_center_id').append(
                                 '<option value="">Select Center</option>');
                             for (i = 0; i < response.center.length; i++) {
@@ -97,7 +96,7 @@
                         }
 
                         $('#can_field_village_id').empty();
-                        if (response.village_id) {
+                        if (response.village_id != null) {
                             $('#can_field_village_id').append(
                                 '<option value="">Select Village</option>');
                             for (i = 0; i < response.village.length; i++) {
