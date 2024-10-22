@@ -48,8 +48,8 @@ class FarmingPaymentController extends Controller
     public function store(Request $request)
     {
         if (\Auth::user()->can('create-security_deposite')) {
-            $farming_payment = FarmingPayment::where('farming_id', $request->farming_id)->where('type',"Security Deposit")->get();
-            if(count($farming_payment) > 0){
+            $farming_payment = FarmingPayment::where('farming_id', $request->farming_id)->where('type', "Security Deposit")->get();
+            if (count($farming_payment) > 0) {
                 return redirect()->route('admin.farmer.payment.index')->with('danger', 'Payment Already Added.');
             }
             try {
@@ -66,7 +66,7 @@ class FarmingPaymentController extends Controller
                     ]);
                 }
 
-                if($request->type != null){
+                if ($request->type != null) {
                     $type = $request->type;
                 } else {
                     $type = "Security Deposit";
@@ -239,9 +239,9 @@ class FarmingPaymentController extends Controller
     {
         $farmer = Farming::find($request->farmer_id);
 
-        return response()->json([
-            'registration_id' => $farmer->registration_no,
-            'g_code' => $farmer->g_code
+            return response()->json([
+                'registration_id' => $farmer->registration_no,
+                'g_code' => $farmer->g_code
         ]);
     }
 }
