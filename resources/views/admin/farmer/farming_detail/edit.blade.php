@@ -458,8 +458,8 @@
                             {{ Form::label('type', __('Planting Type'), ['class' => 'form-label']) }} <br>
                             <input name="type" type="radio" value="Plant"
                                 {{ $farming_detail->type == 'Plant' ? 'checked' : '' }}> Plant
-                            <input name="type" type="radio" value="Ratoon"
-                                {{ $farming_detail->type == 'Ratun' ? 'checked' : '' }}> Ratun
+                            <input name="type" type="radio" value="Ratun"
+                                {{ $farming_detail->type == 'Ratun' ? 'checked' : '' }}> Ratoon
                         </div>
                         <div class="form-group col-md-6" id="planting_category">
                             {{ Form::label('type', __('Planting Category'), ['class' => 'form-label']) }}
