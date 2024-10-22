@@ -27,10 +27,10 @@ class BankDetailsController extends Controller
     {
         if (\Auth::user()->can('manage-bank_detail')) {
             $farmings = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
-                ->where('farmings.is_validate', 1)
+                // ->where('farmings.is_validate', 1)
                 ->where('farmings.bank', '!=', null)
                 // ->where('farmings.created_by', Auth::user()->id)
-                ->orWhere('users.supervisor_id', Auth::user()->id)
+                // ->orWhere('users.supervisor_id', Auth::user()->id)
                 ->get();
             return view('admin.farmer.bank_details.index', compact('farmings'));
         } else {
