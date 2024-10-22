@@ -52,6 +52,46 @@
                     }
                 });
             });
+            $('#branch_detail').change(function() {
+                let branch_id = $(this).val();
+
+                $.ajax({
+                    url: "{{ route('admin.farmer.location.get_branch_ifsc_code') }}",
+                    method: 'post',
+                    data: {
+                        branch_id: branch_id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        $('#ifsc_code').empty();
+                        $('#ifsc_code').val(response.ifsc_code);
+                    }
+                });
+            });
+            $('#non_loan_branch').change(function() {
+                let branch_id = $(this).val();
+                let ifsc = $('#non_loan_ifsc_code').val();
+                console.log(ifsc);
+
+                $.ajax({
+                    url: "{{ route('admin.farmer.location.get_branch_ifsc_code') }}",
+                    method: 'post',
+                    data: {
+                        branch_id: branch_id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        $('#non_loan_ifsc_code').empty();
+                        $('#non_loan_ifsc_code').val(response.ifsc_code);
+                    }
+                });
+            });
             $('#non_loan_bank').change(function() {
                 let bank_id = $(this).val();
                 
@@ -185,7 +225,7 @@
                             {{ Form::text('non_loan_account_number', '', ['class' => 'form-control']) }}
                         </div>
                         <div class="form-group col-md-6 non_loan_fields" style="display:none;">
-                            {{ Form::label('ifsc_code', __('IFSC Code'), ['class' => 'form-label']) }}
+                            {{ Form::label('non_loan_ifsc_code', __('IFSC Code'), ['class' => 'form-label']) }}
                             {{ Form::text('non_loan_ifsc_code', '', ['class' => 'form-control']) }}
                         </div>
                     </div>

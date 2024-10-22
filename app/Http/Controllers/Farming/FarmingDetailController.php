@@ -115,7 +115,7 @@ class FarmingDetailController extends Controller
             $seed_categories = SeedCategory::all();
             $zones = Zone::all();
             $centers = Center::where('zone_id', $farming_detail->can_field_zone_id)->get();
-            $village = Village::where('center_id', $farming_detail->can_field_center_id)->where('zone_id', $farming_detail->can_field_zone_id)->get();
+            $village = Village::where('center_id', $farming_detail->can_field_center_id)->where('zone_id', $farming_detail->can_field_zone_id)->orderBy('name', 'asc')->get();
             if($farming_detail->irregation_mode != null){
                 $irrigations = Irrigation::where('category', $farming_detail->irregation_mode)->get();
             } else {
@@ -220,7 +220,7 @@ class FarmingDetailController extends Controller
         //can field
         $zone = Zone::all();
         $center = Center::where('zone_id', $farming->zone_id)->get();
-        $village = Village::where('center_id', $farming->center_id)->where('zone_id', $farming->zone_id)->get();
+        $village = Village::where('center_id', $farming->center_id)->where('zone_id', $farming->zone_id)->orderBy('name', 'asc')->get();
 
         return response()->json([
             'farmerHtml' => $farmerHtml,

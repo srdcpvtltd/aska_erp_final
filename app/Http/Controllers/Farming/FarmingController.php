@@ -308,6 +308,13 @@ class FarmingController extends Controller
         return response()->json($branches);
     }
 
+    public function get_branch_ifsc_code(Request $request)
+    {
+        $ifsc_codes = Bank_branch::where('id', $request->branch_id)->first();
+
+        return response()->json($ifsc_codes);
+    }
+
     public function get_irrigations(Request $request)
     {
         $irregation = Irrigation::where('category', $request->irregation_mode)->get();

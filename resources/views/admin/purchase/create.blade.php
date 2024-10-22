@@ -5,54 +5,54 @@
 
 @section('scripts')
     <script>
-        var selector = "body";
-        if ($(selector + " .repeater").length) {
-            var $dragAndDrop = $("body .repeater tbody").sortable({
-                handle: '.sort-handler'
-            });
-            var $repeater = $(selector + ' .repeater').repeater({
-                initEmpty: false,
-                defaultValues: {
-                    'status': 1
-                },
-                show: function() {
-                    $(this).slideDown();
-                    var file_uploads = $(this).find('input.multi');
-                    if (file_uploads.length) {
-                        $(this).find('input.multi').MultiFile({
-                            max: 3,
-                            accept: 'png|jpg|jpeg',
-                            max_size: 2048
-                        });
-                    }
-                    $('.select2').select2();
-                },
-                hide: function(deleteElement) {
-                    if (confirm('Are you sure you want to delete this element?')) {
-                        $(this).slideUp(deleteElement);
-                        $(this).remove();
+        // var selector = "body";
+        // if ($(selector + " .repeater").length) {
+        //     var $dragAndDrop = $("body .repeater tbody").sortable({
+        //         handle: '.sort-handler'
+        //     });
+        //     var $repeater = $(selector + ' .repeater').repeater({
+        //         initEmpty: false,
+        //         defaultValues: {
+        //             'status': 1
+        //         },
+        //         show: function() {
+        //             $(this).slideDown();
+        //             var file_uploads = $(this).find('input.multi');
+        //             if (file_uploads.length) {
+        //                 $(this).find('input.multi').MultiFile({
+        //                     max: 3,
+        //                     accept: 'png|jpg|jpeg',
+        //                     max_size: 2048
+        //                 });
+        //             }
+        //             $('.select2').select2();
+        //         },
+        //         hide: function(deleteElement) {
+        //             if (confirm('Are you sure you want to delete this element?')) {
+        //                 $(this).slideUp(deleteElement);
+        //                 $(this).remove();
 
-                        var inputs = $(".amount");
-                        var subTotal = 0;
-                        for (var i = 0; i < inputs.length; i++) {
-                            subTotal = parseFloat(subTotal) + parseFloat($(inputs[i]).html());
-                        }
-                        $('.subTotal').html(subTotal.toFixed(2));
-                        $('.totalAmount').html(subTotal.toFixed(2));
-                    }
-                },
-                ready: function(setIndexes) {
-                    $dragAndDrop.on('drop', setIndexes);
-                },
-                isFirstItemUndeletable: true
-            });
-            var value = $(selector + " .repeater").attr('data-value');
-            if (typeof value != 'undefined' && value.length != 0) {
-                value = JSON.parse(value);
-                $repeater.setList(value);
-            }
+        //                 var inputs = $(".amount");
+        //                 var subTotal = 0;
+        //                 for (var i = 0; i < inputs.length; i++) {
+        //                     subTotal = parseFloat(subTotal) + parseFloat($(inputs[i]).html());
+        //                 }
+        //                 $('.subTotal').html(subTotal.toFixed(2));
+        //                 $('.totalAmount').html(subTotal.toFixed(2));
+        //             }
+        //         },
+        //         ready: function(setIndexes) {
+        //             $dragAndDrop.on('drop', setIndexes);
+        //         },
+        //         isFirstItemUndeletable: true
+        //     });
+        //     var value = $(selector + " .repeater").attr('data-value');
+        //     if (typeof value != 'undefined' && value.length != 0) {
+        //         value = JSON.parse(value);
+        //         $repeater.setList(value);
+        //     }
 
-        }
+        // }
 
         $(document).on('change', '#vender', function() {
             $('#vender_detail').removeClass('d-none');
@@ -538,7 +538,7 @@
             </div>
         </div>
 
-        <div class="modal-footer">
+        <div class="card-footer">
             <input type="button" value="{{ __('Cancel') }}"
                 onclick="location.href = '{{ route('admin.purchase.index') }}';" class="btn btn-light">
             <input type="submit" value="{{ __('Create') }}" class="btn  btn-primary">

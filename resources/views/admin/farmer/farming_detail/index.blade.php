@@ -8,9 +8,21 @@
             $('#loss_reason').hide();
             $('#loss_area').hide();
 
-            $('#reportmodal').on('click', function() {
+            $(document).on('click', '.reportmodal', function(event) {
+                event.preventDefault();
+
+                $('#plot_no').text('');
+                $('#area').text('');
+                $('#farmer_name').text('');
+                $('#plot_detail_id').val('');
+                $('#loss_reason').hide();
+                $('#loss_area').hide();
+                $('input[name=total_planting_area]').val('');
+
                 $('#reportModal').modal('show');
+
                 var farming_details_id = $(this).data('id');
+
                 $.ajax({
                     url: "{{ route('admin.farmer.farming_detail_data') }}",
                     method: 'post',
@@ -26,25 +38,27 @@
                         $('#farmer_name').text(response.farmer_name);
                         $('#plot_detail_id').val(response.plot_details.id);
 
-                        $('input[name=croploss]').on('click', function() {
+                        $('input[name=croploss]').off('click').on('click', function() {
                             var is_crop_loss = $(this).val();
                             if (is_crop_loss == "Yes") {
                                 $('#loss_reason').show();
                                 $('#loss_area').show();
-                                $('input[name=loss_area]').on('keyup', function() {
-                                    var loss_area = $(this).val();
-                                    if (loss_area != null) {
-                                        var total_planting_area = response
-                                            .plot_details.area_in_acar -
-                                            loss_area;
-                                        $('input[name=total_planting_area]')
-                                            .val(total_planting_area);
-                                    } else {
-                                        $('input[name=total_planting_area]')
-                                            .val(response.plot_details
-                                                .area_in_acar);
-                                    }
-                                });
+
+                                $('input[name=loss_area]').off('keyup').on('keyup',
+                                    function() {
+                                        var loss_area = $(this).val();
+                                        if (loss_area != null) {
+                                            var total_planting_area = response
+                                                .plot_details.area_in_acar -
+                                                loss_area;
+                                            $('input[name=total_planting_area]')
+                                                .val(total_planting_area);
+                                        } else {
+                                            $('input[name=total_planting_area]')
+                                                .val(response.plot_details
+                                                    .area_in_acar);
+                                        }
+                                    });
                             } else if (is_crop_loss == "No") {
                                 $('input[name=total_planting_area]').val(response
                                     .plot_details.area_in_acar);
@@ -55,8 +69,17 @@
                     }
                 });
             });
-            $('.close_btn').on('click', function() {
+
+            $(document).on('click', '.close_btn', function(event) {
                 $('#reportModal').modal('hide');
+                $('#plot_no').text('');
+                $('#area').text('');
+                $('#farmer_name').text('');
+                $('#plot_detail_id').val('');
+                $('#loss_reason').hide();
+                $('#loss_area').hide();
+                $('input[name=total_planting_area]').val('');
+                $('input[name=croploss]').prop('checked', false); 
             });
 
         });
@@ -129,7 +152,7 @@
                                                     @endcan
                                                     <li class="me-2">
                                                         <a href="#" data-bs-toggle="tooltip"
-                                                            title="{{ __('Report') }}" id="reportmodal"
+                                                            title="{{ __('Report') }}" class="reportmodal"
                                                             data-id="{{ $farming_detail->id }}">
                                                             <i class="link-icon" data-feather="file-text"></i>
                                                         </a>

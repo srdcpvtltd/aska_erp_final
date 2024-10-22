@@ -479,6 +479,7 @@ Route::group([
                 Route::post('location/get_country_state', [FarmingController::class, 'get_country_state'])->name('location.get_country_state');
                 Route::post('location/get_zone_center', [FarmingController::class, 'get_zone_center'])->name('location.get_zone_center');
                 Route::post('location/get_bank_branches', [FarmingController::class, 'get_bank_branches'])->name('location.get_bank_branches');
+                Route::post('location/get_branch_ifsc_code', [FarmingController::class, 'get_branch_ifsc_code'])->name('location.get_branch_ifsc_code');
                 Route::post('location/get_irrigations', [FarmingController::class, 'get_irrigations'])->name('location.get_irrigations');
 
                 //registration

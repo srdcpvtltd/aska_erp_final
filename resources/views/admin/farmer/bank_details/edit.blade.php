@@ -78,6 +78,46 @@
                     }
                 });
             });
+            $('#branch_detail').change(function() {
+                let branch_id = $(this).val();
+
+                $.ajax({
+                    url: "{{ route('admin.farmer.location.get_branch_ifsc_code') }}",
+                    method: 'post',
+                    data: {
+                        branch_id: branch_id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        $('#ifsc_code').empty();
+                        $('#ifsc_code').val(response.ifsc_code);
+                    }
+                });
+            });
+            $('#non_loan_branch').change(function() {
+                let branch_id = $(this).val();
+                let ifsc = $('#non_loan_ifsc_code').val();
+                console.log(ifsc);
+
+                $.ajax({
+                    url: "{{ route('admin.farmer.location.get_branch_ifsc_code') }}",
+                    method: 'post',
+                    data: {
+                        branch_id: branch_id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        $('#non_loan_ifsc_code').empty();
+                        $('#non_loan_ifsc_code').val(response.ifsc_code);
+                    }
+                });
+            });
         });
     </script>
 @endsection
@@ -87,7 +127,8 @@
     <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
         <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('admin.farmer.bank_details.index') }}">{{ __('Bank Details') }}</a>
+            <li class="breadcrumb-item"><a
+                    href="{{ route('admin.farmer.bank_details.index') }}">{{ __('Bank Details') }}</a>
             </li>
             <li class="breadcrumb-item">{{ __('Edit') }}</li>
         </ol>
@@ -143,7 +184,9 @@
                                             placeholder="Select Bank">
                                             <option value="">{{ __('Select Bank') }}</option>
                                             @foreach ($banks as $bank)
-                                                <option value="{{ $bank->id }}" {{ ($farmings->bank == $bank->id) ? 'selected':'' }}>{{ $bank->name }}</option>
+                                                <option value="{{ $bank->id }}"
+                                                    {{ $farmings->bank == $bank->id ? 'selected' : '' }}>
+                                                    {{ $bank->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -153,8 +196,10 @@
                                     {{-- {{ Form::text('branch', $farmings->branch, ['class' => 'form-control']) }} --}}
                                     <select class="form-control select" name="branch" id="branch_detail">
                                         <option value="">{{ __('Select Branch') }}</option>
-                                        @foreach($bank_branchs as $bank_branch)
-                                        <option value="{{ $bank_branch->id }}" {{ ($farmings->branch == $bank_branch->id) ? 'selected':'' }}>{{ $bank_branch->name }}</option>
+                                        @foreach ($bank_branchs as $bank_branch)
+                                            <option value="{{ $bank_branch->id }}"
+                                                {{ $farmings->branch == $bank_branch->id ? 'selected' : '' }}>
+                                                {{ $bank_branch->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -186,7 +231,9 @@
                                         placeholder="Select Bank">
                                         <option value="">{{ __('Select Bank') }}</option>
                                         @foreach ($banks as $bank)
-                                            <option value="{{ $bank->id }}" {{ ($farmings->bank == $bank->id) ? 'selected':'' }}>{{ $bank->name }}</option>
+                                            <option value="{{ $bank->id }}"
+                                                {{ $farmings->bank == $bank->id ? 'selected' : '' }}>{{ $bank->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -196,8 +243,10 @@
                                 {{-- {{ Form::text('non_loan_branch', $farmings->branch, ['class' => 'form-control']) }} --}}
                                 <select class="form-control select" name="non_loan_branch" id="non_loan_branch">
                                     <option value="">{{ __('Select Branch') }}</option>
-                                    @foreach($bank_branchs as $bank_branch)
-                                    <option value="{{ $bank_branch->id }}" {{ ($farmings->branch == $bank_branch->id) ? 'selected':'' }}>{{ $bank_branch->name }}</option>
+                                    @foreach ($bank_branchs as $bank_branch)
+                                        <option value="{{ $bank_branch->id }}"
+                                            {{ $farmings->branch == $bank_branch->id ? 'selected' : '' }}>
+                                            {{ $bank_branch->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
