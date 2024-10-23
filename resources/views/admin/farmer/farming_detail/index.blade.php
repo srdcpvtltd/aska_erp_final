@@ -34,7 +34,7 @@
                     },
                     success: function(response) {
                         $('#plot_no').text(response.plot_details.plot_number);
-                        $('#area').text(response.plot_details.area_in_acar);
+                        $('#area').text(parseFloat(response.plot_details.area_in_acar).toFixed(2));
                         $('#farmer_name').text(response.farmer_name);
                         $('#plot_detail_id').val(response.plot_details.id);
 
@@ -81,7 +81,17 @@
                 $('input[name=total_planting_area]').val('');
                 $('input[name=croploss]').prop('checked', false); 
             });
+        });
 
+        const input = document.getElementById('tentative_harvest_quantity');
+        
+        input.addEventListener('input', function () {
+            // Regex to allow only numbers and one decimal point
+            this.value = this.value.replace(/[^0-9.]/g, '');  // Remove non-numeric and non-decimal characters
+            if (this.value.indexOf('.') !== -1) {
+                // Allow only one decimal point
+                this.value = this.value.substring(0, this.value.indexOf('.') + 3);
+            }
         });
     </script>
 @endsection
@@ -150,6 +160,7 @@
                                                             </a>
                                                         </li>
                                                     @endcan
+                                                    @if ($farming_detail->croploss == null)
                                                     <li class="me-2">
                                                         <a href="#" data-bs-toggle="tooltip"
                                                             title="{{ __('Report') }}" class="reportmodal"
@@ -157,6 +168,7 @@
                                                             <i class="link-icon" data-feather="file-text"></i>
                                                         </a>
                                                     </li>
+                                                    @endif
                                                     @can('delete-plot')
                                                         <li>
                                                             <a class="deleteBtn" href="#"
@@ -164,7 +176,6 @@
                                                                 data-bs-toggle="tooltip" title="{{ __('Delete') }}">
                                                                 <i class="link-icon" data-feather="delete"></i>
                                                             </a>
-                                                            {!! Form::close() !!}
                                                         </li>
                                                     @endcan
                                                 @else
@@ -225,7 +236,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 {{ Form::label('tentative_harvest_quantity', __('Tentative Plant Quantity (In Ton)'), ['class' => 'form-label']) }}
-                                {{ Form::number('tentative_harvest_quantity', '', ['class' => 'form-control', 'required' => 'required']) }}
+                                {{ Form::text('tentative_harvest_quantity', '', ['class' => 'form-control', 'required' => 'required']) }}
                             </div>
                         </div>
                     </div>
