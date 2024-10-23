@@ -212,6 +212,7 @@
                                 <tr>
                                     <th>{{ __('Sl No.') }}</th>
                                     <th>{{ __('Name') }}</th>
+                                    <th>{{ __('Father Name') }}</th>
                                     <th>{{ __('G. Code') }}</th>
                                     <th>{{ __('Mobile') }}</th>
                                     <th>{{ __('Age') }}</th>
@@ -220,6 +221,8 @@
                                     <th>{{ __('State') }}</th>
                                     <th>{{ __('District') }}</th>
                                     <th>{{ __('Block') }}</th>
+                                    <th>{{ __('Zone') }}</th>
+                                    <th>{{ __('Center') }}</th>
                                     <th>{{ __('Status') }}</th>
                                     <th>{{ __('Action') }}</th>
                                 </tr>
@@ -229,6 +232,7 @@
                                     <tr class="font-style">
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $farming->name }}</td>
+                                        <td>{{ $farming->father_name }}</td>
                                         <td>
                                             @if ($farming->g_code != null)
                                                 {{ $farming->g_code }}
@@ -245,6 +249,8 @@
                                         <td>{{ $farming->state->name }}</td>
                                         <td>{{ $farming->district->name }}</td>
                                         <td>{{ $farming->block->name }}</td>
+                                        <td>{{ $farming->zone->name }}</td>
+                                        <td>{{ $farming->center->name }}</td>
                                         <td>
                                             @if ($farming->is_validate)
                                                 <span
