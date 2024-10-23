@@ -64,11 +64,10 @@
                         <div class="row timeline-wrapper">
                             <div class="col-md-6 col-lg-4 col-xl-4">
                                 <div class="timeline-icons"><span class="timeline-dots"></span>
-                                    <i class="ti ti-plus text-primary"></i>
+                                    
                                 </div>
                                 <h6 class="text-primary my-3">{{ __('Create Purchase') }}</h6>
-                                <p class="text-muted text-sm mb-3"><i
-                                        class="ti ti-clock mr-2"></i>{{ __('Created on ') }}{{ \Auth::user()->dateFormat($purchase->purchase_date) }}
+                                <p class="text-muted text-sm mb-3">{{ __('Created on ') }}{{ \Auth::user()->dateFormat($purchase->purchase_date) }}
                                 </p>
                                 <a href="{{ route('admin.purchase.edit', \Crypt::encrypt($purchase->id)) }}"
                                     class="btn btn-sm btn-primary" data-bs-toggle="tooltip"
@@ -77,12 +76,12 @@
                             </div>
                             <div class="col-md-6 col-lg-4 col-xl-4">
                                 <div class="timeline-icons"><span class="timeline-dots"></span>
-                                    <i class="ti ti-mail text-warning"></i>
+                                    
                                 </div>
                                 <h6 class="text-warning my-3">{{ __('Send Purchase') }}</h6>
                                 <p class="text-muted text-sm mb-3">
                                     @if ($purchase->status != 0)
-                                        <i class="ti ti-clock mr-2"></i>{{ __('Sent on') }}
+                                        {{ __('Sent on') }}
                                         {{ \Auth::user()->dateFormat($purchase->send_date) }}
                                     @else
                                         <small>{{ __('Status') }} : {{ __('Not Sent') }}</small>
@@ -98,7 +97,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 col-xl-4">
                                 <div class="timeline-icons"><span class="timeline-dots"></span>
-                                    <i class="ti ti-report-money text-info"></i>
+                                    
                                 </div>
                                 <h6 class="text-info my-3">{{ __('Get Paid') }}</h6>
                                 <p class="text-muted text-sm mb-3">{{ __('Status') }} : {{ __('Awaiting payment') }} </p>
@@ -282,7 +281,7 @@
                                                 $totalDiscount = 0;
                                                 $taxesData = [];
                                             @endphp
-
+{{-- @dd($iteams) --}}
                                             @foreach ($iteams as $key => $iteam)
                                                 @if (!empty($iteam->tax))
                                                     @php

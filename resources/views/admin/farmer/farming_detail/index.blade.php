@@ -3,97 +3,57 @@
     {{ __('Plot Detail') }}
 @endsection
 @section('scripts')
-    <script>
-        $(document).ready(function() {
-            $('#loss_reason').hide();
-            $('#loss_area').hide();
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
+<script>
+    document.getElementById('exportButton').addEventListener('click', function() {
+        // Get the DataTable instance
+        var table = $('#plot_details_datatable').DataTable(); // Replace with your DataTable's ID
 
-            $(document).on('click', '.reportmodal', function(event) {
-                event.preventDefault();
+        // Get all data from the DataTable (including non-visible rows)
+        var data = table.rows({
+            search: 'applied'
+        }).nodes().toArray(); // Fetch rows as DOM nodes to extract text content directly
 
-                $('#plot_no').text('');
-                $('#area').text('');
-                $('#farmer_name').text('');
-                $('#plot_detail_id').val('');
-                $('#loss_reason').hide();
-                $('#loss_area').hide();
-                $('input[name=total_planting_area]').val('');
+        // Create a new workbook
+        var wb = XLSX.utils.book_new();
 
-                $('#reportModal').modal('show');
+        // Create an array to store rows of data
+        var ws_data = [];
 
-                var farming_details_id = $(this).data('id');
-
-                $.ajax({
-                    url: "{{ route('admin.farmer.farming_detail_data') }}",
-                    method: 'post',
-                    data: {
-                        id: farming_details_id,
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                        $('#plot_no').text(response.plot_details.plot_number);
-                        $('#area').text(parseFloat(response.plot_details.area_in_acar).toFixed(2));
-                        $('#farmer_name').text(response.farmer_name);
-                        $('#plot_detail_id').val(response.plot_details.id);
-
-                        $('input[name=croploss]').off('click').on('click', function() {
-                            var is_crop_loss = $(this).val();
-                            if (is_crop_loss == "Yes") {
-                                $('#loss_reason').show();
-                                $('#loss_area').show();
-
-                                $('input[name=loss_area]').off('keyup').on('keyup',
-                                    function() {
-                                        var loss_area = $(this).val();
-                                        if (loss_area != null) {
-                                            var total_planting_area = response
-                                                .plot_details.area_in_acar -
-                                                loss_area;
-                                            $('input[name=total_planting_area]')
-                                                .val(total_planting_area);
-                                        } else {
-                                            $('input[name=total_planting_area]')
-                                                .val(response.plot_details
-                                                    .area_in_acar);
-                                        }
-                                    });
-                            } else if (is_crop_loss == "No") {
-                                $('input[name=total_planting_area]').val(response
-                                    .plot_details.area_in_acar);
-                                $('#loss_reason').hide();
-                                $('#loss_area').hide();
-                            }
-                        });
-                    }
-                });
-            });
-
-            $(document).on('click', '.close_btn', function(event) {
-                $('#reportModal').modal('hide');
-                $('#plot_no').text('');
-                $('#area').text('');
-                $('#farmer_name').text('');
-                $('#plot_detail_id').val('');
-                $('#loss_reason').hide();
-                $('#loss_area').hide();
-                $('input[name=total_planting_area]').val('');
-                $('input[name=croploss]').prop('checked', false); 
-            });
-        });
-
-        const input = document.getElementById('tentative_harvest_quantity');
-        
-        input.addEventListener('input', function () {
-            // Regex to allow only numbers and one decimal point
-            this.value = this.value.replace(/[^0-9.]/g, '');  // Remove non-numeric and non-decimal characters
-            if (this.value.indexOf('.') !== -1) {
-                // Allow only one decimal point
-                this.value = this.value.substring(0, this.value.indexOf('.') + 3);
+        // Get headers from the table, excluding the "Action" column
+        var headers = [];
+        var actionColumnIndex = -1; // Initialize action column index
+        $('#plot_details_datatable thead tr th').each(function(index) {
+            var headerText = $(this).text();
+            if (headerText.toLowerCase() !== 'action') {
+                headers.push(headerText); // Only add non-"Action" headers
+            } else {
+                actionColumnIndex = index; // Store the index of the "Action" column
             }
         });
-    </script>
+        ws_data.push(headers); // Add headers to ws_data
+
+        // Add rows of data from the DataTable, excluding the "Action" column
+        data.forEach(function(row) {
+            var filteredRow = [];
+            $(row).find('td').each(function(index) {
+                if (index !== actionColumnIndex) { // Exclude "Action" column
+                    filteredRow.push($(this).text().trim()); // Get plain text, strip HTML
+                }
+            });
+            ws_data.push(filteredRow); // Add filtered row to ws_data
+        });
+
+        // Convert the data array to a worksheet
+        var ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+        // Append the worksheet to the workbook
+        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+        // Export the workbook to an Excel file
+        XLSX.writeFile(wb, 'Plot_details.xlsx');
+    });
+</script>
 @endsection
 @section('main-content')
     @include('admin.section.flash_message')
@@ -105,8 +65,9 @@
         </ol>
 
         <div class="float-end">
+            <button id="exportButton" class="btn btn-success">Export</button>
             @can('create-plot')
-                <a href="{{ route('admin.farmer.farming_detail.create') }}" class="btn btn-sm btn-primary">
+                <a href="{{ route('admin.farmer.farming_detail.create') }}" class="btn btn-primary">
                     Add
                 </a>
             @endcan
@@ -118,11 +79,12 @@
             <div class="card">
                 <div class="card-body table-border-style">
                     <div class="table-responsive">
-                        <table class="data_table table datatable">
+                        <table class="data_table table datatable" id="plot_details_datatable">
                             <thead>
                                 <tr>
                                     <th>{{ __('GCode') }}</th>
                                     <th>{{ __('Farmer') }}</th>
+                                    <th>{{ __('Father Name') }}</th>
                                     <th>{{ __('Plot Number') }}</th>
                                     <th>{{ __('Area in Acar') }}</th>
                                     <th>{{ __('Date of Planting') }}</th>
@@ -138,6 +100,7 @@
                                     <tr class="font-style">
                                         <td>{{ @$farming_detail->farming->old_g_code }}</td>
                                         <td>{{ @$farming_detail->farming->name }}</td>
+                                        <td>{{ @$farming_detail->farming->father_name }}</td>
                                         <td>{{ $farming_detail->plot_number }}</td>
                                         <td>{{ number_format($farming_detail->area_in_acar, 2) }}</td>
                                         <td>{{ $farming_detail->date_of_harvesting }}</td>
@@ -152,7 +115,7 @@
                                                     class="status_badge text-capitalize badge bg-danger p-2 px-3 rounded">No</span>
                                             @endif
                                         </td>
-                                        <td>{{ date('d-m-Y',strtotime($farming_detail->created_at)) }}</td>
+                                        <td>{{ date('d-m-Y', strtotime($farming_detail->created_at)) }}</td>
                                         <td class="Action">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                                 @if ($farming_detail->is_cutting_order != '1')
@@ -165,13 +128,13 @@
                                                         </li>
                                                     @endcan
                                                     @if ($farming_detail->croploss == null)
-                                                    <li class="me-2">
-                                                        <a href="#" data-bs-toggle="tooltip"
-                                                            title="{{ __('Report') }}" class="reportmodal"
-                                                            data-id="{{ $farming_detail->id }}">
-                                                            <i class="link-icon" data-feather="file-text"></i>
-                                                        </a>
-                                                    </li>
+                                                        <li class="me-2">
+                                                            <a href="#" data-bs-toggle="tooltip"
+                                                                title="{{ __('Report') }}" class="reportmodal"
+                                                                data-id="{{ $farming_detail->id }}">
+                                                                <i class="link-icon" data-feather="file-text"></i>
+                                                            </a>
+                                                        </li>
                                                     @endif
                                                     @can('delete-plot')
                                                         <li>

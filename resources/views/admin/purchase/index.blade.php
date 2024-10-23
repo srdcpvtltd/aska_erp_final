@@ -2,34 +2,6 @@
 @section('title')
     {{ __('Manage Purchase') }}
 @endsection
-
-@section('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.querySelectorAll('.alertButton').forEach(function(a) {
-            a.addEventListener('click', function(event) {
-                const formId = 'delete-form-' + this.getAttribute('data-id');
-                const form = document.getElementById(formId);
-
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes',
-                    cancelButtonText: 'No'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-            });
-        });
-    </script>
-@endsection
-
 @section('main-content')
     <style>
         .action-btn {
