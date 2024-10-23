@@ -121,6 +121,7 @@
                         <table class="data_table table datatable">
                             <thead>
                                 <tr>
+                                    <th>{{ __('GCode') }}</th>
                                     <th>{{ __('Farmer') }}</th>
                                     <th>{{ __('Plot Number') }}</th>
                                     <th>{{ __('Area in Acar') }}</th>
@@ -135,6 +136,7 @@
                             <tbody>
                                 @foreach ($farming_details as $farming_detail)
                                     <tr class="font-style">
+                                        <td>{{ @$farming_detail->farming->old_g_code }}</td>
                                         <td>{{ @$farming_detail->farming->name }}</td>
                                         <td>{{ $farming_detail->plot_number }}</td>
                                         <td>{{ number_format($farming_detail->area_in_acar, 2) }}</td>
