@@ -128,6 +128,7 @@
                                     <th>{{ __('Tentative Plant Quantity') }}</th>
                                     <th>{{ __('Seed Category') }}</th>
                                     <th>{{ __('Cutting Order') }}</th>
+                                    <th>{{ __('Created At') }}</th>
                                     <th>{{ __('Action') }}</th>
                                 </tr>
                             </thead>
@@ -149,6 +150,7 @@
                                                     class="status_badge text-capitalize badge bg-danger p-2 px-3 rounded">No</span>
                                             @endif
                                         </td>
+                                        <td>{{ date('d-m-Y',strtotime($farming_detail->created_at)) }}</td>
                                         <td class="Action">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                                 @if ($farming_detail->is_cutting_order != '1')

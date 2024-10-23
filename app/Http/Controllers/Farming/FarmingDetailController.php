@@ -27,7 +27,9 @@ class FarmingDetailController extends Controller
             $farming_details = FarmingDetail::query()->select('farming_details.*')
                 ->join('users', 'users.id', 'farming_details.created_by')
                 ->where('farming_details.created_by', Auth::user()->id)
-                ->orWhere('users.supervisor_id', Auth::user()->id)->get();
+                ->orWhere('users.supervisor_id', Auth::user()->id)
+                ->orderBy('id', 'DESC')
+                ->get();
             return view('admin.farmer.farming_detail.index', compact('farming_details'));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');

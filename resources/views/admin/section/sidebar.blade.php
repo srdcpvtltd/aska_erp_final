@@ -23,7 +23,7 @@
                 @include('admin.section.partial.inventory')
                 @include('admin.section.partial.product')
                 @include('admin.section.partial.setting')
-                @include('admin.section.partial.accountingsystem')
+                {{-- @include('admin.section.partial.accountingsystem') --}}
             </ul>
         </div>
     </nav>
