@@ -20,7 +20,8 @@ class GramPanchyatController extends Controller
     {
         if (\Auth::user()->can('manage-gram_panchyat')) {
             $gram_panchyats = GramPanchyat::all();
-            return view('admin.location.gram_panchyat.index', compact('gram_panchyats'));
+            $blocks = Block::all();
+            return view('admin.location.gram_panchyat.index', compact('gram_panchyats','blocks'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -136,5 +137,13 @@ class GramPanchyatController extends Controller
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
+    }
+
+    public function search_filter(Request $request)
+    {
+        $gram_panchyats = GramPanchyat::where('block_id',$request->block_id)->get();
+        $blocks = Block::all();
+
+        return view('admin.location.gram_panchyat.index', compact('gram_panchyats','blocks'));
     }
 }

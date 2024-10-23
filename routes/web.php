@@ -554,6 +554,7 @@ Route::group([
                 Route::get('block/{id}/destroy', [BlockController::class, 'destroy'])->name('block.destroy');
                 Route::resource('gram_panchyat', GramPanchyatController::class);
                 Route::get('gram_panchyat/{id}/destroy', [GramPanchyatController::class, 'destroy'])->name('gram_panchyat.destroy');
+                Route::post('gram_panchyat/search_filter', [GramPanchyatController::class, 'search_filter'])->name('gram_panchyat.search_filter');
                 Route::resource('village', VillageController::class);
                 Route::get('village/{id}/destroy', [VillageController::class, 'destroy'])->name('village.destroy');
                 Route::resource('zone', ZoneController::class);
@@ -569,6 +570,7 @@ Route::group([
 
         //purchase
         Route::resource('purchase', PurchaseController::class);
+        Route::get('purchase/{id}/destroy', [PurchaseController::class, 'destroy'])->name('purchase.destroy');
         Route::post('purchase/items', [PurchaseController::class, 'items'])->name('purchase.items');
         Route::get('/bill/{id}/', 'PurchaseController@purchaseLink')->name('purchase.link.copy');
         Route::get('purchase/{id}/payment', [PurchaseController::class, 'payment'])->name('purchase.payment');

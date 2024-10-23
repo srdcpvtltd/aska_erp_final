@@ -110,7 +110,7 @@
                                             href="{{ route('admin.customer.index') }}">{{ __('Customer') }}</a>
                                     </li>
                                 @endif
-                                @if (Gate::check('manage proposal'))
+                                {{-- @if (Gate::check('manage proposal'))
                                     <li class="nav-item">
                                         <a class="nav-link {{ Request::segment(2) == 'proposal' ? 'active' : '' }}"
                                             href="{{ route('admin.proposal.index') }}">{{ __('Estimate') }}</a>
@@ -119,7 +119,7 @@
                                 <li
                                     class="nav-item">
                                     <a class="nav-link {{ Request::route()->getName() == 'admin.invoice.index' || Request::route()->getName() == 'admin.invoice.create' || Request::route()->getName() == 'admin.invoice.edit' || Request::route()->getName() == 'admin.invoice.show' ? ' active' : '' }}" href="{{ route('admin.invoice.index') }}">{{ __('Invoice') }}</a>
-                                </li>
+                                </li> --}}
                                 {{--
                                 <li
                                     class="nav-item {{ Request::route()->getName() == 'admin.revenue.index' || Request::route()->getName() == 'admin.revenue.create' || Request::route()->getName() == 'admin.revenue.edit' ? ' active' : '' }}">

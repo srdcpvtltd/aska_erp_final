@@ -31,8 +31,6 @@
             <li class="breadcrumb-item">{{ __('GP (Gram Panchyat)') }}</li>
         </ol>
         <div class="float-end">
-            <button id="exportButton" class="btn btn-success">Export</button>
-
             @can('create-gram_panchyat')
                 <a href="{{ route('admin.location.gram_panchyat.create') }}" title="{{ __('Add') }}" class="btn btn-primary">
                     Add
@@ -44,6 +42,33 @@
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-body table-border-style">
+                    <div class="col-12">
+                        <form action="{{ route('admin.location.gram_panchyat.search_filter') }}" method="post">
+                            @csrf
+                            <div class="row align-items-center">
+                                <div class="form-group col-md-3">
+                                    {{ Form::label('block_id', __('Block'), ['class' => 'form-label']) }}
+                                    <select name="block_id" id="block_id" class="form-control">
+                                        <option value="">Select</option>
+                                        @foreach ($blocks as $block)
+                                            <option value="{{ $block->id }}">{{ $block->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="submit" class="btn btn-primary">Filter</button>
+                                </div>
+                                <div class="col-md-1">
+                                    <a href="{{ route('admin.location.gram_panchyat.index') }}">
+                                        <button type="button" class="btn btn-primary">Reset</button>
+                                    </a>
+                                </div>
+                                <div class="col-md-1">
+                                    <button id="exportButton" class="btn btn-success">Export</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div class="table-responsive">
                         <table class="data_table table datatable" id="gp_datatable">
                             <thead>
