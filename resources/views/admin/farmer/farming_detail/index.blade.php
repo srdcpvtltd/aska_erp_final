@@ -139,7 +139,7 @@
                                         <td>{{ $farming_detail->plot_number }}</td>
                                         <td>{{ number_format($farming_detail->area_in_acar, 2) }}</td>
                                         <td>{{ $farming_detail->date_of_harvesting }}</td>
-                                        <td>{{ $farming_detail->tentative_harvest_quantity }}</td>
+                                        <td>{{ number_format($farming_detail->tentative_harvest_quantity, 2) }}</td>
                                         <td>{{ @$farming_detail->seed_category->name }}</td>
                                         <td>
                                             @if (@$farming_detail->is_cutting_order)
