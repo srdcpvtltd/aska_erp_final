@@ -220,6 +220,8 @@
                                     <th>{{ __('State') }}</th>
                                     <th>{{ __('District') }}</th>
                                     <th>{{ __('Block') }}</th>
+                                    <th>{{ __('GP') }}</th>
+                                    <th>{{ __('Village') }}</th>
                                     <th>{{ __('Status') }}</th>
                                     <th>{{ __('Action') }}</th>
                                 </tr>
@@ -245,6 +247,8 @@
                                         <td>{{ $farming->state->name }}</td>
                                         <td>{{ $farming->district->name }}</td>
                                         <td>{{ $farming->block->name }}</td>
+                                        <td>{{ $farming->gram_panchyat->name }}</td>
+                                        <td>{{ $farming->village->name }}</td>
                                         <td>
                                             @if ($farming->is_validate)
                                                 <span
