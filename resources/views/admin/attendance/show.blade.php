@@ -6,7 +6,7 @@
 
 @section('button')
     <a href="{{ route('admin.attendances.index') }}">
-        <button class="btn btn-sm btn-primary"><i class="link-icon" data-feather="arrow-left"></i> Back</button>
+        <button class="btn btn-primary"><i class="link-icon" data-feather="arrow-left"></i> Back</button>
     </a>
 @endsection
 

@@ -21,17 +21,17 @@
         </ol>
         <div class="float-end">
             <div class="float-end">
-                {{--        <a class="btn btn-sm btn-primary" data-bs-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1" data-bs-toggle="tooltip" title="{{__('Filter')}}"> --}}
+                {{--        <a class="btn btn-primary" data-bs-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1" data-bs-toggle="tooltip" title="{{__('Filter')}}"> --}}
                 {{--            <i class="ti ti-filter"></i> --}}
                 {{--        </a> --}}
 
-                <a href="{{ route('admin.invoice.export') }}" class="btn btn-sm btn-primary" data-bs-toggle="tooltip"
+                <a href="{{ route('admin.invoice.export') }}" class="btn btn-primary" data-bs-toggle="tooltip"
                     title="{{ __('Export') }}">
                     <i class="ti ti-file-export"></i>
                 </a>
 
                 @can('create invoice')
-                    <a href="{{ route('admin.invoice.create', 0) }}" class="btn btn-sm btn-primary" data-bs-toggle="tooltip"
+                    <a href="{{ route('admin.invoice.create', 0) }}" class="btn btn-primary" data-bs-toggle="tooltip"
                         title="{{ __('Create') }}">
                         <i class="ti ti-plus"></i>
                     </a>
@@ -65,12 +65,12 @@
                                 </div>
                             </div>
                             <div class="col-auto float-end ms-2 mt-4">
-                                <a href="#" class="btn btn-sm btn-primary"
+                                <a href="#" class="btn btn-primary"
                                     onclick="document.getElementById('customer_submit').submit(); return false;"
                                     data-toggle="tooltip" data-original-title="{{ __('apply') }}">
                                     <span class="btn-inner--icon"><i class="ti ti-search"></i></span>
                                 </a>
-                                <a href="{{ route('admin.invoice.index') }}" class="btn btn-sm btn-danger" data-toggle="tooltip"
+                                <a href="{{ route('admin.invoice.index') }}" class="btn btn-danger" data-toggle="tooltip"
                                     data-original-title="{{ __('Reset') }}">
                                     <span class="btn-inner--icon"><i class="ti ti-trash-off text-white-off"></i></span>
                                 </a>
@@ -150,7 +150,7 @@
                                                         <div class="action-btn bg-warning ms-2">
                                                             <a href="#"
                                                                 id="{{ route('admin.invoice.link.copy', [$invoiceID]) }}"
-                                                                class="mx-3 btn btn-sm align-items-center"
+                                                                class="mx-3 btn align-items-center"
                                                                 onclick="copyToClipboard(this)" data-bs-toggle="tooltip"
                                                                 title="{{ __('Copy Invoice') }}"
                                                                 data-original-title="{{ __('Copy Invoice') }}"><i
@@ -166,7 +166,7 @@
                                                             ]) !!}
 
                                                             <a href="#"
-                                                                class="mx-3 btn btn-sm align-items-center bs-pass-para"
+                                                                class="mx-3 btn align-items-center bs-pass-para"
                                                                 data-toggle="tooltip"
                                                                 data-original-title="{{ __('Duplicate') }}"
                                                                 data-bs-toggle="tooltip" title="Duplicate Invoice"
@@ -187,7 +187,7 @@
                                                         {{--                                                        @if (\Auth::guard('customer')->check()) --}}
                                                         {{--                                                            <div class="action-btn bg-info ms-2"> --}}
                                                         {{--                                                                    <a href="{{ route('customer.invoice.show', \Crypt::encrypt($invoice->id)) }}" --}}
-                                                        {{--                                                                       class="mx-3 btn btn-sm align-items-center" data-bs-toggle="tooltip" title="Show " --}}
+                                                        {{--                                                                       class="mx-3 btn align-items-center" data-bs-toggle="tooltip" title="Show " --}}
                                                         {{--                                                                       data-original-title="{{ __('Detail') }}"> --}}
                                                         {{--                                                                        <i class="ti ti-eye text-white"></i> --}}
                                                         {{--                                                                    </a> --}}
@@ -195,7 +195,7 @@
                                                         {{--                                                        @else --}}
                                                         <div class="action-btn bg-info ms-2">
                                                             <a href="{{ route('admin.invoice.show', \Crypt::encrypt($invoice->id)) }}"
-                                                                class="mx-3 btn btn-sm align-items-center"
+                                                                class="mx-3 btn align-items-center"
                                                                 data-bs-toggle="tooltip" title="Show "
                                                                 data-original-title="{{ __('Detail') }}">
                                                                 <i class="ti ti-eye text-white"></i>
@@ -206,7 +206,7 @@
                                                     @can('edit invoice')
                                                         <div class="action-btn bg-primary ms-2">
                                                             <a href="{{ route('admin.invoice.edit', \Crypt::encrypt($invoice->id)) }}"
-                                                                class="mx-3 btn btn-sm align-items-center"
+                                                                class="mx-3 btn align-items-center"
                                                                 data-bs-toggle="tooltip" title="Edit "
                                                                 data-original-title="{{ __('Edit') }}">
                                                                 <i class="ti ti-pencil text-white"></i>
@@ -221,7 +221,7 @@
                                                                 'id' => 'delete-form-' . $invoice->id,
                                                             ]) !!}
                                                             <a href="#"
-                                                                class="mx-3 btn btn-sm align-items-center bs-pass-para "
+                                                                class="mx-3 btn align-items-center bs-pass-para "
                                                                 data-bs-toggle="tooltip" title="{{ __('Delete') }}"
                                                                 data-original-title="{{ __('Delete') }}"
                                                                 data-confirm="{{ __('Are You Sure?') . '|' . __('This action can not be undone. Do you want to continue?') }}"

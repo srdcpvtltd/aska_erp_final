@@ -561,7 +561,7 @@ class ProductServiceController extends Controller
 
                             <td class="">
                                  <a href="#" class="action-btn bg-danger bs-pass-para-pos" data-confirm="' . __("Are You Sure?") . '" data-text="' . __("This action can not be undone. Do you want to continue?") . '" data-confirm-yes=' . $model_delete_id . ' title="' . __('Delete') . '}" data-id="' . $id . '" title="' . __('Delete') . '"   >
-                                   <span class=""><i class="ti ti-trash btn btn-sm text-white"></i></span>
+                                   <span class=""><i class="ti ti-trash btn text-white"></i></span>
                                  </a>
                                  <form method="post" action="' . url('remove-from-cart') . '"  accept-charset="UTF-8" id="' . $model_delete_id . '">
                                       <input name="_method" type="hidden" value="DELETE">

@@ -47,13 +47,13 @@
 @section('button')
     <div class="float-end">
         @can('create-issue_cutting_order')
-        <button type="button" class="btn btn-sm btn-info" id="select-all">
+        <button type="button" class="btn btn-info" id="select-all">
             Select All
         </button>
-        <button type="button" class="btn btn-sm btn-danger" hidden id="unselect-all">
+        <button type="button" class="btn btn-danger" hidden id="unselect-all">
             Un-select All
         </button>
-        <button type="button" class="btn btn-sm btn-success" id="issue-cutting-order">
+        <button type="button" class="btn btn-success" id="issue-cutting-order">
             Issue Cutting Order
         </button>
         @endcan
@@ -72,13 +72,13 @@
 
         <div class="float-end">
             @can('create-issue_cutting_order')
-            <button type="button" class="btn btn-sm btn-info" id="select-all">
+            <button type="button" class="btn btn-info" id="select-all">
                 Select All
             </button>
-            <button type="button" class="btn btn-sm btn-danger" hidden id="unselect-all">
+            <button type="button" class="btn btn-danger" hidden id="unselect-all">
                 Un-select All
             </button>
-            <button type="button" class="btn btn-sm btn-success" id="issue-cutting-order">
+            <button type="button" class="btn btn-success" id="issue-cutting-order">
                 Issue Cutting Order
             </button>
             @endcan

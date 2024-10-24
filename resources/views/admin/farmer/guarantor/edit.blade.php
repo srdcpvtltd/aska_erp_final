@@ -8,21 +8,50 @@
     <script src="{{ asset('js/jquery.repeater.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            $('#farming_id').change(function() {
-                let farmer_id = $(this).val();
+            $('#g_code').keyup(function() {
+                let g_code = $(this).val();
                 $.ajax({
-                    url: "{{ route('admin.farmer.registration_id') }}",
+                    url: "{{ route('admin.farmer.get_detail') }}",
                     method: 'post',
                     data: {
-                        farmer_id: farmer_id,
+                        g_code: g_code,
                     },
                     headers: {
                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     },
                     success: function(response) {
-                        registration_number = response.registration_id;
-                        $('#registration_number').empty();
-                        $('#registration_number').val(registration_number);
+                        $('#farming_id').empty();
+                        if (response.farmerHtml) {
+                            $('#farming_id').append(response.farmerHtml);
+                        } else {
+                            $('#farming_id').append('<option value="">Select Farmer</option>');
+                        }
+
+                        let farmer_id = response.farming_id;
+
+                        $.ajax({
+                            url: "{{ route('admin.farmer.registration_id') }}",
+                            method: 'post',
+                            data: {
+                                farmer_id: farmer_id,
+                            },
+                            headers: {
+                                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                            },
+                            success: function(value) {
+
+                                guarentor = value.guarentor;
+                                $('#name').empty();
+                                $('#name').append(
+                                    '<option  value="">Select Guarantor Name</option>'
+                                );
+                                for (i = 0; i < guarentor.length; i++) {
+                                    $('#name').append('<option value="' + guarentor[
+                                            i].id + '">' +
+                                        guarentor[i].name + '</option>');
+                                }
+                            }
+                        });
                     }
                 });
             });
@@ -45,6 +74,11 @@
                         var block_id = response.farming.block_id;
                         var gram_panchyat_id = response.farming.gram_panchyat_id;
                         var village_id = response.farming.village_id;
+                        var g_g_code = response.g_code;
+
+                        $('#g_g_code').empty();
+                        $('#g_g_code').val(g_g_code);
+
                         $.ajax({
                             url: "{{ route('admin.farmer.location.get_country_state') }}",
                             method: 'post',
@@ -122,6 +156,12 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ Form::label('g_code', __('G_Code'), ['class' => 'form-label']) }}
+                                {{ Form::text('g_code', $guarantor->farming->old_g_code, ['class' => 'form-control', 'required' => 'required']) }}
+                            </div>
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('farming_id', __('Farmer Registration'), ['class' => 'form-label']) }}
@@ -235,8 +275,8 @@
                             {{ Form::text('police_station', $guarantor->police_station, ['class' => 'form-control', 'required' => 'required', 'readonly']) }}
                         </div>
                         <div class="form-group col-md-6">
-                            {{ Form::label('registration_number', __('Registration No.'), ['class' => 'form-label']) }}
-                            {{ Form::text('registration_number', $guarantor->registration_number, ['class' => 'form-control', 'required' => 'required', 'readonly']) }}
+                            {{ Form::label('g_g_code', __('G Code No.'), ['class' => 'form-label']) }}
+                            {{ Form::text('g_g_code', $guarantor->g_g_code, ['class' => 'form-control', 'required' => 'required', 'readonly']) }}
                         </div>
                         <div class="form-group col-md-6">
                             {{ Form::label('age', __('Age'), ['class' => 'form-label']) }}

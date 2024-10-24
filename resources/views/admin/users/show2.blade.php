@@ -8,14 +8,14 @@
     <div class="float-end">
         @can('edit-employees')
             <a style="float: left;" href="{{ route('admin.users.edit',$userDetail->id)}}">
-                <button class="btn btn-secondary btn-sm me-2">
+                <button class="btn btn-secondary me-2">
                     <i class="link-icon" data-feather="edit"></i>Edit Detail
                 </button>
             </a>
         @endcan
 
         <a href="{{route('admin.users.index')}}">
-            <button class="btn btn-sm btn-primary "><i class="link-icon" data-feather="arrow-left"></i> Back</button>
+            <button class="btn btn-primary "><i class="link-icon" data-feather="arrow-left"></i> Back</button>
         </a>
     </div>
 @endsection

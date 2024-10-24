@@ -12,17 +12,17 @@
 
         @can('edit-task_management')
             <a href="{{ route('admin.tasks.edit', $taskDetail->id) }}">
-                <button class="btn btn-sm btn-secondary d-md-flex align-items-center me-2"><i class="link-icon me-1"
+                <button class="btn btn-secondary d-md-flex align-items-center me-2"><i class="link-icon me-1"
                         data-feather="edit"></i>Task Edit</button>
             </a>
         @endcan
-        <button class="btn btn-sm btn-secondary d-md-flex align-items-center me-2 checklistAdd">
+        <button class="btn btn-secondary d-md-flex align-items-center me-2 checklistAdd">
             <i class="link-icon me-1" data-feather="plus"></i>Create Checklist
         </button>
 
         @can('edit-task_management')
             <a href="{{ route('admin.task-attachment.create', $taskDetail->id) }}">
-                <button class="btn btn-sm btn-secondary d-md-flex align-items-center"><i class="link-icon me-1"
+                <button class="btn btn-secondary d-md-flex align-items-center"><i class="link-icon me-1"
                         data-feather="clipboard"></i>Upload Attachment</button>
             </a>
         @endcan

@@ -25,7 +25,7 @@
         <div class="float-end">
             <a href="{{ route('admin.warehouse.create') }}" data-size="lg" data-url="{{ route('admin.warehouse.create') }}"
                 data-ajax-popup="true" data-bs-toggle="tooltip" title="{{ __('Create') }}"
-                data-title="{{ __('Create Warehouse') }}" class="btn btn-sm btn-primary">
+                data-title="{{ __('Create Warehouse') }}" class="btn btn-primary">
                 Add
             </a>
         </div>
@@ -58,7 +58,7 @@
                                             @can('show-warehouse')
                                             <div class="action-btn bg-warning">
                                                 <a href="{{ route('admin.warehouse.show', $warehouse->id) }}"
-                                                    class="btn btn-sm d-inline-flex align-items-center"
+                                                    class="btn d-inline-flex align-items-center"
                                                     data-bs-toggle="tooltip" title="{{ __('View') }}"><i
                                                         class="link-icon" data-feather="eye"></i></a>
                                             </div>
@@ -66,7 +66,7 @@
                                             @can('edit-warehouse')
                                             <div class="action-btn bg-info">
                                                 <a href="{{ route('admin.warehouse.edit', $warehouse->id) }}"
-                                                    class="btn btn-sm  align-items-center" data-bs-toggle="tooltip"
+                                                    class="btn  align-items-center" data-bs-toggle="tooltip"
                                                     title="{{ __('Edit') }}" data-title="{{ __('Edit Warehouse') }}">
                                                     <i class="link-icon" data-feather="edit"></i>
                                                 </a>
@@ -76,7 +76,7 @@
                                             <div class="action-btn bg-danger">
                                                 {{ Form::open(['route' => ['admin.warehouse.destroy', $warehouse->id],'id' => 'delete-form-' . $warehouse->id, 'class' => 'w-100 delete_btn']) }}
                                                 <a type="submit"
-                                                    class="btn btn-sm align-items-center bs-pass-para alertButton" data-id="{{ $warehouse->id }}"
+                                                    class="btn align-items-center bs-pass-para alertButton" data-id="{{ $warehouse->id }}"
                                                     data-bs-toggle="tooltip" title="{{ __('Delete') }}"><i
                                                         class="link-icon" data-feather="trash"></i></a>
                                                 {{ Form::close() }}

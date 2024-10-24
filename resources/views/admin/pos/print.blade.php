@@ -111,7 +111,7 @@
 
 @section('action-btn')
     <div class="float-end">
-        <a href="{{ route('admin.pos.barcode') }}" class="btn btn-sm btn-primary" data-bs-toggle="tooltip"
+        <a href="{{ route('admin.pos.barcode') }}" class="btn btn-primary" data-bs-toggle="tooltip"
             title="{{ __('Back') }}">
             <i class="ti ti-arrow-left text-white"></i>
         </a>
@@ -149,7 +149,7 @@
 
                     <div class="col-md-6 pt-4">
 
-                        <button class="btn btn-sm btn-primary btn-icon" type="submit">{{ __('Print') }}</button>
+                        <button class="btn btn-primary btn-icon" type="submit">{{ __('Print') }}</button>
 
 
                     </div>

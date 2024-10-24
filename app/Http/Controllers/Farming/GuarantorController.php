@@ -14,6 +14,7 @@ use App\Models\Village;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class GuarantorController extends Controller
 {
@@ -27,7 +28,7 @@ class GuarantorController extends Controller
 
             return view('admin.farmer.guarantor.index', compact('guarantors'));
         } else {
-            return redirect()->back()->with('error', 'Permission denied.');
+            return redirect()->back()->with('danger', 'Permission denied.');
         }
     }
 
@@ -38,7 +39,7 @@ class GuarantorController extends Controller
     {
         if (\Auth::user()->can('create-farmer_guarantor')) {
             $farmings = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
-                ->where('farmings.is_validate', 1)
+                // ->where('farmings.is_validate', 1)
                 ->where('farmings.created_by', Auth::user()->id)
                 ->orWhere('users.supervisor_id', Auth::user()->id)
                 ->get();
@@ -46,7 +47,7 @@ class GuarantorController extends Controller
             $countries = Country::all();
             return view('admin.farmer.guarantor.create', compact('countries', 'farmings'));
         } else {
-            return redirect()->back()->with('error', 'Permission denied.');
+            return redirect()->back()->with('danger', 'Permission denied.');
         }
     }
 
@@ -57,7 +58,7 @@ class GuarantorController extends Controller
     {
         if (\Auth::user()->can('create-farmer_guarantor')) {
             try {
-                $this->validate($request, [
+                $validator = Validator::make($request->all(), [
                     'farming_id' => 'required',
                     'name' => 'required',
                     'father_name' => 'required',
@@ -72,13 +73,20 @@ class GuarantorController extends Controller
                     'age' => 'required',
                     'created_by' => 'required',
                 ]);
+
+                if ($validator->fails()) {
+                    $messages = $validator->getMessageBag();
+    
+                    return redirect()->back()->with('danger', $messages->first());
+                }
+                
                 Guarantor::create($request->all());
                 return redirect()->to(route('admin.farmer.guarantor.index'))->with('success', 'Guarantor Added Successfully.');
             } catch (Exception $e) {
-                return redirect()->back()->with('error', $e->getMessage());
+                return redirect()->back()->with('danger', $e->getMessage());
             }
         } else {
-            return redirect()->back()->with('error', 'Permission denied.');
+            return redirect()->back()->with('danger', 'Permission denied.');
         }
     }
 
@@ -104,7 +112,7 @@ class GuarantorController extends Controller
             $gram_panchyats = GramPanchyat::where('block_id', $guarantor->block_id)->get();
             $villages = Village::where('gram_panchyat_id', $guarantor->gram_panchyat_id)->get();
             $farmings = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
-                ->where('farmings.is_validate', 1)
+                // ->where('farmings.is_validate', 1)
                 ->where('farmings.created_by', Auth::user()->id)
                 ->orWhere('users.supervisor_id', Auth::user()->id)
                 ->get();
@@ -119,7 +127,7 @@ class GuarantorController extends Controller
                 'farmings',
             ));
         } else {
-            return redirect()->back()->with('error', 'Permission denied.');
+            return redirect()->back()->with('danger', 'Permission denied.');
         }
     }
 
@@ -133,7 +141,7 @@ class GuarantorController extends Controller
             $guarantor->update($request->all());
             return redirect()->back()->with('success', 'Guarantor Updated Successfully.');
         } else {
-            return redirect()->back()->with('error', 'Permission denied.');
+            return redirect()->back()->with('danger', 'Permission denied.');
         }
     }
 
@@ -147,7 +155,7 @@ class GuarantorController extends Controller
             $guarantor->delete();
             return redirect()->back()->with('success', 'Guarantor Deleted Successfully.');
         } else {
-            return redirect()->back()->with('error', 'Permission denied.');
+            return redirect()->back()->with('danger', 'Permission denied.');
         }
     }
 }

@@ -224,6 +224,7 @@ class FarmingDetailController extends Controller
             }
 
             //can field
+            $farming_id = $farming->id;
             $zone = Zone::all();
             $zone_id = $farming->zone_id;
             $center = Center::where('zone_id', $farming->zone_id)->get();
@@ -243,6 +244,7 @@ class FarmingDetailController extends Controller
 
             $centerHtml = '<option value="">Select Center</option>';
 
+            $farming_id = null;
             $zone = Zone::all();
             $zone_id = null;
             $center = null;
@@ -252,6 +254,7 @@ class FarmingDetailController extends Controller
         }
 
         return response()->json([
+            'farming_id' => $farming_id,
             'farmerHtml' => $farmerHtml,
             'blockHtml' => $blockHtml,
             'gpHtml' => $gpHtml,

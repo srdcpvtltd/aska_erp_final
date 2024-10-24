@@ -12,7 +12,7 @@
         </ol>
         <div class="float-end">
             @can('create-security_deposite')
-            <a href="{{ route('admin.farmer.payment.create') }}" class="btn btn-sm btn-primary">
+            <a href="{{ route('admin.farmer.payment.create') }}" class="btn btn-primary">
                 Add
             </a>
             @endcan
@@ -26,6 +26,7 @@
                         <table class="data_table table datatable">
                             <thead>
                                 <tr>
+                                    <th>{{ __('G Code') }}</th>
                                     <th>{{ __('Type') }}</th>
                                     <th>{{ __('Farmer Name') }}</th>
                                     <th>{{ __('GL No.') }}</th>
@@ -38,6 +39,7 @@
                             <tbody>
                                 @foreach ($payments as $payment)
                                     <tr class="font-style">
+                                        <td>{{ $payment->g_code }}</td>
                                         <td>{{ $payment->type }}</td>
                                         <td>{{ $payment->farming->name }}</td>
                                         <td>{{ $payment->receipt_no }}</td>

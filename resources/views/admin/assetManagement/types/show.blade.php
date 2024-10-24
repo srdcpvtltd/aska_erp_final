@@ -7,7 +7,7 @@
 @section('button')
     <div class="float-end">
         <a href="{{route('admin.asset-types.index')}}" >
-            <button class="btn btn-sm btn-primary" ><i class="link-icon" data-feather="arrow-left"></i> Back</button>
+            <button class="btn btn-primary" ><i class="link-icon" data-feather="arrow-left"></i> Back</button>
         </a>
     </div>
 @endsection
@@ -44,12 +44,12 @@
                                     {{\App\Helpers\AppHelper::formatDateForView($value->purchased_date)}}
                                 </td>
                                 <td class="text-center">
-                                     <span class="btn btn-sm btn-secondary" >
+                                     <span class="btn btn-secondary" >
                                          {{ucfirst($value->is_working)}}
                                      </span>
                                 </td>
                                 <td class="text-center">
-                                     <span class="btn btn-sm btn-{{$value->is_available ? 'success' : 'danger'}}" >
+                                     <span class="btn btn-{{$value->is_available ? 'success' : 'danger'}}" >
                                          {{ isset($value->is_available) && $value->is_available == 1  ? 'Yes':'No'}}
                                      </span>
                                 </td>

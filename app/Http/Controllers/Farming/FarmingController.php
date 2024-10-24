@@ -261,11 +261,11 @@ class FarmingController extends Controller
 
     public function registration_id(Request $request)
     {
-        $farmer = Farming::find($request->farmer_id);
-        $guarentor = Farming::where('id', '!=', $request->farmer_id)->get();
+        $guarentor = Farming::where('id', '!=', $request->farmer_id)
+            // ->where('is_validate', 1)
+            ->get();
 
         return response()->json([
-            'registration_id' => $farmer->registration_no,
             'guarentor' => $guarentor
         ]);
     }

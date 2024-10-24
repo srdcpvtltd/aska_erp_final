@@ -35,7 +35,7 @@
                                         <input type="text" class="form-control" id="name"  name="name[]" value="" required  placeholder="Enter Payment Method Name">
                                     </div>
                                     <div class="col-lg-2 text-center addButtonSection float-end">
-                                        <button type="button" class="btn btn-sm btn-primary" id="add" title="Add more payment Method"> Add </button>
+                                        <button type="button" class="btn btn-primary" id="add" title="Add more payment Method"> Add </button>
                                     </div>
                                 </div>
                             </div>

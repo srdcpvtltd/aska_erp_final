@@ -12,7 +12,7 @@
         </ol>
         <div class="float-end">
             <a href="{{ route('admin.warehouse-transfer.create') }}" data-bs-toggle="tooltip" title="{{ __('Create') }}"
-                data-title="{{ __('Create Warehouse Transfer') }}" class="btn btn-sm btn-primary">
+                data-title="{{ __('Create Warehouse Transfer') }}" class="btn btn-primary">
                 Add
             </a>
         </div>
@@ -52,7 +52,7 @@
                                             <td class="Action">
                                                 @can('edit-warehouse')
                                                     <div class="action-btn bg-info ms-2">
-                                                        <a href="#" class="mx-3 btn btn-sm  align-items-center"
+                                                        <a href="#" class="mx-3 btn  align-items-center"
                                                             data-url="{{ route('admin.warehouse-transfer.edit', $warehouse_transfer->id) }}"
                                                             data-ajax-popup="true" data-size="lg " data-bs-toggle="tooltip"
                                                             title="{{ __('Edit') }}"
@@ -69,7 +69,7 @@
                                                             'id' => 'delete-form-' . $warehouse_transfer->id,
                                                         ]) !!}
                                                         <a href="#"
-                                                            class="mx-3 btn btn-sm  align-items-center bs-pass-para"
+                                                            class="mx-3 btn  align-items-center bs-pass-para"
                                                             data-bs-toggle="tooltip" title="{{ __('Delete') }}"><i
                                                                 class="ti ti-trash text-white"></i></a>
                                                         {!! Form::close() !!}

@@ -85,7 +85,7 @@
 
 <div class="justify-content-center pt-2 modal-footer">
     <a href="#" id="print"
-       class="btn btn-primary btn-sm text-right float-right mb-3 ">
+       class="btn btn-primary text-right float-right mb-3 ">
         {{ __('Print') }}
     </a>
 </div>

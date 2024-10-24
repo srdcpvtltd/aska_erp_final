@@ -162,6 +162,7 @@
                                     <th>{{ __('Gram Panchyat') }}</th>
                                     <th>{{ __('Zone') }}</th>
                                     <th>{{ __('Center') }}</th>
+                                    <th>{{ __('KM') }}</th>
                                     <th>{{ __('Action') }}</th>
                                 </tr>
                             </thead>
@@ -174,6 +175,7 @@
                                         <td>{{ $village->gram_panchyat_id != '' ? $village->gram_panchyat->name : '-' }}</td>
                                         <td>{{ $village->zone_id != '' ? $village->zone->name : '-' }}</td>
                                         <td>{{ $village->center_id != '' ? $village->center->name : '-' }}</td>
+                                        <td>{{ $village->km != '' ? $village->km : 'N/A' }}</td>
                                         <td class="Action">
                                             <ul class="d-flex list-unstyled mb-0">
                                                 <li class="me-2">

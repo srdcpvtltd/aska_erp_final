@@ -12,7 +12,7 @@
         </ol>
         <div class="float-end">
             @can('create-farmer_guarantor')
-            <a href="{{ route('admin.farmer.guarantor.create') }}" class="btn btn-sm btn-primary">
+            <a href="{{ route('admin.farmer.guarantor.create') }}" class="btn btn-primary">
                 Add
             </a>
             @endcan
@@ -26,11 +26,11 @@
                         <table class="data_table table datatable">
                             <thead>
                                 <tr>
-                                    <th>{{ __('Name') }}</th>
                                     <th>{{ __('Farmer Name') }}</th>
-                                    <th>{{ __('Registration No.') }}</th>
-                                    <th>{{ __('Age') }}</th>
+                                    <th>{{ __('Guarantor Name') }}</th>
                                     <th>{{ __('Father Name') }}</th>
+                                    <th>{{ __('G Code') }}</th>
+                                    <th>{{ __('Age') }}</th>
                                     <th>{{ __('Post Office') }}</th>
                                     <th>{{ __('Police Station') }}</th>
                                     <th>{{ __('District') }}</th>
@@ -42,11 +42,11 @@
                             <tbody>
                                 @foreach ($guarantors as $guarantor)
                                     <tr class="font-style">
-                                        <td>{{ $guarantor->naming->name }}</td>
                                         <td>{{ $guarantor->farming->name }}</td>
-                                        <td>{{ $guarantor->registration_number }}</td>
-                                        <td>{{ $guarantor->age }}</td>
+                                        <td>{{ $guarantor->naming->name }}</td>
                                         <td>{{ $guarantor->father_name }}</td>
+                                        <td>{{ $guarantor->g_g_code }}</td>
+                                        <td>{{ $guarantor->age }}</td>
                                         <td>{{ $guarantor->post_office }}</td>
                                         <td>{{ $guarantor->police_station }}</td>
                                         <td>{{ $guarantor->district->name }}</td>
@@ -65,7 +65,7 @@
                                                 @endcan
                                                 @can('delete-farmer_guarantor')
                                                     <li>
-                                                        <a class="deleteBtn"
+                                                        <a class="deleteBtn" href="#"
                                                             data-href="{{ route('admin.farmer.guarantor.destroy', $guarantor->id) }}"
                                                             data-bs-toggle="tooltip" title="{{ __('Delete') }}">
                                                             <i class="link-icon" data-feather="delete"></i>

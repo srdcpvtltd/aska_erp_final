@@ -190,6 +190,7 @@ class FarmerLoanController extends Controller
     {
         $farming = Farming::find($request->farming_id);
         return response()->json([
+            'g_code' => $farming->old_g_code,
             'farming' => $farming
         ]);
     }

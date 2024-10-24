@@ -22,7 +22,7 @@
             <li class="breadcrumb-item">{{ __('Purchase') }}</li>
         </ol>
         <div class="float-end">
-            <a href="{{ route('admin.purchase.create', 0) }}" class="btn btn-sm btn-primary" data-bs-toggle="tooltip"
+            <a href="{{ route('admin.purchase.create', 0) }}" class="btn btn-primary" data-bs-toggle="tooltip"
                 title="{{ __('Create') }}">
                 Add
             </a>

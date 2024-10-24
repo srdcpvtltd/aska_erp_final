@@ -12,7 +12,7 @@
         @can('create-product_service')
             <a href="#" data-url="{{ route('product-unit.create') }}" data-ajax-popup="true"
                 data-title="{{ __('Create New Unit') }}" data-bs-toggle="tooltip" title="{{ __('Create') }}"
-                class="btn btn-sm btn-primary">
+                class="btn btn-primary">
                 <i class="ti ti-plus"></i>
             </a>
         @endcan
@@ -43,7 +43,7 @@
                                             <span>
                                                 @can('edit-product_service')
                                                     <div class="action-btn bg-primary ms-2">
-                                                        <a href="#" class="mx-3 btn btn-sm align-items-center"
+                                                        <a href="#" class="mx-3 btn align-items-center"
                                                             data-url="{{ route('product-unit.edit', $unit->id) }}"
                                                             data-ajax-popup="true" data-title="{{ __('Edit Unit') }}"
                                                             data-toggle="tooltip" data-original-title="{{ __('Edit') }}">
@@ -60,7 +60,7 @@
                                                             'id' => 'delete-form-' . $unit->id,
                                                         ]) !!}
                                                         <a href="#"
-                                                            class="mx-3 btn btn-sm align-items-center bs-pass-para"
+                                                            class="mx-3 btn align-items-center bs-pass-para"
                                                             data-toggle="tooltip" data-original-title="{{ __('Delete') }}"
                                                             data-confirm="{{ __('Are You Sure?') . '|' . __('This action can not be undone. Do you want to continue?') }}"
                                                             data-confirm-yes="document.getElementById('delete-form-{{ $unit->id }}').submit();">

@@ -12,7 +12,7 @@
         </ol>
         <div class="float-end">
             @can('create-reimbursement')
-                <a href="{{ route('admin.farmer.reimbursement.create') }}" class="btn btn-sm btn-primary">
+                <a href="{{ route('admin.farmer.reimbursement.create') }}" class="btn btn-primary">
                     Add
                 </a>
             @endcan

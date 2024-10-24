@@ -6,6 +6,31 @@
 @section('scripts')
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('js/jquery.repeater.min.js') }}"></script>
+    <script>
+        $(document).ready(function(){
+            $('#g_code').keyup(function() {
+                let g_code = $(this).val();
+                $.ajax({
+                    url: "{{ route('admin.farmer.get_detail') }}",
+                    method: 'post',
+                    data: {
+                        g_code: g_code,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        $('#farming_id').empty();
+                        if (response.farmerHtml) {
+                            $('#farming_id').append(response.farmerHtml);
+                        } else {
+                            $('#farming_id').append('<option value="">Select Farmer</option>');
+                        }
+                    }
+                });
+            });
+        })
+    </script>
 @endsection
 
 @section('main-content')
@@ -26,6 +51,10 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
+                        <div class="form-group col-md-6">
+                            {{ Form::label('g_code', __('G.Code'), ['class' => 'form-label']) }}
+                            {{ Form::text('g_code', '', ['class' => 'form-control', 'required' => 'required']) }}
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('farming_id', __('Farmer Registration'), ['class' => 'form-label']) }}
@@ -42,10 +71,6 @@
                         <div class="form-group col-md-6">
                             {{ Form::label('receipt_no', __('GL No./ Receipt No.'), ['class' => 'form-label']) }}
                             {{ Form::text('receipt_no', $payment->receipt_no, ['class' => 'form-control', 'required' => 'required']) }}
-                        </div>
-                        <div class="form-group col-md-6">
-                            {{ Form::label('agreement_number', __('G_Code No.'), ['class' => 'form-label']) }}
-                            {{ Form::text('agreement_number', $payment->agreement_number, ['class' => 'form-control', 'required' => 'required', 'readonly']) }}
                         </div>
                         <div class="form-group col-md-6">
                             {{ Form::label('date', __('Date of Deposit'), ['class' => 'form-label']) }}
