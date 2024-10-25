@@ -112,7 +112,7 @@ class FarmingPaymentController extends Controller
         if (\Auth::user()->can('edit-security_deposite')) {
             $payment = FarmingPayment::find($id);
             $farmings = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
-                ->where('farmings.is_validate', 1)
+                // ->where('farmings.is_validate', 1)
                 ->where('farmings.created_by', Auth::user()->id)
                 ->orWhere('users.supervisor_id', Auth::user()->id)
                 ->get();

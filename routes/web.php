@@ -526,6 +526,7 @@ Route::group([
                 Route::post('farming_detail_data', [FarmingDetailController::class, 'getFarmingDetailData'])->name('farming_detail_data');
                 Route::resource('farming_detail', FarmingDetailController::class);
                 Route::get('farming_detail/{id}/destroy', [FarmingDetailController::class, 'destroy'])->name('farming_detail.destroy');
+                Route::post('farming_detail/search_filter', [FarmingDetailController::class, 'search_filter'])->name('farming_detail.search_filter');
 
                 //Bank Details
                 Route::resource('bank_details', BankDetailsController::class);

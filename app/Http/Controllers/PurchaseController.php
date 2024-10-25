@@ -120,7 +120,7 @@ class PurchaseController extends Controller
                 $purchaseProduct->quantity    = $request['quantity'][$i];
                 $purchaseProduct->tax         = $request['tax'][$i];
                 $purchaseProduct->discount    = $request['discount'][$i];
-                $purchaseProduct->price       = $request['price'][$i];
+                $purchaseProduct->price       = $request['price'][$i] * $request['quantity'][$i];
                 $purchaseProduct->description = $request['description'][$i];
                 $purchaseProduct->save();
 

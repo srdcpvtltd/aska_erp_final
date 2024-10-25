@@ -30,8 +30,8 @@ class FarmingDetailController extends Controller
                 ->orWhere('users.supervisor_id', Auth::user()->id)
                 ->orderBy('farming_details.id', 'DESC')
                 ->get();
-
-            return view('admin.farmer.farming_detail.index', compact('farming_details'));
+            $zones = Zone::all();
+            return view('admin.farmer.farming_detail.index', compact('farming_details', 'zones'));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
         }
@@ -199,8 +199,8 @@ class FarmingDetailController extends Controller
     public function get_FarmingDetail(Request $request)
     {
         $farming = Farming::where('old_g_code', $request->g_code)
-                            // ->where('is_validate', 1)
-                            ->first();
+            // ->where('is_validate', 1)
+            ->first();
 
         if ($farming != null) {
             $farmerHtml = $blockHtml = $gpHtml = $villageHtml = $zoneHtml = $centerHtml = '';
@@ -297,5 +297,18 @@ class FarmingDetailController extends Controller
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
         }
+    }
+
+    public function search_filter(Request $request)
+    {
+        $farming_details = FarmingDetail::where('created_by', Auth::user()->id)
+        ->where('zone_id', $request->zone_id)
+        ->when($request->center_id !== null, function ($query) use ($request) {
+            $query->where('center_id', $request->center_id);
+        })
+        ->orderBy('id', 'DESC')
+        ->get();
+        $zones = Zone::all();
+        return view('admin.farmer.farming_detail.index', compact('farming_details', 'zones'));
     }
 }

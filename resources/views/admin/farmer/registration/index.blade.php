@@ -135,29 +135,6 @@
             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
             <li class="breadcrumb-item">{{ __('Farmer Registration') }}</li>
         </ol>
-        {{-- <div class="col-md-5">
-            <form action="{{ route('admin.farmer.farming_registration.search_filter') }}" method="post">
-                @csrf
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="">Filter</label>
-                        <select name="filter" id="filter" class="form-control wd-200">
-                            <option value="">Select</option>
-                            <option value="1">Validate</option>
-                            <option value="0">Nonvalidate</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Submit</button>
-                    </div>
-                    <div class="col-md-3">
-                        <a href="{{ route('admin.farmer.farming_registration.index') }}">
-                            <button type="button" class="btn btn-danger" style="margin-top: 20px;">Reset</button>
-                        </a>
-                    </div>
-                </div>
-            </form>
-        </div> --}}
         <div class="float-end">
             <button id="exportButton" class="btn btn-success">Export</button>
             @can('create-farmer_registration')

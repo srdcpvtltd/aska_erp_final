@@ -64,10 +64,11 @@
                         <div class="row timeline-wrapper">
                             <div class="col-md-6 col-lg-4 col-xl-4">
                                 <div class="timeline-icons"><span class="timeline-dots"></span>
-                                    
+
                                 </div>
                                 <h6 class="text-primary my-3">{{ __('Create Purchase') }}</h6>
-                                <p class="text-muted text-sm mb-3">{{ __('Created on ') }}{{ \Auth::user()->dateFormat($purchase->purchase_date) }}
+                                <p class="text-muted text-sm mb-3">
+                                    {{ __('Created on ') }}{{ \Auth::user()->dateFormat($purchase->purchase_date) }}
                                 </p>
                                 <a href="{{ route('admin.purchase.edit', \Crypt::encrypt($purchase->id)) }}"
                                     class="btn btn-primary" data-bs-toggle="tooltip"
@@ -76,7 +77,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 col-xl-4">
                                 <div class="timeline-icons"><span class="timeline-dots"></span>
-                                    
+
                                 </div>
                                 <h6 class="text-warning my-3">{{ __('Send Purchase') }}</h6>
                                 <p class="text-muted text-sm mb-3">
@@ -89,15 +90,14 @@
                                 </p>
 
                                 @if ($purchase->status == 0)
-                                    <a href="{{ route('admin.purchase.sent', $purchase->id) }}"
-                                        class="btn btn-warning" data-bs-toggle="tooltip"
-                                        data-original-title="{{ __('Mark Sent') }}"><i
+                                    <a href="{{ route('admin.purchase.sent', $purchase->id) }}" class="btn btn-warning"
+                                        data-bs-toggle="tooltip" data-original-title="{{ __('Mark Sent') }}"><i
                                             class="ti ti-send mr-2"></i>{{ __('Send') }}</a>
                                 @endif
                             </div>
                             <div class="col-md-6 col-lg-4 col-xl-4">
                                 <div class="timeline-icons"><span class="timeline-dots"></span>
-                                    
+
                                 </div>
                                 <h6 class="text-info my-3">{{ __('Get Paid') }}</h6>
                                 <p class="text-muted text-sm mb-3">{{ __('Status') }} : {{ __('Awaiting payment') }} </p>
@@ -281,13 +281,16 @@
                                                 $totalDiscount = 0;
                                                 $taxesData = [];
                                             @endphp
-{{-- @dd($iteams) --}}
                                             @foreach ($iteams as $key => $iteam)
                                                 @if (!empty($iteam->tax))
                                                     @php
-                                                        $taxes = App\Models\Utility::tax($iteam->tax);
+                                                        $taxArr = explode(',', $iteam->tax);
+                                                        $taxes = [];
+                                                        foreach ($taxArr as $tax) {
+                                                            $taxes[] = App\Models\Tax::find($tax);
+                                                        }
                                                         $totalQuantity += $iteam->quantity;
-                                                        $totalRate += $iteam->price;
+                                                        $totalRate += $iteam->price * $iteam->quantity;
                                                         $totalDiscount += $iteam->discount;
                                                         foreach ($taxes as $taxe) {
                                                             $taxDataPrice = App\Models\Utility::taxRate(
