@@ -30,7 +30,6 @@
                                     <th>{{ __('Type') }}</th>
                                     <th>{{ __('Farmer Name') }}</th>
                                     <th>{{ __('GL No.') }}</th>
-                                    <th>{{ __('Agreement No.') }}</th>
                                     <th>{{ __('Date') }}</th>
                                     <th>{{ __('Amount') }}</th>
                                     <th>{{ __('Action') }}</th>
@@ -43,7 +42,6 @@
                                         <td>{{ $payment->type }}</td>
                                         <td>{{ $payment->farming->name }}</td>
                                         <td>{{ $payment->receipt_no }}</td>
-                                        <td>{{ $payment->agreement_number }}</td>
                                         <td>{{ $payment->date }}</td>
                                         <td>{{ $payment->amount }}</td>
 

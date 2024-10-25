@@ -52,7 +52,6 @@ class FarmerLoanController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
         if (\Auth::user()->can('create-allotment')) {
             try {
                 $this->validate($request, [
@@ -68,7 +67,7 @@ class FarmerLoanController extends Controller
                 $farmerLoan = new FarmerLoan;
                 $farmerLoan->farming_id = $request->farming_id;
                 $farmerLoan->registration_number = $request->registration_number;
-                $farmerLoan->agreement_number = $request->agreement_number;
+                $farmerLoan->g_code = $request->g_code;
                 $farmerLoan->date = $request->date;
                 $farmerLoan->loan_category_id = $encoded_loan_category_id;
                 $farmerLoan->loan_type_id = $encoded_loan_type_id;
@@ -102,7 +101,7 @@ class FarmerLoanController extends Controller
     {
         if (\Auth::user()->can('edit-allotment')) {
             $farmings = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
-                ->where('farmings.is_validate', 1)
+                // ->where('farmings.is_validate', 1)
                 ->where('farmings.created_by', Auth::user()->id)
                 ->orWhere('users.supervisor_id', Auth::user()->id)
                 ->get();
@@ -137,7 +136,7 @@ class FarmerLoanController extends Controller
                 $farmerLoan = FarmerLoan::find($id);
                 $farmerLoan->farming_id = $request->farming_id;
                 $farmerLoan->registration_number = $request->registration_number;
-                $farmerLoan->agreement_number = $request->agreement_number;
+                $farmerLoan->g_code = $request->g_code;
                 $farmerLoan->date = $request->date;
                 $farmerLoan->loan_category_id = $encoded_loan_category_id;
                 $farmerLoan->loan_type_id = $encoded_loan_type_id;
@@ -190,7 +189,6 @@ class FarmerLoanController extends Controller
     {
         $farming = Farming::find($request->farming_id);
         return response()->json([
-            'g_code' => $farming->old_g_code,
             'farming' => $farming
         ]);
     }

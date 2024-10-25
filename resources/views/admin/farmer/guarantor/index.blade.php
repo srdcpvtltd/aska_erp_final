@@ -26,10 +26,11 @@
                         <table class="data_table table datatable">
                             <thead>
                                 <tr>
+                                    <th>{{ __('Farmer G Code') }}</th>
                                     <th>{{ __('Farmer Name') }}</th>
                                     <th>{{ __('Guarantor Name') }}</th>
                                     <th>{{ __('Father Name') }}</th>
-                                    <th>{{ __('G Code') }}</th>
+                                    <th>{{ __('Guarantor G Code') }}</th>
                                     <th>{{ __('Age') }}</th>
                                     <th>{{ __('Post Office') }}</th>
                                     <th>{{ __('Police Station') }}</th>
@@ -42,6 +43,7 @@
                             <tbody>
                                 @foreach ($guarantors as $guarantor)
                                     <tr class="font-style">
+                                        <td>{{ $guarantor->farming->old_g_code }}</td>
                                         <td>{{ $guarantor->farming->name }}</td>
                                         <td>{{ $guarantor->naming->name }}</td>
                                         <td>{{ $guarantor->father_name }}</td>

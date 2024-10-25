@@ -539,7 +539,7 @@
                                 </tr>
                             </tfoot>
                         </table>
-                        <input type="text" name="total_amount">
+                        <input type="hidden" name="total_amount">
                     </div>
                 </div>
             </div>

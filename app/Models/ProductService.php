@@ -101,13 +101,17 @@ class ProductService extends Model
             $purchasedquantity += $purchaseditem != null ? $purchaseditem->quantity : 0;
         }
 
-        $loan = FarmerLoan::where('created_by', Auth::user()->id)->get('quantity');
+        $loan = FarmerLoan::where('created_by', Auth::user()->id)->get();
 
-        foreach($loan as $loans){
+        foreach ($loan as $loans) {
+            $loan_type = json_decode($loans->loan_type_id);
             $quantity = json_decode($loans->quantity);
+
             $count = count($quantity);
-            for($i = 0; $i < $count; $i++){
-                $qty += $quantity[$i];
+            for ($i = 0; $i < $count; $i++) {
+                if ($loan_type[$i] == $product_id) {
+                    $qty += $quantity[$i];
+                }
             }
         }
 

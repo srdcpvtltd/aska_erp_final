@@ -26,9 +26,9 @@
                         <table class="data_table table datatable">
                             <thead>
                                 <tr>
+                                    <th>{{ __('G Code No') }}</th>
                                     <th>{{ __('Farmer Name') }}</th>
                                     <th>{{ __('Registration No.') }}</th>
-                                    <th>{{ __('Agreement No') }}</th>
                                     <th>{{ __('Date of Agreement') }}</th>
                                     <th>{{ __('Category') }}</th>
                                     <th>{{ __('Type') }}</th>
@@ -50,9 +50,9 @@
                                     @endphp
 
                                     <tr class="font-style">
+                                        <td>{{ $loan->g_code }}</td>
                                         <td>{{ $loan->farming->name }}</td>
                                         <td>{{ $loan->registration_number }}</td>
-                                        <td>{{ $loan->agreement_number }}</td>
                                         <td>{{ $loan->date }}</td>
                                         <td>
                                             @for ($i = 0; $i < $count; $i++)
