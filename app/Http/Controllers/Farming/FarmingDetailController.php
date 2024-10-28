@@ -28,7 +28,7 @@ class FarmingDetailController extends Controller
                 ->join('users', 'users.id', 'farming_details.created_by')
                 ->where('farming_details.created_by', Auth::user()->id)
                 ->orWhere('users.supervisor_id', Auth::user()->id)
-                ->orderBy('farming_details.id', 'DESC')
+                ->orderBy('farming_details.id', 'ASC')
                 ->get();
             $zones = Zone::all();
             return view('admin.farmer.farming_detail.index', compact('farming_details', 'zones'));
