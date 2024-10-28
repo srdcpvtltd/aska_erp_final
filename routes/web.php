@@ -567,7 +567,7 @@ Route::group([
 
         //warehouse
         Route::resource('warehouse', WarehouseController::class);
-        Route::post('warehouse/{id}/destroy', [WarehouseController::class, 'destroy'])->name('warehouse.destroy');
+        Route::get('warehouse/{id}/destroy', [WarehouseController::class, 'destroy'])->name('warehouse.destroy');
 
         //purchase
         Route::resource('purchase', PurchaseController::class);

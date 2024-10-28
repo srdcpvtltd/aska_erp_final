@@ -248,10 +248,6 @@
                                         @endif
                                     </small>
                                 </div>
-
-
-
-
                             </div>
 
                             <div class="row mt-4">
@@ -299,6 +295,7 @@
                                                                 $iteam->quantity,
                                                                 $iteam->discount,
                                                             );
+                                                            $totalTaxPrice += $taxDataPrice;
                                                             if (array_key_exists($taxe->name, $taxesData)) {
                                                                 $taxesData[$taxe->name] =
                                                                     $taxesData[$taxe->name] + $taxDataPrice;
@@ -317,10 +314,6 @@
                                                     <td>
                                                         @if (!empty($iteam->tax))
                                                             <table>
-                                                                @php
-                                                                    $totalTaxRate = 0;
-                                                                    $totalTaxPrice = 0;
-                                                                @endphp
                                                                 @foreach ($taxes as $tax)
                                                                     @php
                                                                         $taxPrice = App\Models\Utility::taxRate(
@@ -329,7 +322,7 @@
                                                                             $iteam->quantity,
                                                                             $iteam->discount,
                                                                         );
-                                                                        $totalTaxPrice += $taxPrice;
+                                                                        
                                                                     @endphp
                                                                     <tr>
                                                                         <td>{{ $tax->name . ' (' . $tax->rate . '%)' }}
