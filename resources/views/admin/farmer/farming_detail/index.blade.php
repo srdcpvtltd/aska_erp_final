@@ -153,7 +153,7 @@
                                         <td>{{ @$farming_detail->farming->father_name }}</td>
                                         <td>{{ $farming_detail->plot_number }}</td>
                                         <td>{{ number_format($farming_detail->area_in_acar, 2) }}</td>
-                                        <td>{{ $farming_detail->date_of_harvesting }}</td>
+                                        <td>{{ date('d-m-Y', strtotime ($farming_detail->date_of_harvesting ))}}</td>
                                         <td>{{ number_format($farming_detail->tentative_harvest_quantity, 2) }}</td>
                                         <td>{{ @$farming_detail->seed_category->name }}</td>
                                         <td>
