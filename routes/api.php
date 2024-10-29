@@ -26,10 +26,12 @@ use App\Http\Controllers\Api\TaskChecklistApiController;
 use App\Http\Controllers\Api\EmployeePayrollApiController;
 use App\Http\Controllers\Api\FarmingDetailsController;
 use App\Http\Controllers\Api\GuarantorController;
+use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\StaticPageContentApiController;
 use App\Http\Controllers\Api\ProjectManagementDashboardApiController;
 use App\Http\Controllers\Api\SecurityDepositeController;
 use App\Http\Controllers\Api\SeedCatagoryController;
+use App\Http\Controllers\Farming\FarmingController;
 use App\Http\Requests\Api\AllotmentRequest;
 use App\Http\Requests\Api\FarmingDetailsRequest;
 
@@ -220,4 +222,15 @@ Route::group([
             Route::get('retrive', [SeedCatagoryController::class, 'retrive_seedCategory']);
         });
     });
+
+    // Location Apis
+    Route::get('countries', [LocationController::class, 'getCountries']);
+    Route::post('get_states', [LocationController::class, 'getStates']);
+    Route::post('get_districts', [LocationController::class, 'getDistricts']);
+    Route::post('get_blocks', [LocationController::class, 'getBlocks']);
+    Route::post('get_gram_panchyats', [LocationController::class, 'getGramPanchyats']);
+    Route::post('get_villages', [LocationController::class, 'getVillages']);
+    Route::post('get_center_villages', [LocationController::class, 'get_center_Villages']);
+    Route::get('get_zones', [LocationController::class, 'getZones']);
+    Route::post('get_centers', [LocationController::class, 'getCenters']);
 });
