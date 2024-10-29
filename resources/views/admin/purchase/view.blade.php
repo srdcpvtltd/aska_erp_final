@@ -191,7 +191,6 @@
                                         </small>
                                     </div>
                                 @endif
-
                                 <div class="col">
                                     <div class="float-end mt-3">
                                         {!! DNS2D::getBarcodeHTML(
@@ -242,8 +241,7 @@
                                                 <th class="text-dark">{{ __('Tax') }}</th>
                                                 <th class="text-dark">{{ __('Description') }}</th>
                                                 <th class="text-end text-dark" width="12%">{{ __('Price') }}<br>
-                                                    <small
-                                                        class="text-danger font-weight-bold">{{ __('after tax & discount') }}</small>
+                                                    <small class="text-danger font-weight-bold">{{ __('after tax & discount') }}</small>
                                                 </th>
                                                 <th></th>
                                             </tr>

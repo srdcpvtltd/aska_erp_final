@@ -104,7 +104,7 @@ class PurchaseController extends Controller
             $purchase->vender_id      = $request->vender_id;
             $purchase->warehouse_id   = $request->warehouse_id;
             $purchase->purchase_date  = $request->purchase_date;
-            $purchase->purchase_number= !empty($request->purchase_number) ? $request->purchase_number : 0;
+            $purchase->purchase_number = !empty($request->purchase_number) ? $request->purchase_number : 0;
             $purchase->status         =  0;
             $purchase->total_price    =  $request->total_amount;
             $purchase->category_id    = $request->category_id;
@@ -184,7 +184,7 @@ class PurchaseController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($idsd)
-    {   
+    {
         if (\Auth::user()->can('edit-purchase')) {
             $idwww    = Crypt::decrypt($idsd);
             $purchase = Purchase::find($idwww);
@@ -194,8 +194,9 @@ class PurchaseController extends Controller
             $purchase_number  = \Auth::user()->purchaseNumberFormat($purchase->purchase_id);
             $venders          = Vender::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $product_services = ProductService::where('created_by', \Auth::user()->creatorId())->where('type', '!=', 'service')->get()->pluck('name', 'id');
+            $vender = Vender::where('id', $purchase->vender_id)->first();
 
-            return view('admin.purchase.edit', compact('venders', 'product_services', 'purchase', 'warehouse', 'purchase_number', 'category'));
+            return view('admin.purchase.edit', compact('venders', 'vender', 'product_services', 'purchase', 'warehouse', 'purchase_number', 'category'));
         } else {
             return response()->json(['error' => __('Permission denied.')], 401);
         }
@@ -298,7 +299,7 @@ class PurchaseController extends Controller
     public function destroy($id)
     {
         if (\Auth::user()->can('delete-purchase')) {
-            $purchase = Purchase::findorfail($id);    
+            $purchase = Purchase::findorfail($id);
             if ($purchase->created_by == \Auth::user()->creatorId()) {
                 $purchase_products = PurchaseProduct::where('purchase_id', $purchase->id)->get();
                 // dd($purchase_products);
