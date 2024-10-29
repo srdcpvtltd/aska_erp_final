@@ -120,7 +120,7 @@ class PurchaseController extends Controller
                 $purchaseProduct->quantity    = $request['quantity'][$i];
                 $purchaseProduct->tax         = $request['tax'][$i];
                 $purchaseProduct->discount    = $request['discount'][$i];
-                $purchaseProduct->price       = $request['price'][$i] * $request['quantity'][$i];
+                $purchaseProduct->price       = $request['price'][$i];
                 $purchaseProduct->description = $request['description'][$i];
                 $purchaseProduct->save();
 
@@ -678,7 +678,7 @@ class PurchaseController extends Controller
         }
 
         $purchasePayment                 = new PurchasePayment();
-        $purchasePayment->purchase_id        = $purchase_id;
+        $purchasePayment->purchase_id    = $purchase_id;
         $purchasePayment->date           = $request->date;
         $purchasePayment->amount         = $request->amount;
         $purchasePayment->account_id     = $request->account_id;
@@ -754,10 +754,10 @@ class PurchaseController extends Controller
         return redirect()->back()->with('success', __('Payment successfully added.'));
     }
 
-    public function paymentDestroy(Request $request, $purchase_id, $payment_id)
+    public function paymentDestroy($purchase_id, $payment_id)
     {
         $payment = PurchasePayment::find($payment_id);
-        PurchasePayment::where('id', '=', $payment_id)->delete();
+        $payment->delete();
 
         $purchase = Purchase::where('id', $purchase_id)->first();
 

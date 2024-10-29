@@ -61,19 +61,23 @@ class Purchase extends Model
     }
     public function getTotal()
     {
-        return ($this->getSubTotal() -$this->getTotalDiscount()) + $this->getTotalTax();
+        return ($this->getSubTotal() - $this->getTotalDiscount()) + $this->getTotalTax();
     }
     public function getTotalTax()
     {
         $totalTax = 0;
         foreach($this->items as $product)
         {
-            $taxes = Utility::totalTaxRate($product->tax);
+            $taxArr  = explode(',', $product->tax);
+            $taxes = 0;
+            
+            foreach ($taxArr as $tax) {
+                $tax = Tax::find($tax);
+                $taxes += !empty($tax->rate) ? $tax->rate : 0;
+            }
 
             $totalTax += ($taxes / 100) * ($product->price * $product->quantity - $product->discount) ;
-
         }
-
         return $totalTax;
     }
     public function getTotalDiscount()

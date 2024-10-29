@@ -202,6 +202,7 @@
                                     <th>{{ __('Village') }}</th>
                                     <th>{{ __('Zone') }}</th>
                                     <th>{{ __('Center') }}</th>
+                                    <th>{{ __('Bank') }}</th>
                                     <th>{{ __('Status') }}</th>
                                     <th>{{ __('Action') }}</th>
                                 </tr>
@@ -232,6 +233,7 @@
                                         <td>{{ $farming->village->name }}</td>
                                         <td>{{ $farming->zone->name }}</td>
                                         <td>{{ $farming->center->name }}</td>
+                                        <td>{{ @$farming->bank_data->name }}</td>
                                         <td>
                                             @if ($farming->is_validate)
                                                 <span

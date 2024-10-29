@@ -679,9 +679,8 @@ class Utility extends Model
         if (self::$taxRateData == null) {
             $taxArr  = explode(',', $taxes);
             $taxRate = 0;
-
+            
             foreach ($taxArr as $tax) {
-                // $tax     = self::taxes($tax);
                 $tax = Tax::find($tax);
                 $taxRate += !empty($tax->rate) ? $tax->rate : 0;
             }

@@ -22,28 +22,6 @@
                 }
             });
         })
-        document.querySelectorAll('.bs-pass-para').forEach(function(element) {
-            element.addEventListener('click', function(event) {
-                event.preventDefault();
-                var confirmText = this.getAttribute('data-confirm').split('|');
-                var formId = this.getAttribute('data-confirm-yes').match(/'(.*)'/)[1];
-
-                Swal.fire({
-                    title: confirmText[0],
-                    text: confirmText[1],
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes',
-                    cancelButtonText: 'No'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById(formId).submit();
-                    }
-                });
-            });
-        });
     </script>
 @endsection
 
@@ -72,8 +50,9 @@
                                 </p>
                                 <a href="{{ route('admin.purchase.edit', \Crypt::encrypt($purchase->id)) }}"
                                     class="btn btn-primary" data-bs-toggle="tooltip"
-                                    data-original-title="{{ __('Edit') }}"><i
-                                        class="ti ti-pencil mr-2"></i>{{ __('Edit') }}</a>
+                                    data-original-title="{{ __('Edit') }}">
+                                    {{ __('Edit') }}
+                                </a>
                             </div>
                             <div class="col-md-6 col-lg-4 col-xl-4">
                                 <div class="timeline-icons"><span class="timeline-dots"></span>
@@ -91,8 +70,9 @@
 
                                 @if ($purchase->status == 0)
                                     <a href="{{ route('admin.purchase.sent', $purchase->id) }}" class="btn btn-warning"
-                                        data-bs-toggle="tooltip" data-original-title="{{ __('Mark Sent') }}"><i
-                                            class="ti ti-send mr-2"></i>{{ __('Send') }}</a>
+                                        data-bs-toggle="tooltip" data-original-title="{{ __('Mark Sent') }}">
+                                        {{ __('Send') }}
+                                    </a>
                                 @endif
                             </div>
                             <div class="col-md-6 col-lg-4 col-xl-4">
@@ -104,8 +84,9 @@
                                 @if ($purchase->status != 0)
                                     <a href="{{ route('admin.purchase.payment', $purchase->id) }}" data-ajax-popup="true"
                                         data-title="{{ __('Add Payment') }}" class="btn btn-info"
-                                        data-original-title="{{ __('Add Payment') }}"><i
-                                            class="ti ti-report-money mr-2"></i>{{ __('Add Payment') }}</a> <br>
+                                        data-original-title="{{ __('Add Payment') }}">
+                                        {{ __('Add Payment') }}
+                                    </a> <br>
                                 @endif
                             </div>
                         </div>
@@ -322,7 +303,7 @@
                                                                             $iteam->quantity,
                                                                             $iteam->discount,
                                                                         );
-                                                                        
+
                                                                     @endphp
                                                                     <tr>
                                                                         <td>{{ $tax->name . ' (' . $tax->rate . '%)' }}
@@ -383,13 +364,13 @@
                                                     <td colspan="6"></td>
                                                     <td class="blue-text text-end"><b>{{ __('Total') }}</b></td>
                                                     <td class="blue-text text-end">
-                                                        {{ \Auth::user()->priceFormat($purchase->getTotal()) }}</td>
+                                                        {{ \Auth::user()->priceFormat($purchase->total_price) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="6"></td>
                                                     <td class="text-end"><b>{{ __('Paid') }}</b></td>
                                                     <td class="text-end">
-                                                        {{ \Auth::user()->priceFormat($purchase->getTotal() - $purchase->getDue()) }}
+                                                        {{ \Auth::user()->priceFormat($purchase->total_price - $purchase->getDue()) }}
                                                     </td>
                                                 </tr>
                                                 {{--                                            <tr> --}}
@@ -439,8 +420,8 @@
                                         @if (!empty($payment->add_receipt))
                                             <a href="{{ asset(Storage::url('uploads/payment')) . '/' . $payment->add_receipt }}"
                                                 download="" class="btn btn-secondary btn-icon rounded-pill"
-                                                target="_blank"><span class="btn-inner--icon"><i
-                                                        class="ti ti-download"></i></span></a>
+                                                target="_blank"><span class="btn-inner--icon"><i class="link-icon"
+                                                        data-feather="download"></i></span></a>
                                         @else
                                             -
                                         @endif
@@ -452,20 +433,12 @@
                                     <td>{{ $payment->reference }}</td>
                                     <td>{{ $payment->description }}</td>
                                     <td class="text-dark">
-                                        <div class="action-btn bg-danger ms-2">
-                                            {!! Form::open([
-                                                'method' => 'post',
-                                                'route' => ['admin.purchase.payment.destroy', $purchase->id, $payment->id],
-                                                'id' => 'delete-form-' . $payment->id,
-                                            ]) !!}
-                                            <a href="#" class="mx-3 btn  align-items-center bs-pass-para"
-                                                data-bs-toggle="tooltip" title="{{ __('Delete') }}"
-                                                data-original-title="{{ __('Delete') }}"
-                                                data-confirm="{{ __('Are You Sure?') . '|' . __('This action can not be undone. Do you want to continue?') }}"
-                                                data-confirm-yes="document.getElementById('delete-form-{{ $payment->id }}').submit();">
+                                        <div class="text-center">
+                                            <a class="deleteBtn" href="#"
+                                                data-href="{{ route('admin.purchase.payment.destroy',['id' => $purchase->id, 'pid' => $payment->id]) }}"
+                                                data-bs-toggle="tooltip" title="{{ __('Delete') }}">
                                                 <i class="link-icon" data-feather="trash"></i>
                                             </a>
-                                            {!! Form::close() !!}
                                         </div>
                                     </td>
                                 </tr>
@@ -482,5 +455,4 @@
             </div>
         </div>
     </div>
-
 @endsection
