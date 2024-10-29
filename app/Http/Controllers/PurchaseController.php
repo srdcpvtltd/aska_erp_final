@@ -184,16 +184,14 @@ class PurchaseController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($idsd)
-    {
+    {   
         if (\Auth::user()->can('edit-purchase')) {
-
-            $idwww   = Crypt::decrypt($idsd);
-            $purchase     = Purchase::find($idwww);
+            $idwww    = Crypt::decrypt($idsd);
+            $purchase = Purchase::find($idwww);
             $category = ProductServiceCategory::where('created_by', \Auth::user()->creatorId())->where('type', 'expense')->get()->pluck('name', 'id');
             $category->prepend('Select Category', '');
-            $warehouse     = warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
-
-            $purchase_number      = \Auth::user()->purchaseNumberFormat($purchase->purchase_id);
+            $warehouse = warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
+            $purchase_number  = \Auth::user()->purchaseNumberFormat($purchase->purchase_id);
             $venders          = Vender::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $product_services = ProductService::where('created_by', \Auth::user()->creatorId())->where('type', '!=', 'service')->get()->pluck('name', 'id');
 
@@ -685,9 +683,11 @@ class PurchaseController extends Controller
         $purchasePayment->payment_method = 0;
         $purchasePayment->reference      = $request->reference;
         $purchasePayment->description    = $request->description;
-        if (!empty($request->add_receipt)) {
-            $fileName = time() . "_" . $request->add_receipt->getClientOriginalName();
-            $request->add_receipt->storeAs('uploads/payment', $fileName);
+
+        if ($request->hasFile('add_receipt')) {
+            $file = $request->file('add_receipt');
+            $fileName = $file->getClientOriginalName();
+            $file->move(public_path('uploads/payment'), $fileName);
             $purchasePayment->add_receipt = $fileName;
         }
         $purchasePayment->save();

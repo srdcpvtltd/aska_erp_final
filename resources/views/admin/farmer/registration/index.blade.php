@@ -214,13 +214,14 @@
                                         <td>{{ $farming->name }}</td>
                                         <td>{{ $farming->father_name }}</td>
                                         <td>
-                                            @if ($farming->g_code != null)
+                                            {{-- @if ($farming->g_code != null)
                                                 {{ $farming->g_code }}
                                             @else
                                                 <span
                                                     class="status_badge text-capitalize badge bg-danger p-2 px-3 rounded">Not
                                                     Assigned</span>
-                                            @endif
+                                            @endif --}}
+                                            {{ $farming->old_g_code }}
                                         </td>
                                         <td>{{ $farming->mobile }}</td>
                                         <td>{{ $farming->age }}</td>

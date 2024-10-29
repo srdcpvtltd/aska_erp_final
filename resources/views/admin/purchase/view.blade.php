@@ -136,8 +136,6 @@
                                 </div>
                             </div>
 
-
-
                             <div class="row">
                                 <div class="col text-end">
                                     <div class="d-flex align-items-center justify-content-end">
@@ -151,7 +149,6 @@
                                     </div>
                                 </div>
                             </div>
-
 
                             <div class="row">
                                 @if (!empty($vendor->billing_name))
@@ -197,7 +194,6 @@
 
                                 <div class="col">
                                     <div class="float-end mt-3">
-
                                         {!! DNS2D::getBarcodeHTML(
                                             route('admin.purchase.link.copy', \Illuminate\Support\Facades\Crypt::encrypt($purchase->id)),
                                             'QRCODE',
@@ -332,8 +328,6 @@
                                                     <td><b>{{ \Auth::user()->priceFormat($totalRate) }}</b></td>
                                                     <td><b>{{ \Auth::user()->priceFormat($totalDiscount) }}</b></td>
                                                     <td><b>{{ \Auth::user()->priceFormat($totalTaxPrice) }}</b></td>
-
-
                                                 </tr>
                                                 <tr>
                                                     <td colspan="6"></td>
@@ -373,11 +367,6 @@
                                                         {{ \Auth::user()->priceFormat($purchase->total_price - $purchase->getDue()) }}
                                                     </td>
                                                 </tr>
-                                                {{--                                            <tr> --}}
-                                                {{--                                                <td colspan="6"></td> --}}
-                                                {{--                                                <td class="text-end"><b>{{__('Debit Note')}}</b></td> --}}
-                                                {{--                                                <td class="text-end">{{\Auth::user()->priceFormat(($purchase->billTotalDebitNote()))}}</td> --}}
-                                                {{--                                            </tr> --}}
                                                 <tr>
                                                     <td colspan="6"></td>
                                                     <td class="text-end"><b>{{ __('Due') }}</b></td>
@@ -418,7 +407,7 @@
                                 <tr>
                                     <td>
                                         @if (!empty($payment->add_receipt))
-                                            <a href="{{ asset(Storage::url('uploads/payment')) . '/' . $payment->add_receipt }}"
+                                            <a href="{{ asset('uploads/payment') . '/' . $payment->add_receipt }}"
                                                 download="" class="btn btn-secondary btn-icon rounded-pill"
                                                 target="_blank"><span class="btn-inner--icon"><i class="link-icon"
                                                         data-feather="download"></i></span></a>

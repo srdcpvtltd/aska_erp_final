@@ -5,62 +5,6 @@
 
 @section('scripts')
     <script>
-        var selector = "body";
-        if ($(selector + " .repeater").length) {
-            var $dragAndDrop = $("body .repeater tbody").sortable({
-                handle: '.sort-handler'
-            });
-            var $repeater = $(selector + ' .repeater').repeater({
-                initEmpty: true,
-                defaultValues: {
-                    'status': 1
-                },
-                show: function() {
-                    $(this).slideDown();
-                    var file_uploads = $(this).find('input.multi');
-                    if (file_uploads.length) {
-                        $(this).find('input.multi').MultiFile({
-                            max: 3,
-                            accept: 'png|jpg|jpeg',
-                            max_size: 2048
-                        });
-                    }
-                    if ($('.select2').length) {
-                        $('.select2').select2();
-                    }
-                },
-                hide: function(deleteElement) {
-
-                    $(this).slideUp(deleteElement);
-                    $(this).remove();
-                    var inputs = $(".amount");
-                    var subTotal = 0;
-                    for (var i = 0; i < inputs.length; i++) {
-                        subTotal = parseFloat(subTotal) + parseFloat($(inputs[i]).html());
-                    }
-                    $('.subTotal').html(subTotal.toFixed(2));
-                    $('.totalAmount').html(subTotal.toFixed(2));
-
-                },
-                ready: function(setIndexes) {
-                    $dragAndDrop.on('drop', setIndexes);
-                },
-                isFirstItemUndeletable: true
-            });
-            var value = $(selector + " .repeater").attr('data-value');
-            console.log(value);
-
-            if (typeof value != 'undefined' && value.length != 0) {
-                value = JSON.parse(value);
-                $repeater.setList(value);
-                for (var i = 0; i < value.length; i++) {
-                    var tr = $('#sortable-table .id[value="' + value[i].id + '"]').parent();
-                    tr.find('.item').val(value[i].product_id);
-                    changeItem(tr.find('.item'));
-                }
-            }
-
-        }
         $(document).on('change', '#vender', function() {
             $('#vender_detail').removeClass('d-none');
             $('#vender_detail').addClass('d-block');
@@ -445,8 +389,7 @@
 
             }
         });
-    </script>
-    <script>
+
         $(document).on('click', '[data-repeater-delete]', function() {
             $(".price").change();
             $(".discount").change();
