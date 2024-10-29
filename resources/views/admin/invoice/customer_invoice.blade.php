@@ -427,7 +427,7 @@
                                             @if($bankPayment->status == 'Pending')
                                                 <div class="action-btn bg-warning">
                                                     <a href="#" data-url="{{ URL::to('invoice/'.$bankPayment->id.'/action') }}" data-size="lg"
-                                                       data-ajax-popup="true" data-title="{{__('Payment Status')}}" class="mx-3 btn btn-sm align-items-center"
+                                                       data-ajax-popup="true" data-title="{{__('Payment Status')}}" class="mx-3 btn align-items-center"
                                                        data-bs-toggle="tooltip" title="{{__('Payment Status')}}" data-original-title="{{__('Payment Status')}}">
                                                         <i class="ti ti-caret-right text-white"></i>
                                                     </a>
@@ -437,7 +437,7 @@
                                             <div class="action-btn bg-danger ms-2">
                                                 {!! Form::open(['method' => 'post', 'route' => ['invoice.payment.destroy',$invoice->id,$bankPayment->id],'id'=>'delete-form-'.$bankPayment->id]) !!}
 
-                                                <a href="#" class="mx-3 btn btn-sm align-items-center bs-pass-para" data-bs-toggle="tooltip" title="Delete" data-original-title="{{__('Delete')}}" data-confirm="{{__('Are You Sure?').'|'.__('This action can not be undone. Do you want to continue?')}}" data-confirm-yes="document.getElementById('delete-form-{{$bankPayment->id}}').submit();">
+                                                <a href="#" class="mx-3 btn align-items-center bs-pass-para" data-bs-toggle="tooltip" title="Delete" data-original-title="{{__('Delete')}}" data-confirm="{{__('Are You Sure?').'|'.__('This action can not be undone. Do you want to continue?')}}" data-confirm-yes="document.getElementById('delete-form-{{$bankPayment->id}}').submit();">
                                                     <i class="ti ti-trash text-white"></i>
                                                 </a>
                                             {!! Form::close() !!}
@@ -499,7 +499,7 @@
                                   <ul class="nav nav-pills  mb-3" role="tablist">
                                       @if($company_payment_setting['is_bank_transfer_enabled'] == 'on' && !empty($company_payment_setting['bank_details']))
                                           <li class="nav-item mb-2">
-                                              <a class="btn btn-outline-primary btn-sm me-1 active" data-bs-toggle="tab" href="#bank-transfer-payment" role="tab" aria-controls="bank" aria-selected="true">{{ __('Bank Transfer') }}</a>
+                                              <a class="btn btn-outline-primary me-1 active" data-bs-toggle="tab" href="#bank-transfer-payment" role="tab" aria-controls="bank" aria-selected="true">{{ __('Bank Transfer') }}</a>
                                           </li>
                                       @endif
                                       @if($company_payment_setting['is_stripe_enabled'] == 'on' && !empty($company_payment_setting['stripe_key']) && !empty($company_payment_setting['stripe_secret']))
@@ -509,104 +509,104 @@
                                       @endif
                                       @if($company_payment_setting['is_paypal_enabled'] == 'on' && !empty($company_payment_setting['paypal_client_id']) && !empty($company_payment_setting['paypal_secret_key']))
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1 ml-1" data-bs-toggle="tab" href="#paypal-payment" role="tab" aria-controls="paypal" aria-selected="false">{{ __('Paypal') }}</a>
+                                                  <a class="btn btn-outline-primary me-1 ml-1" data-bs-toggle="tab" href="#paypal-payment" role="tab" aria-controls="paypal" aria-selected="false">{{ __('Paypal') }}</a>
                                               </li>
                                           @endif
 
                                           @if($company_payment_setting['is_paystack_enabled'] == 'on' && !empty($company_payment_setting['paystack_public_key']) && !empty($company_payment_setting['paystack_secret_key']))
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1 ml-1" data-bs-toggle="tab" href="#paystack-payment" role="tab" aria-controls="paystack" aria-selected="false">{{ __('Paystack') }}</a>
+                                                  <a class="btn btn-outline-primary me-1 ml-1" data-bs-toggle="tab" href="#paystack-payment" role="tab" aria-controls="paystack" aria-selected="false">{{ __('Paystack') }}</a>
                                               </li>
                                           @endif
                                           @if(isset($company_payment_setting['is_flutterwave_enabled']) && $company_payment_setting['is_flutterwave_enabled'] == 'on')
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1 ml-1" data-bs-toggle="tab" href="#flutterwave-payment" role="tab" aria-controls="flutterwave" aria-selected="false">{{ __('Flutterwave') }}</a>
+                                                  <a class="btn btn-outline-primary me-1 ml-1" data-bs-toggle="tab" href="#flutterwave-payment" role="tab" aria-controls="flutterwave" aria-selected="false">{{ __('Flutterwave') }}</a>
                                               </li>
                                           @endif
                                           @if(isset($company_payment_setting['is_razorpay_enabled']) && $company_payment_setting['is_razorpay_enabled'] == 'on')
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1 ml-1" data-bs-toggle="tab" href="#razorpay-payment" role="tab" aria-controls="razorpay" aria-selected="false">{{ __('Razorpay') }}</a>
+                                                  <a class="btn btn-outline-primary me-1 ml-1" data-bs-toggle="tab" href="#razorpay-payment" role="tab" aria-controls="razorpay" aria-selected="false">{{ __('Razorpay') }}</a>
                                               </li>
                                           @endif
                                           @if(isset($company_payment_setting['is_mercado_enabled']) && $company_payment_setting['is_mercado_enabled'] == 'on')
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1 ml-1" data-bs-toggle="tab" href="#mercado-payment" role="tab" aria-controls="mercado" aria-selected="false">{{ __('Mercado') }}</a>
+                                                  <a class="btn btn-outline-primary me-1 ml-1" data-bs-toggle="tab" href="#mercado-payment" role="tab" aria-controls="mercado" aria-selected="false">{{ __('Mercado') }}</a>
                                               </li>
                                           @endif
                                           @if(isset($company_payment_setting['is_paytm_enabled']) && $company_payment_setting['is_paytm_enabled'] == 'on')
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1 ml-1" data-bs-toggle="tab" href="#paytm-payment" role="tab" aria-controls="paytm" aria-selected="false">{{ __('Paytm') }}</a>
+                                                  <a class="btn btn-outline-primary me-1 ml-1" data-bs-toggle="tab" href="#paytm-payment" role="tab" aria-controls="paytm" aria-selected="false">{{ __('Paytm') }}</a>
                                               </li>
                                           @endif
                                           @if(isset($company_payment_setting['is_mollie_enabled']) && $company_payment_setting['is_mollie_enabled'] == 'on')
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1 ml-1" data-bs-toggle="tab" href="#mollie-payment" role="tab" aria-controls="mollie" aria-selected="false">{{ __('Mollie') }}</a>
+                                                  <a class="btn btn-outline-primary me-1 ml-1" data-bs-toggle="tab" href="#mollie-payment" role="tab" aria-controls="mollie" aria-selected="false">{{ __('Mollie') }}</a>
                                               </li>
                                           @endif
                                           @if(isset($company_payment_setting['is_skrill_enabled']) && $company_payment_setting['is_skrill_enabled'] == 'on')
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1 ml-1" data-bs-toggle="tab" href="#skrill-payment" role="tab" aria-controls="skrill" aria-selected="false">{{ __('Skrill') }}</a>
+                                                  <a class="btn btn-outline-primary me-1 ml-1" data-bs-toggle="tab" href="#skrill-payment" role="tab" aria-controls="skrill" aria-selected="false">{{ __('Skrill') }}</a>
                                               </li>
                                           @endif
                                           @if(isset($company_payment_setting['is_coingate_enabled']) && $company_payment_setting['is_coingate_enabled'] == 'on')
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1 ml-1" data-bs-toggle="tab" href="#coingate-payment" role="tab" aria-controls="coingate" aria-selected="false">{{ __('Coingate') }}</a>
+                                                  <a class="btn btn-outline-primary me-1 ml-1" data-bs-toggle="tab" href="#coingate-payment" role="tab" aria-controls="coingate" aria-selected="false">{{ __('Coingate') }}</a>
                                               </li>
                                           @endif
                                           @if ($company_payment_setting['is_paymentwall_enabled'] == 'on' && !empty($company_payment_setting['paymentwall_public_key']) && !empty($company_payment_setting['paymentwall_private_key']))
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1 ml-1" data-bs-toggle="tab" href="#paymentwall-payment" role="tab" aria-controls="paymentwall" aria-selected="false">{{ __('PaymentWall') }}</a>
+                                                  <a class="btn btn-outline-primary me-1 ml-1" data-bs-toggle="tab" href="#paymentwall-payment" role="tab" aria-controls="paymentwall" aria-selected="false">{{ __('PaymentWall') }}</a>
                                               </li>
                                           @endif
                                           @if(isset($company_payment_setting['is_toyyibpay_enabled']) && $company_payment_setting['is_toyyibpay_enabled'] == 'on')
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1 ml-1" data-bs-toggle="tab" href="#toyyibpay-payment" role="tab" aria-controls="toyyibpay" aria-selected="false">{{ __('Toyyibpay') }}</a>
+                                                  <a class="btn btn-outline-primary me-1 ml-1" data-bs-toggle="tab" href="#toyyibpay-payment" role="tab" aria-controls="toyyibpay" aria-selected="false">{{ __('Toyyibpay') }}</a>
                                               </li>
                                           @endif
                                           @if(isset($company_payment_setting['is_payfast_enabled']) && $company_payment_setting['is_payfast_enabled'] == 'on')
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1 ml-1" onclick=get_payfast_status() data-bs-toggle="tab" href="#payfast-payment" role="tab" aria-controls="payfast" aria-selected="false">{{ __('PayFast') }}</a>
+                                                  <a class="btn btn-outline-primary me-1 ml-1" onclick=get_payfast_status() data-bs-toggle="tab" href="#payfast-payment" role="tab" aria-controls="payfast" aria-selected="false">{{ __('PayFast') }}</a>
                                               </li>
                                           @endif
                                           @if(isset($company_payment_setting['is_iyzipay_enabled']) && $company_payment_setting['is_iyzipay_enabled'] == 'on')
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1 ml-1" data-bs-toggle="tab" href="#iyzipay-payment" role="tab" aria-controls="iyzipay" aria-selected="false">{{ __('Iyzipay') }}</a>
+                                                  <a class="btn btn-outline-primary me-1 ml-1" data-bs-toggle="tab" href="#iyzipay-payment" role="tab" aria-controls="iyzipay" aria-selected="false">{{ __('Iyzipay') }}</a>
                                               </li>
                                           @endif
                                           @if(isset($company_payment_setting['is_sspay_enabled']) && $company_payment_setting['is_sspay_enabled'] == 'on')
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1 ml-1" data-bs-toggle="tab" href="#sspay-payment" role="tab" aria-controls="sspay" aria-selected="false">{{ __('SSpay') }}</a>
+                                                  <a class="btn btn-outline-primary me-1 ml-1" data-bs-toggle="tab" href="#sspay-payment" role="tab" aria-controls="sspay" aria-selected="false">{{ __('SSpay') }}</a>
                                               </li>
                                           @endif
 
                                           @if(isset($company_payment_setting['is_paytab_enabled']) && $company_payment_setting['is_paytab_enabled'] == 'on')
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1 ml-1" data-bs-toggle="tab" href="#paytab-payment" role="tab" aria-controls="paytab" aria-selected="false">{{ __('PayTab') }}</a>
+                                                  <a class="btn btn-outline-primary me-1 ml-1" data-bs-toggle="tab" href="#paytab-payment" role="tab" aria-controls="paytab" aria-selected="false">{{ __('PayTab') }}</a>
                                               </li>
                                           @endif
                                           @if(isset($company_payment_setting['is_benefit_enabled']) && $company_payment_setting['is_benefit_enabled'] == 'on')
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1 ml-1" data-bs-toggle="tab" href="#benefit-payment" role="tab" aria-controls="paytab" aria-selected="false">{{ __('Benefit') }}</a>
+                                                  <a class="btn btn-outline-primary me-1 ml-1" data-bs-toggle="tab" href="#benefit-payment" role="tab" aria-controls="paytab" aria-selected="false">{{ __('Benefit') }}</a>
                                               </li>
                                           @endif
                                           @if(isset($company_payment_setting['is_cashfree_enabled']) && $company_payment_setting['is_cashfree_enabled'] == 'on')
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1  ml-1" data-bs-toggle="tab" href="#cashfree-payment" role="tab" aria-controls="cashfree" aria-selected="false">{{ __('Cashfree') }}</a>
+                                                  <a class="btn btn-outline-primary me-1  ml-1" data-bs-toggle="tab" href="#cashfree-payment" role="tab" aria-controls="cashfree" aria-selected="false">{{ __('Cashfree') }}</a>
                                               </li>
                                           @endif
                                           @if(isset($company_payment_setting['is_aamarpay_enabled']) && $company_payment_setting['is_aamarpay_enabled'] == 'on')
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1 ml-1" data-bs-toggle="tab" href="#aamarpay-payment" role="tab" aria-controls="aamarpay" aria-selected="false">{{ __('AamarPay') }}</a>
+                                                  <a class="btn btn-outline-primary me-1 ml-1" data-bs-toggle="tab" href="#aamarpay-payment" role="tab" aria-controls="aamarpay" aria-selected="false">{{ __('AamarPay') }}</a>
                                               </li>
                                           @endif
                                           @if(isset($company_payment_setting['is_paytr_enabled']) && $company_payment_setting['is_paytr_enabled'] == 'on')
                                               <li class="nav-item mb-2">
-                                                  <a class="btn btn-outline-primary btn-sm me-1 ml-1" data-bs-toggle="tab" href="#paytr-payment" role="tab" aria-controls="paytr" aria-selected="false">{{ __('PayTR') }}</a>
+                                                  <a class="btn btn-outline-primary me-1 ml-1" data-bs-toggle="tab" href="#paytr-payment" role="tab" aria-controls="paytr" aria-selected="false">{{ __('PayTR') }}</a>
                                               </li>
                                           @endif
                                           @if (isset($company_payment_setting['is_yookassa_enabled']) && $company_payment_setting['is_yookassa_enabled'] == 'on')
                                           <li class="nav-item mb-2">
-                                              <a class="btn btn-outline-primary btn-sm me-1 ml-1"
+                                              <a class="btn btn-outline-primary me-1 ml-1"
                                                   data-bs-toggle="tab" href="#yookassa-payment" role="tab"
                                                   aria-controls="yookassa"
                                                   aria-selected="false">{{ __('Yookassa') }}</a>
@@ -614,7 +614,7 @@
                                       @endif
                                       @if (isset($company_payment_setting['is_midtrans_enabled']) && $company_payment_setting['is_midtrans_enabled'] == 'on')
                                       <li class="nav-item mb-2">
-                                          <a class="btn btn-outline-primary btn-sm me-1 ml-1"
+                                          <a class="btn btn-outline-primary me-1 ml-1"
                                               data-bs-toggle="tab" href="#midtrans-payment" role="tab"
                                               aria-controls="midtrans"
                                               aria-selected="false">{{ __('Midtrans') }}</a>
@@ -622,7 +622,7 @@
                                   @endif
                                   @if (isset($company_payment_setting['is_xendit_enabled']) && $company_payment_setting['is_xendit_enabled'] == 'on')
                                   <li class="nav-item mb-2">
-                                      <a class="btn btn-outline-primary btn-sm me-1 ml-1"
+                                      <a class="btn btn-outline-primary me-1 ml-1"
                                           data-bs-toggle="tab" href="#xendit-payment" role="tab"
                                           aria-controls="xendit"
                                           aria-selected="false">{{ __('Xendit') }}</a>

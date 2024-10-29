@@ -7,11 +7,11 @@
 @section('button')
 <div class="float-end">
     <a href="{{route('admin.users.index')}}">
-        <button class="btn btn-sm btn-primary"><i class="link-icon" data-feather="arrow-left"></i> Back</button>
+        <button class="btn btn-primary"><i class="link-icon" data-feather="arrow-left"></i> Back</button>
     </a>
 
     <a href="{{route('admin.users.exportForm')}}">
-        <button style="padding: 10px 15px; font-size: 0.812rem;" class="btn btn-sm btn-primary"> Export</button>
+        <button style="padding: 10px 15px; font-size: 0.812rem;" class="btn btn-primary"> Export</button>
     </a>
 </div>
 @endsection

@@ -442,10 +442,10 @@
                         </div> --}}
                         <div class="col-md-6">
                             <div class="form-group">
-                                {{ Form::label('seed_category_id', __('Seed Category'), ['class' => 'form-label']) }}
+                                {{ Form::label('seed_category_id', __('Seed Variety'), ['class' => 'form-label']) }}
                                 <select class="form-control select" name="seed_category_id" id="seed_category_id"
                                     required placeholder="Select Seed Category">
-                                    <option value="">{{ __('Select Seed Category') }}</option>
+                                    <option value="">{{ __('Select Seed Variety') }}</option>
                                     @foreach ($seed_categories as $seed_category)
                                         <option
                                             {{ $farming_detail->seed_category_id == $seed_category->id ? 'selected' : '' }}
@@ -459,7 +459,7 @@
                             <input name="type" type="radio" value="Plant"
                                 {{ $farming_detail->type == 'Plant' ? 'checked' : '' }}> Plant
                             <input name="type" type="radio" value="Ratun"
-                                {{ $farming_detail->type == 'Ratun' ? 'checked' : '' }}> Ratun
+                                {{ $farming_detail->type == 'Ratun' ? 'checked' : '' }}> Ratoon
                         </div>
                         <div class="form-group col-md-6" id="planting_category">
                             {{ Form::label('type', __('Planting Category'), ['class' => 'form-label']) }}
@@ -496,6 +496,7 @@
                                 <option value="Major Irrigation" {{ $farming_detail->irregation_mode == 'Major Irrigation' ? 'selected':'' }}>Major Irrigation</option>
                                 <option value="Medium Irrigation" {{ $farming_detail->irregation_mode == 'Medium Irrigation' ? 'selected':'' }}>Medium Irrigation</option>
                                 <option value="Minor Irrigation" {{ $farming_detail->irregation_mode == 'Minor Irrigation' ? 'selected':'' }}>Minor Irrigation</option>
+                                <option value="Bore Well" {{ $farming_detail->irregation_mode == 'Bore Well' ? 'selected':'' }}>Bore Well</option>
                                 <option value="Other Irrigation" {{ $farming_detail->irregation_mode == 'Other Irrigation' ? 'selected':'' }}>Other Irrigation</option>
                             </select>
                         </div>

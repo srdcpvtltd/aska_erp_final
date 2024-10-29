@@ -261,11 +261,11 @@ class FarmingController extends Controller
 
     public function registration_id(Request $request)
     {
-        $farmer = Farming::find($request->farmer_id);
-        $guarentor = Farming::where('id', '!=', $request->farmer_id)->get();
+        $guarentor = Farming::where('id', '!=', $request->farmer_id)
+            // ->where('is_validate', 1)
+            ->get();
 
         return response()->json([
-            'registration_id' => $farmer->registration_no,
             'guarentor' => $guarentor
         ]);
     }
@@ -306,6 +306,13 @@ class FarmingController extends Controller
         $branches = Bank_branch::where('bank_id', $request->bank_id)->get();
 
         return response()->json($branches);
+    }
+
+    public function get_branch_ifsc_code(Request $request)
+    {
+        $ifsc_codes = Bank_branch::where('id', $request->branch_id)->first();
+
+        return response()->json($ifsc_codes);
     }
 
     public function get_irrigations(Request $request)

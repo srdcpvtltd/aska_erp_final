@@ -82,7 +82,7 @@ class PurchaseController extends Controller
      */
     public function store(Request $request)
     {
-
+        // dd($request->all());
         if (\Auth::user()->can('create-purchase')) {
             $validator = \Validator::make(
                 $request->all(),
@@ -91,7 +91,7 @@ class PurchaseController extends Controller
                     'warehouse_id' => 'required',
                     'purchase_date' => 'required',
                     'category_id' => 'required',
-                    'items' => 'required',
+                    'item' => 'required',
                 ]
             );
             if ($validator->fails()) {
@@ -102,27 +102,26 @@ class PurchaseController extends Controller
             $purchase                 = new Purchase();
             $purchase->purchase_id    = $this->purchaseNumber();
             $purchase->vender_id      = $request->vender_id;
-            $purchase->warehouse_id      = $request->warehouse_id;
+            $purchase->warehouse_id   = $request->warehouse_id;
             $purchase->purchase_date  = $request->purchase_date;
-            $purchase->purchase_number   = !empty($request->purchase_number) ? $request->purchase_number : 0;
+            $purchase->purchase_number= !empty($request->purchase_number) ? $request->purchase_number : 0;
             $purchase->status         =  0;
-            //            $purchase->discount_apply = isset($request->discount_apply) ? 1 : 0;
+            $purchase->total_price    =  $request->total_amount;
             $purchase->category_id    = $request->category_id;
             $purchase->created_by     = \Auth::user()->creatorId();
             $purchase->save();
 
-            $products = $request->items;
+            $products = $request->item;
 
             for ($i = 0; $i < count($products); $i++) {
                 $purchaseProduct              = new PurchaseProduct();
-                $purchaseProduct->purchase_id     = $purchase->id;
-                $purchaseProduct->product_id  = $products[$i]['item'];
-                $purchaseProduct->quantity    = $products[$i]['quantity'];
-                $purchaseProduct->tax         = $products[$i]['tax'];
-                //                $purchaseProduct->discount    = isset($products[$i]['discount']) ? $products[$i]['discount'] : 0;
-                $purchaseProduct->discount    = $products[$i]['discount'];
-                $purchaseProduct->price       = $products[$i]['price'];
-                $purchaseProduct->description = $products[$i]['description'];
+                $purchaseProduct->purchase_id = $purchase->id;
+                $purchaseProduct->product_id  = $request['item'][$i];
+                $purchaseProduct->quantity    = $request['quantity'][$i];
+                $purchaseProduct->tax         = $request['tax'][$i];
+                $purchaseProduct->discount    = $request['discount'][$i];
+                $purchaseProduct->price       = $request['price'][$i] * $request['quantity'][$i];
+                $purchaseProduct->description = $request['description'][$i];
                 $purchaseProduct->save();
 
                 //inventory management (Quantity)
@@ -131,12 +130,12 @@ class PurchaseController extends Controller
                 //Product Stock Report
                 $type = 'purchase';
                 $type_id = $purchase->id;
-                $description = $products[$i]['quantity'] . '  ' . __(' quantity add in purchase') . ' ' . \Auth::user()->purchaseNumberFormat($purchase->purchase_id);
-                Utility::addProductStock($products[$i]['item'], $products[$i]['quantity'], $type, $description, $type_id);
+                $description = $request['quantity'][$i] . '  ' . __(' quantity add in purchase') . ' ' . \Auth::user()->purchaseNumberFormat($purchase->purchase_id);
+                Utility::addProductStock($request['item'][$i], $request['quantity'][$i], $type, $description, $type_id);
 
                 //Warehouse Stock Report
-                if (isset($products[$i]['item'])) {
-                    Utility::addWarehouseStock($products[$i]['item'], $products[$i]['quantity'], $request->warehouse_id);
+                if (isset($request['item'][$i])) {
+                    Utility::addWarehouseStock($request['item'][$i], $request['quantity'][$i], $request->warehouse_id);
                 }
             }
 
@@ -298,17 +297,18 @@ class PurchaseController extends Controller
      * @param  \App\Models\Purchase  $purchase
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Purchase $purchase)
+    public function destroy($id)
     {
         if (\Auth::user()->can('delete-purchase')) {
+            $purchase = Purchase::findorfail($id);    
             if ($purchase->created_by == \Auth::user()->creatorId()) {
                 $purchase_products = PurchaseProduct::where('purchase_id', $purchase->id)->get();
-
-                $purchasepayments = $purchase->payments;
-                foreach ($purchasepayments as $key => $value) {
-                    $purchasepayment = PurchasePayment::find($value->id)->first();
-                    $purchasepayment->delete();
-                }
+                // dd($purchase_products);
+                // $purchasepayments = $purchase->payments;
+                // foreach ($purchasepayments as $key => $value) {
+                //     $purchasepayment = PurchasePayment::find($value->id)->first();
+                //     $purchasepayment->delete();
+                // }
 
                 foreach ($purchase_products as $purchase_product) {
                     $warehouse_qty = WarehouseProduct::where('warehouse_id', $purchase->warehouse_id)->where('product_id', $purchase_product->product_id)->first();
@@ -343,7 +343,7 @@ class PurchaseController extends Controller
                 }
 
                 $purchase->delete();
-                PurchaseProduct::where('purchase_id', '=', $purchase->id)->delete();
+                PurchaseProduct::where('purchase_id', '==', $purchase->id)->delete();
 
                 return redirect()->route('admin.purchase.index')->with('success', __('Purchase successfully deleted.'));
             } else {

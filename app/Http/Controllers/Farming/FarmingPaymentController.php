@@ -31,7 +31,7 @@ class FarmingPaymentController extends Controller
     {
         if (\Auth::user()->can('create-security_deposite')) {
             $farmings = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
-                ->where('farmings.is_validate', 1)
+                // ->where('farmings.is_validate', 1)
                 ->where('farmings.created_by', Auth::user()->id)
                 ->orWhere('users.supervisor_id', Auth::user()->id)
                 ->get();
@@ -76,7 +76,7 @@ class FarmingPaymentController extends Controller
                 $client->farming_id = $request->farming_id;
                 $client->receipt_no = $request->receipt_no;
                 $client->receipt_type = $request->receipt_type;
-                $client->agreement_number = $request->agreement_number;
+                $client->g_code = $request->g_code;
                 $client->date = $request->date;
                 $client->amount = $request->amount;
                 $client->type = $type;
@@ -112,7 +112,7 @@ class FarmingPaymentController extends Controller
         if (\Auth::user()->can('edit-security_deposite')) {
             $payment = FarmingPayment::find($id);
             $farmings = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
-                ->where('farmings.is_validate', 1)
+                // ->where('farmings.is_validate', 1)
                 ->where('farmings.created_by', Auth::user()->id)
                 ->orWhere('users.supervisor_id', Auth::user()->id)
                 ->get();

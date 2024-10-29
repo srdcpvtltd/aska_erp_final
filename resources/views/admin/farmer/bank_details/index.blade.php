@@ -14,7 +14,7 @@
 
     <div class="float-end">
         @can('create-bank_detail')
-        <a href="{{ route('admin.farmer.bank_details.create') }}" class="btn btn-sm btn-primary">
+        <a href="{{ route('admin.farmer.bank_details.create') }}" class="btn btn-primary">
             Add
         </a>
         @endcan

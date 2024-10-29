@@ -81,7 +81,11 @@
     @yield('scripts')
     <script>
         $(document).ready(function() {
-            new DataTable('.data_table');
+            // new DataTable('.data_table');
+            $('.data_table').DataTable({
+                "ordering": false
+            });
+
             $(document).on('click', '.deleteBtn', function(event) {
                 event.preventDefault();
                 let href = $(this).data('href');

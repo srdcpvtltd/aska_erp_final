@@ -655,12 +655,10 @@ class Utility extends Model
 
     public static function tax($taxes)
     {
-
         if (self::$taxData == null) {
             $taxArr = explode(',', $taxes);
             $taxes  = [];
             foreach ($taxArr as $tax) {
-                // $taxes[] = self::taxes($tax);
                 $taxes[] = Tax::find($tax);
             }
             self::$taxData = $taxes;

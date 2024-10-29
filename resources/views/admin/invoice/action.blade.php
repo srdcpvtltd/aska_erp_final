@@ -35,7 +35,7 @@
                     <tr>
                         <th>{{__('Payment Receipt')}}</th>
                         <td>
-                            <a  class="action-btn bg-primary ms-2 btn btn-sm align-items-center" href="{{ $path . '/' . $invoiceBankTransfer->receipt }}" download=""  data-bs-toggle="tooltip" title="{{__('Download')}}" target="_blank">
+                            <a  class="action-btn bg-primary ms-2 btn align-items-center" href="{{ $path . '/' . $invoiceBankTransfer->receipt }}" download=""  data-bs-toggle="tooltip" title="{{__('Download')}}" target="_blank">
                                 <i class="ti ti-download text-white"></i>
                             </a>
                         </td>

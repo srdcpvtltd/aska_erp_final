@@ -2,48 +2,6 @@
 @section('title')
     {{ __('Manage Purchase') }}
 @endsection
-
-@section('scripts')
-    <script>
-        $('.copy_link').click(function(e) {
-            e.preventDefault();
-            var copyText = $(this).attr('href');
-
-            document.addEventListener('copy', function(e) {
-                e.clipboardData.setData('text/plain', copyText);
-                e.preventDefault();
-            }, true);
-
-            document.execCommand('copy');
-            show_toastr('success', 'Url copied to clipboard', 'success');
-        });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.querySelectorAll('.alertButton').forEach(function(a) {
-            a.addEventListener('click', function(event) {
-                const formId = 'delete-form-' + this.getAttribute('data-id');
-                const form = document.getElementById(formId);
-
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes',
-                    cancelButtonText: 'No'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-            });
-        });
-    </script>
-@endsection
-
 @section('main-content')
     <style>
         .action-btn {
@@ -64,7 +22,7 @@
             <li class="breadcrumb-item">{{ __('Purchase') }}</li>
         </ol>
         <div class="float-end">
-            <a href="{{ route('admin.purchase.create', 0) }}" class="btn btn-sm btn-primary" data-bs-toggle="tooltip"
+            <a href="{{ route('admin.purchase.create', 0) }}" class="btn btn-primary" data-bs-toggle="tooltip"
                 title="{{ __('Create') }}">
                 Add
             </a>
@@ -119,36 +77,27 @@
                                         @if (Gate::check('edit purchase') || Gate::check('delete purchase') || Gate::check('show purchase'))
                                             <td class="Action">
                                                 <span>
-                                                    <div class="action-btn bg-info">
-                                                        <a href="{{ route('admin.purchase.show', \Crypt::encrypt($purchase->id)) }}"
-                                                            class="mx-3 btn btn-sm align-items-center"
-                                                            data-bs-toggle="tooltip" title="{{ __('Show') }}"
-                                                            data-original-title="{{ __('Detail') }}">
-                                                            <i class="link-icon" data-feather="eye"></i>
-                                                        </a>
-                                                    </div>
-                                                    <div class="action-btn bg-primary">
-                                                        <a href="{{ route('admin.purchase.edit', \Crypt::encrypt($purchase->id)) }}"
-                                                            class="mx-3 btn btn-sm align-items-center"
-                                                            data-bs-toggle="tooltip" title="Edit"
-                                                            data-original-title="{{ __('Edit') }}">
-                                                            <i class="link-icon" data-feather="edit"></i>
-                                                        </a>
-                                                    </div>
-                                                    <div class="action-btn bg-danger">
-                                                        {!! Form::open([
-                                                            'method' => 'DELETE',
-                                                            'route' => ['admin.purchase.destroy', $purchase->id],
-                                                            'class' => 'delete-form-btn delete_btn',
-                                                            'id' => 'delete-form-' . $purchase->id,
-                                                        ]) !!}
-                                                        <a class="mx-3 btn btn-sm align-items-center bs-pass-para alertButton"
-                                                            data-bs-toggle="tooltip" title="{{ __('Delete') }}"
-                                                            data-id="{{ $purchase->id }}">
-                                                            <i class="link-icon" data-feather="trash"></i>
-                                                        </a>
-                                                        {!! Form::close() !!}
-                                                    </div>
+                                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
+                                                        <li class="me-2">
+                                                            <a href="{{ route('admin.purchase.show', \Crypt::encrypt($purchase->id)) }}"
+                                                                data-bs-toggle="tooltip" title="{{ __('Show') }}">
+                                                                <i class="link-icon" data-feather="eye"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li class="me-2">
+                                                            <a href="{{ route('admin.purchase.edit', \Crypt::encrypt($purchase->id)) }}"
+                                                                data-bs-toggle="tooltip" title="Edit">
+                                                                <i class="link-icon" data-feather="edit"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="deleteBtn" href="#"
+                                                                data-href="{{ route('admin.purchase.destroy', $purchase->id) }}"
+                                                                data-bs-toggle="tooltip" title="{{ __('Delete') }}">
+                                                                <i class="link-icon" data-feather="delete"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
                                                 </span>
                                             </td>
                                         @endif

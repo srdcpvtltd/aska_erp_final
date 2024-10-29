@@ -26,7 +26,7 @@
                         <div class="col-md-12 mb-6">
                             {{ Form::label('file', __('Download sample customer CSV file'), ['class' => 'form-label']) }}
                             <a href="{{ asset('upload/sample') . '/sample-customer.csv' }}"
-                                class="btn btn-sm btn-primary">
+                                class="btn btn-primary">
                                 <i class="ti ti-download"></i> {{ __('Download') }}
                             </a>
                         </div>

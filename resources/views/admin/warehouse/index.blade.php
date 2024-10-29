@@ -25,7 +25,7 @@
         <div class="float-end">
             <a href="{{ route('admin.warehouse.create') }}" data-size="lg" data-url="{{ route('admin.warehouse.create') }}"
                 data-ajax-popup="true" data-bs-toggle="tooltip" title="{{ __('Create') }}"
-                data-title="{{ __('Create Warehouse') }}" class="btn btn-sm btn-primary">
+                data-title="{{ __('Create Warehouse') }}" class="btn btn-primary">
                 Add
             </a>
         </div>
@@ -52,38 +52,35 @@
                                         <td>{{ $warehouse->address }}</td>
                                         <td>{{ $warehouse->city }}</td>
                                         <td>{{ $warehouse->city_zip }}</td>
-
-                                        {{-- @if (Gate::check('show warehouse') || Gate::check('edit warehouse') || Gate::check('delete warehouse')) --}}
                                         <td class="Action">
-                                            @can('show-warehouse')
-                                            <div class="action-btn bg-warning">
-                                                <a href="{{ route('admin.warehouse.show', $warehouse->id) }}"
-                                                    class="btn btn-sm d-inline-flex align-items-center"
-                                                    data-bs-toggle="tooltip" title="{{ __('View') }}"><i
-                                                        class="link-icon" data-feather="eye"></i></a>
-                                            </div>
-                                            @endcan
-                                            @can('edit-warehouse')
-                                            <div class="action-btn bg-info">
-                                                <a href="{{ route('admin.warehouse.edit', $warehouse->id) }}"
-                                                    class="btn btn-sm  align-items-center" data-bs-toggle="tooltip"
-                                                    title="{{ __('Edit') }}" data-title="{{ __('Edit Warehouse') }}">
-                                                    <i class="link-icon" data-feather="edit"></i>
-                                                </a>
-                                            </div>
-                                            @endcan
-                                            @can('delete-warehouse')
-                                            <div class="action-btn bg-danger">
-                                                {{ Form::open(['route' => ['admin.warehouse.destroy', $warehouse->id],'id' => 'delete-form-' . $warehouse->id, 'class' => 'w-100 delete_btn']) }}
-                                                <a type="submit"
-                                                    class="btn btn-sm align-items-center bs-pass-para alertButton" data-id="{{ $warehouse->id }}"
-                                                    data-bs-toggle="tooltip" title="{{ __('Delete') }}"><i
-                                                        class="link-icon" data-feather="trash"></i></a>
-                                                {{ Form::close() }}
-                                            </div>
-                                            @endcan
+                                            <ul class="d-flex list-unstyled mb-0 justify-content-center">
+                                                @can('show-warehouse')
+                                                    <li class="me-2">
+                                                        <a href="{{ route('admin.warehouse.show', $warehouse->id) }}"
+                                                            data-bs-toggle="tooltip" title="{{ __('View') }}"><i
+                                                                class="link-icon" data-feather="eye"></i></a>
+                                                    </li>
+                                                @endcan
+                                                @can('edit-warehouse')
+                                                    <li class="me-2">
+                                                        <a href="{{ route('admin.warehouse.edit', $warehouse->id) }}"
+                                                            data-bs-toggle="tooltip" title="{{ __('Edit') }}"
+                                                            data-title="{{ __('Edit Warehouse') }}">
+                                                            <i class="link-icon" data-feather="edit"></i>
+                                                        </a>
+                                                    </li>
+                                                @endcan
+                                                @can('delete-warehouse')
+                                                    <li>
+                                                        <a class="deleteBtn" href="#"
+                                                            data-href="{{ route('admin.warehouse.destroy', $warehouse->id) }}"
+                                                            data-bs-toggle="tooltip" title="{{ __('Delete') }}">
+                                                            <i class="link-icon" data-feather="delete"></i>
+                                                        </a>
+                                                    </li>
+                                                @endcan
+                                            </ul>
                                         </td>
-                                        {{-- @endif --}}
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -93,30 +90,4 @@
             </div>
         </div>
     </div>
-@endsection
-@section('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.querySelectorAll('.alertButton').forEach(function(a) {
-            a.addEventListener('click', function(event) {
-                const formId = 'delete-form-' + this.getAttribute('data-id');
-                const form = document.getElementById(formId);
-                console.log(formId);
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes',
-                    cancelButtonText: 'No'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-            });
-        });
-    </script>
 @endsection

@@ -48,7 +48,7 @@
                                     <h6 class="text-primary my-3">{{__('Create Bill')}}</h6>
                                     <p class="text-muted text-sm mb-3"><i class="ti ti-clock mr-2"></i>{{__('Created on ')}}{{\Auth::user()->dateFormat($bill->bill_date)}}</p>
                                     @can('edit-bill')
-                                        <a href="{{ route('bill.edit',\Crypt::encrypt($bill->id)) }}" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" data-original-title="{{__('Edit')}}"><i class="ti ti-pencil mr-2"></i>{{__('Edit')}}</a>
+                                        <a href="{{ route('bill.edit',\Crypt::encrypt($bill->id)) }}" class="btn btn-primary" data-bs-toggle="tooltip" data-original-title="{{__('Edit')}}"><i class="ti ti-pencil mr-2"></i>{{__('Edit')}}</a>
 
                                     @endcan
                                 </div>
@@ -66,7 +66,7 @@
                                     </p>
 
                                     @if($bill->status==0)
-                                            <a href="{{ route('bill.sent',$bill->id) }}" class="btn btn-sm btn-warning" data-bs-toggle="tooltip" data-original-title="{{__('Mark Sent')}}"><i class="ti ti-send mr-2"></i>{{__('Send')}}</a>
+                                            <a href="{{ route('bill.sent',$bill->id) }}" class="btn btn-warning" data-bs-toggle="tooltip" data-original-title="{{__('Mark Sent')}}"><i class="ti ti-send mr-2"></i>{{__('Send')}}</a>
                                     @endif
                                 </div>
                                 <div class="col-md-6 col-lg-4 col-xl-4">
@@ -77,7 +77,7 @@
                                     <p class="text-muted text-sm mb-3">{{__('Status')}} : {{__('Awaiting payment')}} </p>
                                     @if($bill->status!=0)
                                         @can('create-bill')
-                                            <a href="#" data-url="{{ route('bill.payment',$bill->id) }}" data-ajax-popup="true" data-title="{{__('Add Payment')}}" class="btn btn-sm btn-info" data-original-title="{{__('Add Payment')}}"><i class="ti ti-report-money mr-2"></i>{{__('Add Payment')}}</a> <br>
+                                            <a href="#" data-url="{{ route('bill.payment',$bill->id) }}" data-ajax-popup="true" data-title="{{__('Add Payment')}}" class="btn btn-info" data-original-title="{{__('Add Payment')}}"><i class="ti ti-report-money mr-2"></i>{{__('Add Payment')}}</a> <br>
                                         @endcan
                                     @endif
 
@@ -96,19 +96,19 @@
                 <div class="col-md-12 d-flex align-items-center justify-content-between justify-content-md-end">
                     @if(!empty($billPayment))
                         <div class="all-button-box mx-2">
-                            <a href="#" data-url="{{ route('bill.debit.note',$bill->id) }}" data-ajax-popup="true" data-title="{{__('Add Debit Note')}}" class="btn btn-sm btn-primary">
+                            <a href="#" data-url="{{ route('bill.debit.note',$bill->id) }}" data-ajax-popup="true" data-title="{{__('Add Debit Note')}}" class="btn btn-primary">
                                 {{__('Add Debit Note')}}
                             </a>
                         </div>
 
                     @endif
                     <div class="all-button-box mx-2">
-                        <a href="{{ route('bill.resent',$bill->id) }}" class="btn btn-sm btn-primary">
+                        <a href="{{ route('bill.resent',$bill->id) }}" class="btn btn-primary">
                             {{__('Resend Bill')}}
                         </a>
                     </div>
                     <div class="all-button-box">
-                        <a href="{{ route('bill.pdf', Crypt::encrypt($bill->id))}}" target="_blank" class="btn btn-sm btn-primary">
+                        <a href="{{ route('bill.pdf', Crypt::encrypt($bill->id))}}" target="_blank" class="btn btn-primary">
                             {{__('Download')}}
                         </a>
                     </div>
@@ -446,7 +446,7 @@
                                 <tr>
                                     <td>
                                         @if(!empty($payment->add_receipt))
-                                            <a href="{{asset(Storage::url('uploads/payment')).'/'.$payment->add_receipt}}" download="" class="btn btn-sm btn-secondary btn-icon rounded-pill" target="_blank"><span class="btn-inner--icon"><i class="ti ti-download"></i></span></a>
+                                            <a href="{{asset(Storage::url('uploads/payment')).'/'.$payment->add_receipt}}" download="" class="btn btn-secondary btn-icon rounded-pill" target="_blank"><span class="btn-inner--icon"><i class="ti ti-download"></i></span></a>
                                         @else
                                             -
                                         @endif
@@ -460,7 +460,7 @@
                                         @can('delete-bill')
                                             <div class="action-btn bg-danger ms-2">
                                                 {!! Form::open(['method' => 'post', 'route' => ['bill.payment.destroy',$bill->id,$payment->id],'id'=>'delete-form-'.$payment->id]) !!}
-                                                <a href="#" class="mx-3 btn btn-sm  align-items-center bs-pass-para" data-bs-toggle="tooltip"  title="{{__('Delete')}}" data-original-title="{{__('Delete')}}" data-confirm="{{__('Are You Sure?').'|'.__('This action can not be undone. Do you want to continue?')}}" data-confirm-yes="document.getElementById('delete-form-{{$payment->id}}').submit();">
+                                                <a href="#" class="mx-3 btn  align-items-center bs-pass-para" data-bs-toggle="tooltip"  title="{{__('Delete')}}" data-original-title="{{__('Delete')}}" data-confirm="{{__('Are You Sure?').'|'.__('This action can not be undone. Do you want to continue?')}}" data-confirm-yes="document.getElementById('delete-form-{{$payment->id}}').submit();">
                                                     <i class="ti ti-trash text-white text-white text-white"></i>
                                                 </a>
                                                 {!! Form::close() !!}
@@ -504,14 +504,14 @@
                                     <td>{{$debitNote->description}}</td>
                                     <td>
                                         @can('edit-bill')
-                                            <a data-url="{{ route('bill.edit.debit.note',[$debitNote->bill,$debitNote->id]) }}" data-ajax-popup="true" data-title="{{__('Add Debit Note')}}" href="#" class="mx-3 btn btn-sm align-items-center" data-bs-toggle="tooltip" data-original-title="{{__('Edit')}}">
+                                            <a data-url="{{ route('bill.edit.debit.note',[$debitNote->bill,$debitNote->id]) }}" data-ajax-popup="true" data-title="{{__('Add Debit Note')}}" href="#" class="mx-3 btn align-items-center" data-bs-toggle="tooltip" data-original-title="{{__('Edit')}}">
                                                 <i class="link-icon" data-feather="edit"></i>
                                             </a>
                                         @endcan
                                         @can('delete-bill')
                                             <div class="action-btn bg-danger ms-2">
                                                 {!! Form::open(['method' => 'DELETE', 'route' => array('bill.delete.debit.note', $debitNote->bill,$debitNote->id),'id'=>'delete-form-'.$debitNote->id]) !!}
-                                                <a href="#" class="mx-3 btn btn-sm  align-items-center bs-pass-para" data-bs-toggle="tooltip"  title="{{__('Delete')}}" data-original-title="{{__('Delete')}}" data-confirm="{{__('Are You Sure?').'|'.__('This action can not be undone. Do you want to continue?')}}" data-confirm-yes="document.getElementById('delete-form-{{$debitNote->id}}').submit();">
+                                                <a href="#" class="mx-3 btn  align-items-center bs-pass-para" data-bs-toggle="tooltip"  title="{{__('Delete')}}" data-original-title="{{__('Delete')}}" data-confirm="{{__('Are You Sure?').'|'.__('This action can not be undone. Do you want to continue?')}}" data-confirm-yes="document.getElementById('delete-form-{{$debitNote->id}}').submit();">
                                                     <i class="ti ti-trash text-white text-white"></i>
                                                 </a>
                                                 {!! Form::close() !!}

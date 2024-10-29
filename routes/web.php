@@ -479,6 +479,7 @@ Route::group([
                 Route::post('location/get_country_state', [FarmingController::class, 'get_country_state'])->name('location.get_country_state');
                 Route::post('location/get_zone_center', [FarmingController::class, 'get_zone_center'])->name('location.get_zone_center');
                 Route::post('location/get_bank_branches', [FarmingController::class, 'get_bank_branches'])->name('location.get_bank_branches');
+                Route::post('location/get_branch_ifsc_code', [FarmingController::class, 'get_branch_ifsc_code'])->name('location.get_branch_ifsc_code');
                 Route::post('location/get_irrigations', [FarmingController::class, 'get_irrigations'])->name('location.get_irrigations');
 
                 //registration
@@ -525,6 +526,7 @@ Route::group([
                 Route::post('farming_detail_data', [FarmingDetailController::class, 'getFarmingDetailData'])->name('farming_detail_data');
                 Route::resource('farming_detail', FarmingDetailController::class);
                 Route::get('farming_detail/{id}/destroy', [FarmingDetailController::class, 'destroy'])->name('farming_detail.destroy');
+                Route::post('farming_detail/search_filter', [FarmingDetailController::class, 'search_filter'])->name('farming_detail.search_filter');
 
                 //Bank Details
                 Route::resource('bank_details', BankDetailsController::class);
@@ -553,6 +555,7 @@ Route::group([
                 Route::get('block/{id}/destroy', [BlockController::class, 'destroy'])->name('block.destroy');
                 Route::resource('gram_panchyat', GramPanchyatController::class);
                 Route::get('gram_panchyat/{id}/destroy', [GramPanchyatController::class, 'destroy'])->name('gram_panchyat.destroy');
+                Route::post('gram_panchyat/search_filter', [GramPanchyatController::class, 'search_filter'])->name('gram_panchyat.search_filter');
                 Route::resource('village', VillageController::class);
                 Route::get('village/{id}/destroy', [VillageController::class, 'destroy'])->name('village.destroy');
                 Route::resource('zone', ZoneController::class);
@@ -564,10 +567,11 @@ Route::group([
 
         //warehouse
         Route::resource('warehouse', WarehouseController::class);
-        Route::post('warehouse/{id}/destroy', [WarehouseController::class, 'destroy'])->name('warehouse.destroy');
+        Route::get('warehouse/{id}/destroy', [WarehouseController::class, 'destroy'])->name('warehouse.destroy');
 
         //purchase
         Route::resource('purchase', PurchaseController::class);
+        Route::get('purchase/{id}/destroy', [PurchaseController::class, 'destroy'])->name('purchase.destroy');
         Route::post('purchase/items', [PurchaseController::class, 'items'])->name('purchase.items');
         Route::get('/bill/{id}/', 'PurchaseController@purchaseLink')->name('purchase.link.copy');
         Route::get('purchase/{id}/payment', [PurchaseController::class, 'payment'])->name('purchase.payment');

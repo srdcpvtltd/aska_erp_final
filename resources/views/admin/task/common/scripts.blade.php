@@ -157,7 +157,7 @@
         $('#addChecklist').on('click',function(event){
             event.preventDefault();
             let removeButton = '<div class="col-lg-2 col-md-2 removeButton">'
-                                +'<button type="button" class="btn btn-sm btn-danger remove" title="remove checklist" id="removeChecklist"> Remove </button>'+
+                                +'<button type="button" class="btn btn-danger remove" title="remove checklist" id="removeChecklist"> Remove </button>'+
                           '</div>';
             $(".checklist").first().clone().find("input").val("").end().append(removeButton).appendTo("#addTaskCheckList");
             $(".addButtonSection:last").remove();

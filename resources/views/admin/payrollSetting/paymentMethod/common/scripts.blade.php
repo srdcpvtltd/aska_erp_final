@@ -50,7 +50,7 @@
 
         $('#add').on('click',function(){
             let removeButton = '<div class="col-lg-2 text-center removeButton">'
-                +'<button type="button" class="btn btn-sm btn-danger remove" title="remove paymentMethod" id="removePaymentMethod"> Remove </button>'+
+                +'<button type="button" class="btn btn-danger remove" title="remove paymentMethod" id="removePaymentMethod"> Remove </button>'+
                 '</div>';
             $(".paymentMethodList").first().clone().find("input").val("").end().append(removeButton).appendTo("#addPaymentMethod");
             $(".addButtonSection:last").remove();

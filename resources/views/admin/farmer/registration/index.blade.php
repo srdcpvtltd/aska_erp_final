@@ -135,29 +135,6 @@
             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
             <li class="breadcrumb-item">{{ __('Farmer Registration') }}</li>
         </ol>
-        {{-- <div class="col-md-5">
-            <form action="{{ route('admin.farmer.farming_registration.search_filter') }}" method="post">
-                @csrf
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="">Filter</label>
-                        <select name="filter" id="filter" class="form-control wd-200">
-                            <option value="">Select</option>
-                            <option value="1">Validate</option>
-                            <option value="0">Nonvalidate</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Submit</button>
-                    </div>
-                    <div class="col-md-3">
-                        <a href="{{ route('admin.farmer.farming_registration.index') }}">
-                            <button type="button" class="btn btn-danger" style="margin-top: 20px;">Reset</button>
-                        </a>
-                    </div>
-                </div>
-            </form>
-        </div> --}}
         <div class="float-end">
             <button id="exportButton" class="btn btn-success">Export</button>
             @can('create-farmer_registration')
@@ -212,6 +189,7 @@
                                 <tr>
                                     <th>{{ __('Sl No.') }}</th>
                                     <th>{{ __('Name') }}</th>
+                                    <th>{{ __('Father Name') }}</th>
                                     <th>{{ __('G. Code') }}</th>
                                     <th>{{ __('Mobile') }}</th>
                                     <th>{{ __('Age') }}</th>
@@ -220,6 +198,10 @@
                                     <th>{{ __('State') }}</th>
                                     <th>{{ __('District') }}</th>
                                     <th>{{ __('Block') }}</th>
+                                    <th>{{ __('GP') }}</th>
+                                    <th>{{ __('Village') }}</th>
+                                    <th>{{ __('Zone') }}</th>
+                                    <th>{{ __('Center') }}</th>
                                     <th>{{ __('Status') }}</th>
                                     <th>{{ __('Action') }}</th>
                                 </tr>
@@ -229,6 +211,7 @@
                                     <tr class="font-style">
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $farming->name }}</td>
+                                        <td>{{ $farming->father_name }}</td>
                                         <td>
                                             @if ($farming->g_code != null)
                                                 {{ $farming->g_code }}
@@ -245,6 +228,10 @@
                                         <td>{{ $farming->state->name }}</td>
                                         <td>{{ $farming->district->name }}</td>
                                         <td>{{ $farming->block->name }}</td>
+                                        <td>{{ $farming->gram_panchyat->name }}</td>
+                                        <td>{{ $farming->village->name }}</td>
+                                        <td>{{ $farming->zone->name }}</td>
+                                        <td>{{ $farming->center->name }}</td>
                                         <td>
                                             @if ($farming->is_validate)
                                                 <span

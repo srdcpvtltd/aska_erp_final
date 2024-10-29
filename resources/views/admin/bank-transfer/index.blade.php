@@ -52,7 +52,7 @@
                                 <div class="row">
                                     <div class="col-auto">
 
-                                        <a href="#" class="btn btn-sm btn-primary"
+                                        <a href="#" class="btn btn-primary"
                                             onclick="document.getElementById('transfer_form').submit(); return false;"
                                             data-bs-toggle="tooltip" title="{{ __('Apply') }}"
                                             data-original-title="{{ __('apply') }}">
@@ -60,7 +60,7 @@
                                                     data-feather="search"></i></span>
                                         </a>
 
-                                        <a href="{{ route('admin.bank-transfer.index') }}" class="btn btn-sm btn-danger "
+                                        <a href="{{ route('admin.bank-transfer.index') }}" class="btn btn-danger "
                                             data-bs-toggle="tooltip" title="{{ __('Reset') }}"
                                             data-original-title="{{ __('Reset') }}">
                                             <span class="btn-inner--icon"><i class="link-icon"

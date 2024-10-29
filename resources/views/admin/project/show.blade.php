@@ -11,19 +11,19 @@
 
         @can('edit-project_management')
             <a href="{{ route('admin.projects.edit', $projectDetail->id) }}">
-                <button class="btn btn-sm btn-success me-md-2 d-md-flex align-items-center"><i class="link-icon"
+                <button class="btn btn-success me-md-2 d-md-flex align-items-center"><i class="link-icon"
                         data-feather="edit"></i> Edit project</button>
             </a>
         @endcan
 
         @can('create-task_management')
             <a href="{{ route('admin.project-task.create', $projectDetail->id) }}">
-                <button class="btn btn-sm btn-secondary me-md-2 d-md-flex align-items-center"><i class="link-icon"
+                <button class="btn btn-secondary me-md-2 d-md-flex align-items-center"><i class="link-icon"
                         data-feather="plus"></i> Create Task</button>
             </a>
         @endcan
         <a href="{{ route('admin.project-attachment.create', $projectDetail->id) }}">
-            <button class="btn btn-sm btn-primary d-md-flex align-items-center"><i class="link-icon"
+            <button class="btn btn-primary d-md-flex align-items-center"><i class="link-icon"
                     data-feather="clipboard"></i> Upload Attachments</button>
         </a>
     </div>

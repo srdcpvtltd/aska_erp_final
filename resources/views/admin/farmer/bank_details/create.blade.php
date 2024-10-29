@@ -7,6 +7,28 @@
     <script src="{{ asset('js/jquery.repeater.min.js') }}"></script>
     <script>
         $(document).ready(function() {
+            $('#g_code').keyup(function() {
+                let g_code = $(this).val();
+                $.ajax({
+                    url: "{{ route('admin.farmer.get_detail') }}",
+                    method: 'post',
+                    data: {
+                        g_code: g_code,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        console.log(response.farmerHtml);
+                        $('#farming_id').empty();
+                        if (response.farmerHtml) {
+                            $('#farming_id').append(response.farmerHtml);
+                        } else {
+                            $('#farming_id').append('<option  value="">Select Farmer</option>');
+                        }
+                    }
+                });
+            });
             $('input[type=radio][name="finance_category"]').on('change', function(event) {
                 var value = $(this).val();
                 if (value == "Non-loan") {
@@ -49,6 +71,46 @@
                             $('#branch_detail').append('<option value="' + response[i].id + '">' +
                                 response[i].name + '</option>');
                         }
+                    }
+                });
+            });
+            $('#branch_detail').change(function() {
+                let branch_id = $(this).val();
+
+                $.ajax({
+                    url: "{{ route('admin.farmer.location.get_branch_ifsc_code') }}",
+                    method: 'post',
+                    data: {
+                        branch_id: branch_id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        $('#ifsc_code').empty();
+                        $('#ifsc_code').val(response.ifsc_code);
+                    }
+                });
+            });
+            $('#non_loan_branch').change(function() {
+                let branch_id = $(this).val();
+                let ifsc = $('#non_loan_ifsc_code').val();
+                console.log(ifsc);
+
+                $.ajax({
+                    url: "{{ route('admin.farmer.location.get_branch_ifsc_code') }}",
+                    method: 'post',
+                    data: {
+                        branch_id: branch_id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        $('#non_loan_ifsc_code').empty();
+                        $('#non_loan_ifsc_code').val(response.ifsc_code);
                     }
                 });
             });
@@ -101,6 +163,12 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
+                                {{ Form::label('g_code', __('G_Code'), ['class' => 'form-label']) }}
+                                {{ Form::text('g_code', null, ['class' => 'form-control', 'required' => 'required']) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 {{ Form::label('farming_id', __('Select Farmer'), ['class' => 'form-label']) }}
                                 <select class="form-control select" name="farming_id" id="farming_id" required
                                     placeholder="Select Farmer">
@@ -111,7 +179,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group col-md-2">
+                        <div class="form-group col-md-6">
                             {{ Form::label('finance_category', __('Finance Category'), ['class' => 'form-label']) }}
                             <br>
                             <input type="radio" name="finance_category" value="Loan"> Loan
@@ -185,7 +253,7 @@
                             {{ Form::text('non_loan_account_number', '', ['class' => 'form-control']) }}
                         </div>
                         <div class="form-group col-md-6 non_loan_fields" style="display:none;">
-                            {{ Form::label('ifsc_code', __('IFSC Code'), ['class' => 'form-label']) }}
+                            {{ Form::label('non_loan_ifsc_code', __('IFSC Code'), ['class' => 'form-label']) }}
                             {{ Form::text('non_loan_ifsc_code', '', ['class' => 'form-control']) }}
                         </div>
                     </div>

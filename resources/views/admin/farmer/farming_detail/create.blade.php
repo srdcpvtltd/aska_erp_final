@@ -13,7 +13,6 @@
 
             $('#g_code').keyup(function() {
                 let g_code = $(this).val();
-                console.log(g_code);
                 $.ajax({
                     url: "{{ route('admin.farmer.get_detail') }}",
                     method: 'post',
@@ -29,27 +28,27 @@
                         if (response.farmerHtml) {
                             $('#farming_id').append(response.farmerHtml);
                         } else {
-                            $('#farming_id').append('<option  value="">Select Farmer</option>');
+                            $('#farming_id').append('<option value="">Select Farmer</option>');
                         }
                         $('#block_id').empty();
                         if (response.blockHtml) {
                             $('#block_id').append(response.blockHtml);
                         } else {
-                            $('#block_id').append('<option  value="">Select Block</option>');
+                            $('#block_id').append('<option value="">Select Block</option>');
                         }
                         $('#gram_panchyat_id').empty();
                         if (response.gpHtml) {
                             $('#gram_panchyat_id').append(response.gpHtml);
                         } else {
                             $('#gram_panchyat_id').append(
-                                '<option  value="">Select Gram Panchyat</option>');
+                                '<option value="">Select Gram Panchyat</option>');
                         }
                         $('#village_id').empty();
                         if (response.villageHtml) {
                             $('#village_id').append(response.villageHtml);
                         } else {
                             $('#village_id').append(
-                                '<option  value="">Select Village</option>');
+                                '<option value="">Select Village</option>');
                         }
                         $('#zone_id').empty();
                         if (response.zoneHtml) {
@@ -65,7 +64,7 @@
                         }
 
                         $('#can_field_zone_id').empty();
-                        if (response.zone_id) {
+                        if (response.zone_id != null) {
                             $('#can_field_zone_id').append(
                                 '<option value="">Select Zone</option>');
                             for (i = 0; i < response.zone.length; i++) {
@@ -81,7 +80,7 @@
                         }
 
                         $('#can_field_center_id').empty();
-                        if (response.center_id) {
+                        if (response.center_id != null) {
                             $('#can_field_center_id').append(
                                 '<option value="">Select Center</option>');
                             for (i = 0; i < response.center.length; i++) {
@@ -97,7 +96,7 @@
                         }
 
                         $('#can_field_village_id').empty();
-                        if (response.village_id) {
+                        if (response.village_id != null) {
                             $('#can_field_village_id').append(
                                 '<option value="">Select Village</option>');
                             for (i = 0; i < response.village.length; i++) {
@@ -388,10 +387,10 @@
                         </div> --}}
                         <div class="col-md-6">
                             <div class="form-group">
-                                {{ Form::label('seed_category_id', __('Seed Category'), ['class' => 'form-label']) }}
+                                {{ Form::label('seed_category_id', __('Seed Variety'), ['class' => 'form-label']) }}
                                 <select class="form-control select" name="seed_category_id" id="seed_category_id" required
                                     placeholder="Select Seed Category">
-                                    <option value="">{{ __('Select Seed Category') }}</option>
+                                    <option value="">{{ __('Select Seed Variety') }}</option>
                                     @foreach ($seed_categories as $seed_category)
                                         <option value="{{ $seed_category->id }}">{{ $seed_category->name }}</option>
                                     @endforeach
@@ -401,7 +400,7 @@
                         <div class="form-group col-md-6">
                             {{ Form::label('type', __('Planting Type'), ['class' => 'form-label']) }} <br>
                             <input name="type" type="radio" value="Plant"> Plant
-                            <input name="type" type="radio" value="Ratun"> Ratun
+                            <input name="type" type="radio" value="Ratun"> Ratoon
                         </div>
                         <div class="form-group col-md-6" id="planting_category">
                             {{ Form::label('type', __('Planting Category'), ['class' => 'form-label']) }}
@@ -427,6 +426,7 @@
                                 <option value="Major Irrigation">Major Irrigation</option>
                                 <option value="Medium Irrigation">Medium Irrigation</option>
                                 <option value="Minor Irrigation">Minor Irrigation</option>
+                                <option value="Bore Well">Bore Well</option>
                                 <option value="Other Irrigation">Other Irrigation</option>
                             </select>
                         </div>

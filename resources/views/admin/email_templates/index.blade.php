@@ -61,7 +61,7 @@
 
 {{--@section('action-btn')--}}
 {{--    <div class="float-end">--}}
-{{--        <a href="#" class="btn btn-sm btn-primary" data-ajax-popup="true"--}}
+{{--        <a href="#" class="btn btn-primary" data-ajax-popup="true"--}}
 {{--                   data-title="{{__('Create New Email Template')}}" title="{{__('Create')}}" data-url="{{route('email_template.create')}}">--}}
 {{--                    <i class="ti ti-plus"></i> </a>--}}
 {{--    </div>--}}
@@ -94,7 +94,7 @@
                                     @if(\Auth::user()->type=='super admin')
                                         <div class="text-end">
                                             <div class="action-btn bg-warning ms-2">
-                                                <a href="{{ route('manage.email.language',[$EmailTemplate->id,\Auth::user()->lang]) }}" class="mx-3 btn btn-sm d-inline-flex align-items-center" data-toggle="tooltip" title="{{__('View')}}">
+                                                <a href="{{ route('manage.email.language',[$EmailTemplate->id,\Auth::user()->lang]) }}" class="mx-3 btn d-inline-flex align-items-center" data-toggle="tooltip" title="{{__('View')}}">
                                                     <i class="ti ti-eye text-white"></i>
                                                 </a>
                                             </div>

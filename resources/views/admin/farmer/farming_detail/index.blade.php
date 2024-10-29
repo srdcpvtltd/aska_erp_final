@@ -3,62 +3,77 @@
     {{ __('Plot Detail') }}
 @endsection
 @section('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#loss_reason').hide();
-            $('#loss_area').hide();
+        document.getElementById('exportButton').addEventListener('click', function() {
+            // Get the DataTable instance
+            var table = $('#plot_details_datatable').DataTable(); // Replace with your DataTable's ID
 
-            $('#reportmodal').on('click', function() {
-                $('#reportModal').modal('show');
-                var farming_details_id = $(this).data('id');
-                $.ajax({
-                    url: "{{ route('admin.farmer.farming_detail_data') }}",
-                    method: 'post',
-                    data: {
-                        id: farming_details_id,
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                        $('#plot_no').text(response.plot_details.plot_number);
-                        $('#area').text(response.plot_details.area_in_acar);
-                        $('#farmer_name').text(response.farmer_name);
-                        $('#plot_detail_id').val(response.plot_details.id);
+            // Get all data from the DataTable (including non-visible rows)
+            var data = table.rows({
+                search: 'applied'
+            }).nodes().toArray(); // Fetch rows as DOM nodes to extract text content directly
 
-                        $('input[name=croploss]').on('click', function() {
-                            var is_crop_loss = $(this).val();
-                            if (is_crop_loss == "Yes") {
-                                $('#loss_reason').show();
-                                $('#loss_area').show();
-                                $('input[name=loss_area]').on('keyup', function() {
-                                    var loss_area = $(this).val();
-                                    if (loss_area != null) {
-                                        var total_planting_area = response
-                                            .plot_details.area_in_acar -
-                                            loss_area;
-                                        $('input[name=total_planting_area]')
-                                            .val(total_planting_area);
-                                    } else {
-                                        $('input[name=total_planting_area]')
-                                            .val(response.plot_details
-                                                .area_in_acar);
-                                    }
-                                });
-                            } else if (is_crop_loss == "No") {
-                                $('input[name=total_planting_area]').val(response
-                                    .plot_details.area_in_acar);
-                                $('#loss_reason').hide();
-                                $('#loss_area').hide();
-                            }
-                        });
+            // Create a new workbook
+            var wb = XLSX.utils.book_new();
+
+            // Create an array to store rows of data
+            var ws_data = [];
+
+            // Get headers from the table, excluding the "Action" column
+            var headers = [];
+            var actionColumnIndex = -1; // Initialize action column index
+            $('#plot_details_datatable thead tr th').each(function(index) {
+                var headerText = $(this).text();
+                if (headerText.toLowerCase() !== 'action') {
+                    headers.push(headerText); // Only add non-"Action" headers
+                } else {
+                    actionColumnIndex = index; // Store the index of the "Action" column
+                }
+            });
+            ws_data.push(headers); // Add headers to ws_data
+
+            // Add rows of data from the DataTable, excluding the "Action" column
+            data.forEach(function(row) {
+                var filteredRow = [];
+                $(row).find('td').each(function(index) {
+                    if (index !== actionColumnIndex) { // Exclude "Action" column
+                        filteredRow.push($(this).text().trim()); // Get plain text, strip HTML
                     }
                 });
-            });
-            $('.close_btn').on('click', function() {
-                $('#reportModal').modal('hide');
+                ws_data.push(filteredRow); // Add filtered row to ws_data
             });
 
+            // Convert the data array to a worksheet
+            var ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+            // Append the worksheet to the workbook
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+            // Export the workbook to an Excel file
+            XLSX.writeFile(wb, 'Plot_details.xlsx');
+        });
+        $('#zone_id').change(function() {
+            let zone_id = $(this).val();
+            $.ajax({
+                url: "{{ route('admin.farmer.location.get_centers') }}",
+                method: 'post',
+                data: {
+                    zone_id: zone_id,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    centers = response.centers;
+                    $('#center_id').empty();
+                    $('#center_id').append('<option  value="">Select Center</option>');
+                    for (i = 0; i < centers.length; i++) {
+                        $('#center_id').append('<option value="' + centers[i].id + '">' +
+                            centers[i].name + '</option>');
+                    }
+                }
+            });
         });
     </script>
 @endsection
@@ -72,8 +87,9 @@
         </ol>
 
         <div class="float-end">
+            <button id="exportButton" class="btn btn-success">Export</button>
             @can('create-plot')
-                <a href="{{ route('admin.farmer.farming_detail.create') }}" class="btn btn-sm btn-primary">
+                <a href="{{ route('admin.farmer.farming_detail.create') }}" class="btn btn-primary">
                     Add
                 </a>
             @endcan
@@ -84,28 +100,61 @@
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-body table-border-style">
+                    <div class="col-12">
+                        <form action="{{ route('admin.farmer.farming_detail.search_filter') }}" method="post">
+                            @csrf
+                            <div class="row align-items-center">
+                                <div class="form-group col-md-4">
+                                    {{ Form::label('zone_id', __('Zone'), ['class' => 'form-label']) }}
+                                    <select name="zone_id" id="zone_id" class="form-control">
+                                        <option value="">Select Zone</option>
+                                        @foreach ($zones as $zone)
+                                            <option value="{{ $zone->id }}">{{ $zone->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    {{ Form::label('center_id', __('Center'), ['class' => 'form-label']) }}
+                                    {{ Form::select('center_id', ['' => 'Select center'], null, ['class' => 'form-control select']) }}
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="submit" class="btn btn-primary">Filter</button>
+                                </div>
+                                <div class="col-md-1">
+                                    <a href="{{ route('admin.farmer.farming_detail.index') }}">
+                                        <button type="button" class="btn btn-primary">Reset</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div class="table-responsive">
-                        <table class="data_table table datatable">
+                        <table class="data_table table datatable" id="plot_details_datatable">
                             <thead>
                                 <tr>
+                                    <th>{{ __('GCode') }}</th>
                                     <th>{{ __('Farmer') }}</th>
+                                    <th>{{ __('Father Name') }}</th>
                                     <th>{{ __('Plot Number') }}</th>
                                     <th>{{ __('Area in Acar') }}</th>
                                     <th>{{ __('Date of Planting') }}</th>
                                     <th>{{ __('Tentative Plant Quantity') }}</th>
                                     <th>{{ __('Seed Category') }}</th>
                                     <th>{{ __('Cutting Order') }}</th>
+                                    <th>{{ __('Created At') }}</th>
                                     <th>{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($farming_details as $farming_detail)
                                     <tr class="font-style">
+                                        <td>{{ @$farming_detail->farming->old_g_code }}</td>
                                         <td>{{ @$farming_detail->farming->name }}</td>
+                                        <td>{{ @$farming_detail->farming->father_name }}</td>
                                         <td>{{ $farming_detail->plot_number }}</td>
-                                        <td>{{ $farming_detail->area_in_acar }}</td>
-                                        <td>{{ $farming_detail->date_of_harvesting }}</td>
-                                        <td>{{ $farming_detail->tentative_harvest_quantity }}</td>
+                                        <td>{{ number_format($farming_detail->area_in_acar, 2) }}</td>
+                                        <td>{{ date('d-m-Y', strtotime ($farming_detail->date_of_harvesting ))}}</td>
+                                        <td>{{ number_format($farming_detail->tentative_harvest_quantity, 2) }}</td>
                                         <td>{{ @$farming_detail->seed_category->name }}</td>
                                         <td>
                                             @if (@$farming_detail->is_cutting_order)
@@ -116,6 +165,7 @@
                                                     class="status_badge text-capitalize badge bg-danger p-2 px-3 rounded">No</span>
                                             @endif
                                         </td>
+                                        <td>{{ date('d-m-Y', strtotime($farming_detail->created_at)) }}</td>
                                         <td class="Action">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                                 @if ($farming_detail->is_cutting_order != '1')
@@ -127,13 +177,15 @@
                                                             </a>
                                                         </li>
                                                     @endcan
-                                                    <li class="me-2">
-                                                        <a href="#" data-bs-toggle="tooltip"
-                                                            title="{{ __('Report') }}" id="reportmodal"
-                                                            data-id="{{ $farming_detail->id }}">
-                                                            <i class="link-icon" data-feather="file-text"></i>
-                                                        </a>
-                                                    </li>
+                                                    @if ($farming_detail->croploss == null)
+                                                        <li class="me-2">
+                                                            <a href="#" data-bs-toggle="tooltip"
+                                                                title="{{ __('Report') }}" class="reportmodal"
+                                                                data-id="{{ $farming_detail->id }}">
+                                                                <i class="link-icon" data-feather="file-text"></i>
+                                                            </a>
+                                                        </li>
+                                                    @endif
                                                     @can('delete-plot')
                                                         <li>
                                                             <a class="deleteBtn" href="#"
@@ -141,7 +193,6 @@
                                                                 data-bs-toggle="tooltip" title="{{ __('Delete') }}">
                                                                 <i class="link-icon" data-feather="delete"></i>
                                                             </a>
-                                                            {!! Form::close() !!}
                                                         </li>
                                                     @endcan
                                                 @else
@@ -202,7 +253,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 {{ Form::label('tentative_harvest_quantity', __('Tentative Plant Quantity (In Ton)'), ['class' => 'form-label']) }}
-                                {{ Form::number('tentative_harvest_quantity', '', ['class' => 'form-control', 'required' => 'required']) }}
+                                {{ Form::text('tentative_harvest_quantity', '', ['class' => 'form-control', 'required' => 'required']) }}
                             </div>
                         </div>
                     </div>

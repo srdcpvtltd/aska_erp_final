@@ -13,7 +13,7 @@ class Guarantor extends Model
         'name',
         'farming_id',
         'father_name',
-        'registration_number',
+        'g_g_code',
         'country_id',
         'state_id',
         'district_id',

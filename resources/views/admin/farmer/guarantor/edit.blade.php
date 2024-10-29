@@ -8,37 +8,46 @@
     <script src="{{ asset('js/jquery.repeater.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            $('#farming_id').change(function() {
-                let farmer_id = $(this).val();
+            $('#g_code').keyup(function() {
+                let g_code = $(this).val();
                 $.ajax({
-                    url: "{{ route('admin.farmer.registration_id') }}",
+                    url: "{{ route('admin.farmer.get_detail') }}",
                     method: 'post',
                     data: {
-                        farmer_id: farmer_id,
+                        g_code: g_code,
                     },
                     headers: {
                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     },
                     success: function(response) {
-                        registration_number = response.registration_id;
-                        $('#registration_number').empty();
-                        $('#registration_number').val(registration_number);
+                        $('#farming_id').empty();
+                        if (response.farmerHtml) {
+                            $('#farming_id').append(response.farmerHtml);
+                        } else {
+                            $('#farming_id').append('<option value="">Select Farmer</option>');
+                        }
                     }
                 });
             });
-            $('#name').change(function() {
-                let farming_id = $(this).val();
+            $('#g_g_code').keyup(function() {
+                let g_code = $(this).val();
                 $.ajax({
-                    url: "{{ route('admin.farmer.loan.get_farming_detail') }}",
+                    url: "{{ route('admin.farmer.get_detail') }}",
                     method: 'post',
                     data: {
-                        farming_id: farming_id,
+                        g_code: g_code,
                     },
                     headers: {
                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     },
                     success: function(response) {
-                        console.log(response);
+                        $('#name').empty();
+                        if (response.farmerHtml) {
+                            $('#name').append(response.farmerHtml);
+                        } else {
+                            $('#name').append('<option value="">Select Farmer</option>');
+                        }
+
                         var country_id = response.farming.country_id;
                         var state_id = response.farming.state_id;
                         var district_id = response.farming.district_id;
@@ -124,6 +133,12 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
+                                {{ Form::label('g_code', __('G_Code'), ['class' => 'form-label']) }}
+                                {{ Form::text('g_code', $guarantor->farming->old_g_code, ['class' => 'form-control', 'required' => 'required']) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 {{ Form::label('farming_id', __('Farmer Registration'), ['class' => 'form-label']) }}
                                 <select class="form-control select" name="farming_id" id="farming_id" required>
                                     <option value="">{{ __('Select Farmer Registration') }}</option>
@@ -133,6 +148,10 @@
                                     @endforeach
                                 </select>
                             </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            {{ Form::label('g_g_code', __('G Code No.'), ['class' => 'form-label']) }}
+                            {{ Form::text('g_g_code', null, ['class' => 'form-control', 'required' => 'required']) }}
                         </div>
                         <div class="form-group col-md-6">
                             {{ Form::label('name', __('Name'), ['class' => 'form-label']) }}
@@ -233,10 +252,6 @@
                         <div class="form-group col-md-6">
                             {{ Form::label('police_station', __('Police Station'), ['class' => 'form-label']) }}
                             {{ Form::text('police_station', $guarantor->police_station, ['class' => 'form-control', 'required' => 'required', 'readonly']) }}
-                        </div>
-                        <div class="form-group col-md-6">
-                            {{ Form::label('registration_number', __('Registration No.'), ['class' => 'form-label']) }}
-                            {{ Form::text('registration_number', $guarantor->registration_number, ['class' => 'form-control', 'required' => 'required', 'readonly']) }}
                         </div>
                         <div class="form-group col-md-6">
                             {{ Form::label('age', __('Age'), ['class' => 'form-label']) }}

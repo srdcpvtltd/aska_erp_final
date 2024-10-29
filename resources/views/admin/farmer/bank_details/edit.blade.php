@@ -10,6 +10,7 @@
         $(document).ready(function() {
             $('input[type=radio][name="finance_category"]').on('change', function(event) {
                 var value = $(this).val();
+                console.log(value);
                 if (value == "Non-loan") {
                     $('.finance_category_fields').hide();
                     $('.coperative_fields').hide();
@@ -78,6 +79,46 @@
                     }
                 });
             });
+            $('#branch_detail').change(function() {
+                let branch_id = $(this).val();
+
+                $.ajax({
+                    url: "{{ route('admin.farmer.location.get_branch_ifsc_code') }}",
+                    method: 'post',
+                    data: {
+                        branch_id: branch_id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        $('#ifsc_code').empty();
+                        $('#ifsc_code').val(response.ifsc_code);
+                    }
+                });
+            });
+            $('#non_loan_branch').change(function() {
+                let branch_id = $(this).val();
+                let ifsc = $('#non_loan_ifsc_code').val();
+                console.log(ifsc);
+
+                $.ajax({
+                    url: "{{ route('admin.farmer.location.get_branch_ifsc_code') }}",
+                    method: 'post',
+                    data: {
+                        branch_id: branch_id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        $('#non_loan_ifsc_code').empty();
+                        $('#non_loan_ifsc_code').val(response.ifsc_code);
+                    }
+                });
+            });
         });
     </script>
 @endsection
@@ -87,7 +128,8 @@
     <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
         <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('admin.farmer.bank_details.index') }}">{{ __('Bank Details') }}</a>
+            <li class="breadcrumb-item"><a
+                    href="{{ route('admin.farmer.bank_details.index') }}">{{ __('Bank Details') }}</a>
             </li>
             <li class="breadcrumb-item">{{ __('Edit') }}</li>
         </ol>
@@ -120,7 +162,7 @@
                             <input type="radio" name="finance_category" value="Non-loan"
                                 {{ $farmings->finance_category === 'Non-loan' ? 'checked' : '' }}> Non-loan
                         </div>
-                        @if ($farmings->finance_category === 'Loan')
+                        {{-- @if ($farmings->finance_category === 'Loan') --}}
                             <div class="col-md-6 finance_category_fields">
                                 <div class="form-group">
                                     {{ Form::label('loan_type', __('Loan Type'), ['class' => 'form-label']) }}
@@ -135,7 +177,7 @@
                                     </select>
                                 </div>
                             </div>
-                            @if ($farmings->non_loan_type === 'Bank')
+                            {{-- @if ($farmings->non_loan_type === 'Bank') --}}
                                 <div class="col-md-6 bank_detail_fields">
                                     <div class="form-group">
                                         {{ Form::label('bank', __('Bank'), ['class' => 'form-label']) }}
@@ -143,7 +185,9 @@
                                             placeholder="Select Bank">
                                             <option value="">{{ __('Select Bank') }}</option>
                                             @foreach ($banks as $bank)
-                                                <option value="{{ $bank->id }}" {{ ($farmings->bank == $bank->id) ? 'selected':'' }}>{{ $bank->name }}</option>
+                                                <option value="{{ $bank->id }}"
+                                                    {{ $farmings->bank == $bank->id ? 'selected' : '' }}>
+                                                    {{ $bank->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -153,8 +197,10 @@
                                     {{-- {{ Form::text('branch', $farmings->branch, ['class' => 'form-control']) }} --}}
                                     <select class="form-control select" name="branch" id="branch_detail">
                                         <option value="">{{ __('Select Branch') }}</option>
-                                        @foreach($bank_branchs as $bank_branch)
-                                        <option value="{{ $bank_branch->id }}" {{ ($farmings->branch == $bank_branch->id) ? 'selected':'' }}>{{ $bank_branch->name }}</option>
+                                        @foreach ($bank_branchs as $bank_branch)
+                                            <option value="{{ $bank_branch->id }}"
+                                                {{ $farmings->branch == $bank_branch->id ? 'selected' : '' }}>
+                                                {{ $bank_branch->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -166,9 +212,9 @@
                                     {{ Form::label('ifsc_code', __('IFSC Code'), ['class' => 'form-label']) }}
                                     {{ Form::text('ifsc_code', $farmings->ifsc_code, ['class' => 'form-control']) }}
                                 </div>
-                            @endif
-                        @endif
-                        @if ($farmings->non_loan_type === 'Co-Operative')
+                            {{-- @endif
+                        @endif --}}
+                        {{-- @if ($farmings->non_loan_type === 'Co-Operative') --}}
                             <div class="form-group col-md-6 coperative_fields">
                                 {{ Form::label('name_of_cooperative', __('Co-Operative Name'), ['class' => 'form-label']) }}
                                 {{ Form::text('name_of_cooperative', $farmings->name_of_cooperative, ['class' => 'form-control']) }}
@@ -177,8 +223,8 @@
                                 {{ Form::label('cooperative_address', __('Co-Operative Branch'), ['class' => 'form-label']) }}
                                 {{ Form::text('cooperative_address', $farmings->cooperative_address, ['class' => 'form-control']) }}
                             </div>
-                        @endif
-                        @if ($farmings->finance_category === 'Non-loan')
+                        {{-- @endif --}}
+                        {{-- @if ($farmings->finance_category === 'Non-loan') --}}
                             <div class="col-md-6 non_loan_fields">
                                 <div class="form-group">
                                     {{ Form::label('bank', __('Bank'), ['class' => 'form-label']) }}
@@ -186,7 +232,9 @@
                                         placeholder="Select Bank">
                                         <option value="">{{ __('Select Bank') }}</option>
                                         @foreach ($banks as $bank)
-                                            <option value="{{ $bank->id }}" {{ ($farmings->bank == $bank->id) ? 'selected':'' }}>{{ $bank->name }}</option>
+                                            <option value="{{ $bank->id }}"
+                                                {{ $farmings->bank == $bank->id ? 'selected' : '' }}>{{ $bank->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -196,8 +244,10 @@
                                 {{-- {{ Form::text('non_loan_branch', $farmings->branch, ['class' => 'form-control']) }} --}}
                                 <select class="form-control select" name="non_loan_branch" id="non_loan_branch">
                                     <option value="">{{ __('Select Branch') }}</option>
-                                    @foreach($bank_branchs as $bank_branch)
-                                    <option value="{{ $bank_branch->id }}" {{ ($farmings->branch == $bank_branch->id) ? 'selected':'' }}>{{ $bank_branch->name }}</option>
+                                    @foreach ($bank_branchs as $bank_branch)
+                                        <option value="{{ $bank_branch->id }}"
+                                            {{ $farmings->branch == $bank_branch->id ? 'selected' : '' }}>
+                                            {{ $bank_branch->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -209,7 +259,7 @@
                                 {{ Form::label('ifsc_code', __('IFSC Code'), ['class' => 'form-label']) }}
                                 {{ Form::text('non_loan_ifsc_code', $farmings->ifsc_code, ['class' => 'form-control']) }}
                             </div>
-                        @endif
+                        {{-- @endif --}}
                     </div>
                 </div>
             </div>

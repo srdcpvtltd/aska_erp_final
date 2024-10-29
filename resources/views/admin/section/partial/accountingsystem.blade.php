@@ -97,7 +97,7 @@
                     </div>
                 </li>
                 {{-- @if (Gate::check('manage invoice') || Gate::check('manage revenue') || Gate::check('manage credit note')) --}}
-                    {{-- <li
+                    <li
                         class="nav-item">
                         <a class="nav-link {{ Request::segment(2) == 'customer' || Request::segment(2) == 'proposal' || Request::segment(2) == 'invoice' || Request::segment(2) == 'revenue' || Request::segment(2) == 'credit-note' ? 'active' : '' }}" data-bs-toggle="collapse" href="#sales" data-href="#" role="button"
                             aria-expanded="false"><span>{{ __('Sales') }}</span><i class="link-arrow"
@@ -110,7 +110,7 @@
                                             href="{{ route('admin.customer.index') }}">{{ __('Customer') }}</a>
                                     </li>
                                 @endif
-                                 @if (Gate::check('manage proposal'))
+                                @if (Gate::check('manage proposal'))
                                     <li class="nav-item">
                                         <a class="nav-link {{ Request::segment(2) == 'proposal' ? 'active' : '' }}"
                                             href="{{ route('admin.proposal.index') }}">{{ __('Estimate') }}</a>
@@ -119,7 +119,7 @@
                                 <li
                                     class="nav-item">
                                     <a class="nav-link {{ Request::route()->getName() == 'admin.invoice.index' || Request::route()->getName() == 'admin.invoice.create' || Request::route()->getName() == 'admin.invoice.edit' || Request::route()->getName() == 'admin.invoice.show' ? ' active' : '' }}" href="{{ route('admin.invoice.index') }}">{{ __('Invoice') }}</a>
-                                </li> --}}
+                                </li>
                                 {{--
                                 <li
                                     class="nav-item {{ Request::route()->getName() == 'admin.revenue.index' || Request::route()->getName() == 'admin.revenue.create' || Request::route()->getName() == 'admin.revenue.edit' ? ' active' : '' }}">
@@ -130,9 +130,9 @@
                                     <a class="nav-link"
                                         href="{{ route('admin.credit.note') }}">{{ __('Credit Note') }}</a>
                                 </li> --}}
-                            {{-- </ul>
+                            </ul>
                         </div>
-                    </li> --}}
+                    </li>
                 {{-- @endif --}}
                 {{--
             @if (Gate::check('manage bill') || Gate::check('manage payment') || Gate::check('manage debit note'))

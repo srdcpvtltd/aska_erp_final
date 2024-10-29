@@ -7,7 +7,7 @@
 @section('button')
     <div class="float-md-end">
         <a href="{{route('admin.projects.show',$projectId)}}" >
-            <button class="btn btn-sm btn-primary mb-4" ><i class="link-icon" data-feather="arrow-left"></i> Back</button>
+            <button class="btn btn-primary mb-4" ><i class="link-icon" data-feather="arrow-left"></i> Back</button>
         </a>
     </div>
 @endsection

@@ -20,17 +20,17 @@ $status = [
     <div class="breadcrumb-button float-md-end d-md-flex align-items-center">
         @can('edit-tada')
             <a href="{{ route('admin.tadas.edit', $tadaDetail->id) }}">
-                <button class="btn btn-sm btn-secondary d-md-flex align-items-center me-2"><i class="link-icon me-1"
+                <button class="btn btn-secondary d-md-flex align-items-center me-2"><i class="link-icon me-1"
                         data-feather="edit"></i>Tada Edit</button>
             </a>
         @endcan
         <a href="{{ route('admin.tadas.attachment.create', $tadaDetail->id) }}">
-            <button class="btn btn-sm btn-secondary d-md-flex align-items-center me-2"><i class="link-icon me-1"
+            <button class="btn btn-secondary d-md-flex align-items-center me-2"><i class="link-icon me-1"
                     data-feather="clipboard"></i>Upload Attachment</button>
         </a>
 
         @can('edit-tada')
-            <button class="btn btn-sm btn-secondary d-md-flex align-items-center me-2" id="updateStatus"
+            <button class="btn btn-secondary d-md-flex align-items-center me-2" id="updateStatus"
                 data-id="{{ $tadaDetail->id }}" data-status="{{ $tadaDetail->status }}"
                 data-title="{{ ucfirst($tadaDetail->title) }}" data-reason="{{ $tadaDetail->remark }}"
                 data-action="{{ route('admin.tadas.update-status', $tadaDetail->id) }}">
@@ -38,7 +38,7 @@ $status = [
         @endcan
 
         <a href="{{ route('admin.tadas.index') }}">
-            <button class="btn btn-sm btn-primary d-md-flex align-items-center"><i class="link-icon"
+            <button class="btn btn-primary d-md-flex align-items-center"><i class="link-icon"
                     data-feather="arrow-left"></i> Back</button>
         </a>
     </div>
