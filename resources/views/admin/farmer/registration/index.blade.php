@@ -194,6 +194,7 @@
                                     <th>{{ __('Mobile') }}</th>
                                     <th>{{ __('Age') }}</th>
                                     <th>{{ __('Gender') }}</th>
+                                    <th>{{ __('Category') }}</th>
                                     <th>{{ __('Qualification') }}</th>
                                     <th>{{ __('State') }}</th>
                                     <th>{{ __('District') }}</th>
@@ -227,6 +228,7 @@
                                         <td>{{ $farming->mobile }}</td>
                                         <td>{{ $farming->age }}</td>
                                         <td>{{ $farming->gender }}</td>
+                                         <td>{{ $farming->farmer_category }}</td>
                                         <td>{{ $farming->qualification }}</td>
                                         <td>{{ $farming->state->name }}</td>
                                         <td>{{ $farming->district->name }}</td>
