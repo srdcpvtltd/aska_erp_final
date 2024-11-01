@@ -494,7 +494,26 @@
                                 </tr>
                             </thead>
                             <tbody class="ui-sortable" data-repeater-item>
+                                @php
+                                    $totalQuantity = 0;
+                                    $totalRate = 0;
+                                    $totalTaxPrice = 0;
+                                    $totalDiscount = 0;
+                                    $taxesData = [];
+                                @endphp
                                 @foreach ($purchase->items as $iteam)
+                                    @if (!empty($iteam->tax))
+                                        @php
+                                            $taxArr = explode(',', $iteam->tax);
+                                            $taxes = [];
+                                            foreach ($taxArr as $tax) {
+                                                $taxes[] = App\Models\Tax::find($tax);
+                                            }
+                                            $totalQuantity += $iteam->quantity;
+                                            $totalRate = $iteam->price * $iteam->quantity;
+                                            $totalDiscount += $iteam->discount;
+                                        @endphp
+                                    @endif
                                     <tr>
                                         {{ Form::hidden('id', null, ['class' => 'form-control id']) }}
                                         <td width="25%">
@@ -525,23 +544,7 @@
                                         <td>
                                             @if (!empty($iteam->tax))
                                                 @php
-                                                    $totalQuantity = 0;
-                                                    $totalRate = 0;
-                                                    $totalTaxPrice = 0;
-                                                    $totalDiscount = 0;
-                                                    $taxesData = [];
-
-                                                    $taxArr = explode(',', $iteam->tax);
-                                                    $taxes = [];
-                                                    foreach ($taxArr as $tax) {
-                                                        $taxes[] = App\Models\Tax::find($tax);
-                                                    }
-                                                    $totalQuantity += $iteam->quantity;
-                                                    $totalRate += $iteam->price * $iteam->quantity;
-                                                    $totalDiscount += $iteam->discount;
-                                                @endphp
-                                                @foreach ($taxes as $taxe)
-                                                    @php
+                                                    foreach ($taxes as $taxe) {
                                                         $taxDataPrice = App\Models\Utility::taxRate(
                                                             $taxe->rate,
                                                             $iteam->price,
@@ -555,11 +558,14 @@
                                                         } else {
                                                             $taxesData[$taxe->name] = $taxDataPrice;
                                                         }
-                                                    @endphp
+                                                    }
+                                                @endphp
+                                                @foreach ($taxes as $taxe)
                                                     <div>
                                                         <div class="input-group">
                                                             <div class="taxes">
-                                                                <span class="badge bg-primary mt-1 mr-2">{{ $taxe->name . ' (' . $taxe->rate . '%)' }}</span>
+                                                                <span
+                                                                    class="badge bg-primary mt-1 mr-2">{{ $taxe->name . ' (' . $taxe->rate . '%)' }}</span>
                                                             </div>
                                                             {{ Form::hidden('tax[]', $taxe->id, ['class' => 'form-control tax']) }}
                                                         </div>
@@ -567,16 +573,11 @@
                                                 @endforeach
                                             @endif
                                         </td>
-
                                         <td class="text-end amount">
-                                            {{ \Auth::user()->priceFormat($totalRate + $totalTaxPrice) }}
+                                            {{ \Auth::user()->priceFormat($totalRate - $iteam->discount + $totalTaxPrice) }}
                                         </td>
 
-                                        <td>
-                                            {{-- <a href="#"
-                                            class="ti ti-trash text-white repeater-action-btn bg-danger ms-2 bs-pass-para"
-                                            data-repeater-delete></a> --}}
-                                        </td>
+                                        <td></td>
                                     </tr>
                                     <tr>
                                         <td colspan="2">
@@ -626,7 +627,8 @@
                                     <td>&nbsp;</td>
                                     <td class="blue-text"><strong>{{ __('Total Amount') }}
                                             ({{ \Auth::user()->currencySymbol() }})</strong></td>
-                                    <td class="blue-text text-end totalAmount">{{ \Auth::user()->priceFormat($purchase->total_price) }}</td>
+                                    <td class="blue-text text-end totalAmount">
+                                        {{ \Auth::user()->priceFormat($purchase->total_price) }}</td>
                                     <td></td>
                                 </tr>
                             </tfoot>

@@ -380,6 +380,10 @@
                             {{ Form::label('adhaarno', __('Adhaar No.'), ['class' => 'form-label']) }}
                             {{ Form::text('adhaarno', '', ['class' => 'form-control', 'required' => 'required', 'id' => 'adhaarno', 'maxlength' => '12']) }}
                         </div>
+                        <div class="form-group col-md-6">
+                            {{ Form::label('old_g_code', __('Old G Code'), ['class' => 'form-label']) }}
+                            {{ Form::text('old_g_code', '', ['class' => 'form-control']) }}
+                        </div>
                         <div class="form-group col-md-2">
                             {{ Form::label('language', __('Language'), ['class' => 'form-label']) }}
                             <br>

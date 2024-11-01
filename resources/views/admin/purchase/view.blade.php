@@ -261,7 +261,7 @@
                                                             $taxes[] = App\Models\Tax::find($tax);
                                                         }
                                                         $totalQuantity += $iteam->quantity;
-                                                        $totalRate += $iteam->price * $iteam->quantity;
+                                                        $totalRate = $iteam->price * $iteam->quantity;
                                                         $totalDiscount += $iteam->discount;
                                                         foreach ($taxes as $taxe) {
                                                             $taxDataPrice = App\Models\Utility::taxRate(
@@ -297,7 +297,6 @@
                                                                             $iteam->quantity,
                                                                             $iteam->discount,
                                                                         );
-
                                                                     @endphp
                                                                     <tr>
                                                                         <td>{{ $tax->name . ' (' . $tax->rate . '%)' }}
@@ -314,7 +313,7 @@
 
                                                     <td>{{ !empty($iteam->description) ? $iteam->description : '-' }}</td>
                                                     <td class="text-end">
-                                                        {{ \Auth::user()->priceFormat($iteam->price * $iteam->quantity - $iteam->discount + $totalTaxPrice) }}
+                                                        {{ \Auth::user()->priceFormat($totalRate - $iteam->discount + $totalTaxPrice) }}
                                                     </td>
                                                 </tr>
                                             @endforeach
