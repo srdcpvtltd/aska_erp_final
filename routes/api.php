@@ -230,7 +230,7 @@ Route::group([
     Route::post('get_blocks', [LocationController::class, 'getBlocks']);
     Route::post('get_gram_panchyats', [LocationController::class, 'getGramPanchyats']);
     Route::post('get_villages', [LocationController::class, 'getVillages']);
-    Route::post('get_center_villages', [LocationController::class, 'get_center_Villages']);
+    Route::post('get-center-get-zones', [LocationController::class, 'get_center_and_zones']);
     Route::get('get_zones', [LocationController::class, 'getZones']);
-    Route::post('get_centers', [LocationController::class, 'getCenters']);
+    // Route::post('get_centers', [LocationController::class, 'getCenters']);
 });
