@@ -116,8 +116,9 @@
                     $('.totalTax').html(totalItemTaxPrice.toFixed(2));
                     $('.totalAmount').html((parseFloat(subTotal) + parseFloat(totalItemTaxPrice))
                         .toFixed(2));
-                    $('input[name=total_amount]').val((parseFloat(subTotal) + parseFloat(totalItemTaxPrice))
-                    .toFixed(2))
+                    $('input[name=total_amount]').val((parseFloat(subTotal) + parseFloat(
+                            totalItemTaxPrice))
+                        .toFixed(2))
                 },
             });
         });
@@ -291,65 +292,64 @@
             $('#vender').val(vendorId).change();
         }
 
-        $(document).on('click', '.add_more_btn', function(){
-            $('#table').append('<tbody class="ui-sortable" data-repeater-item>'+
-                                '<tr>'+
-                                    '<td width="25%" class="form-group pt-1">'+
-                                        '{{ Form::select("item[]", $product_services, "", ["class" => "form-control select2 item", "data-url" => route("admin.purchase.product"), "required" => "required"]) }}'+
-                                    '</td>'+
-                                    '<td>'+
-                                        '<div class="form-group price-input input-group search-form">'+
-                                            '{{ Form::text("quantity[]", "", ["class" => "form-control quantity", "required" => "required", "placeholder" => __("Qty"), "required" => "required"]) }}'+
+        $(document).on('click', '.add_more_btn', function() {
+            $('#table').append('<tbody class="ui-sortable" data-repeater-item>' +
+                '<tr>' +
+                '<td width="25%" class="form-group">' +
+                '{{ Form::select('item[]', $product_services, '', ['class' => 'form-control select2 item', 'data-url' => route('admin.purchase.product'), 'required' => 'required']) }}' +
+                '</td>' +
+                '<td>' +
+                '<div class="form-group price-input input-group search-form">' +
+                '{{ Form::text('quantity[]', '', ['class' => 'form-control quantity', 'required' => 'required', 'placeholder' => __('Qty'), 'required' => 'required']) }}' +
 
-                                            '<span class="unit input-group-text bg-transparent"></span>'+
-                                        '</div>'+
-                                    '</td>'+
-                                    '<td>'+
-                                        '<div class="form-group price-input input-group search-form">'+
-                                            '{{ Form::text("price[]", "", ["class" => "form-control price", "required" => "required", "placeholder" => __("Price"), "required" => "required"]) }}'+
-                                            '<span class="input-group-text bg-transparent">{{ \Auth::user()->currencySymbol() }}</span>'+
-                                        '</div>'+
-                                    '</td>'+
-                                    '<td>'+
-                                        '<div class="form-group price-input input-group search-form">'+
-                                            '{{ Form::text("discount[]", "", ["class" => "form-control discount", "required" => "required", "placeholder" => __("Discount")]) }}'+
-                                            '<span class="input-group-text bg-transparent">{{ \Auth::user()->currencySymbol() }}</span>'+
-                                        '</div>'+
-                                    '</td>'+
-                                    '<td>'+
-                                        '<div class="form-group">'+
-                                            '<div class="input-group">'+
-                                                '<div class="taxes"></div>'+
-                                                '{{ Form::hidden("tax[]", "", ["class" => "form-control tax"]) }}'+
-                                                '{{ Form::hidden("itemTaxPrice[]", "", ["class" => "form-control itemTaxPrice"]) }}'+
-                                                '{{ Form::hidden("itemTaxRate[]", "", ["class" => "form-control itemTaxRate"]) }}'+
-                                            '</div>'+
-                                        '</div>'+
-                                    '</td>'+
+                '<span class="unit input-group-text bg-transparent"></span>' +
+                '</div>' +
+                '</td>' +
+                '<td>' +
+                '<div class="form-group price-input input-group search-form">' +
+                '{{ Form::text('price[]', '', ['class' => 'form-control price', 'required' => 'required', 'placeholder' => __('Price'), 'required' => 'required']) }}' +
+                '<span class="input-group-text bg-transparent">{{ \Auth::user()->currencySymbol() }}</span>' +
+                '</div>' +
+                '</td>' +
+                '<td>' +
+                '<div class="form-group price-input input-group search-form">' +
+                '{{ Form::text('discount[]', '', ['class' => 'form-control discount', 'required' => 'required', 'placeholder' => __('Discount')]) }}' +
+                '<span class="input-group-text bg-transparent">{{ \Auth::user()->currencySymbol() }}</span>' +
+                '</div>' +
+                '</td>' +
+                '<td>' +
+                '<div class="form-group">' +
+                '<div class="input-group">' +
+                '<div class="taxes"></div>' +
+                '{{ Form::hidden('tax[]', '', ['class' => 'form-control tax']) }}' +
+                '</div>' +
+                '</div>' +
+                '</td>' +
 
-                                    '<td class="text-end amount">'+
-                                        '0.00'+
-                                    '</td>'+
-                                    '<td>'+
-                                        '<a href="#" class="text-white bg-danger ms-2">'+
-                                            '<i class="link-icon" data-feather="delete"></i>'+
-                                        '</a>'+
-                                    '</td>'+
-                                '</tr>'+
-                                '<tr>'+
-                                    '<td colspan="2">'+
-                                        '<div class="form-group">'+
-                                            '{{ Form::textarea("description[]", null, ["class" => "form-control pro_description", "rows" => "2", "placeholder" => __("Description")]) }}'+
-                                        '</div>'+
-                                    '</td>'+
-                                    '<td colspan="5"></td>'+
-                                '</tr>'+
-                            '</tbody>');
+                '<td class="text-end amount">' +
+                '0.00' +
+                '</td>' +
+                '<td>' +
+                '<a href="#" class="delete_append_data">' +
+                '<i class="link-icon" data-feather="trash"></i>' +
+                '</a>' +
+                '</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td colspan="2">' +
+                '<div class="form-group">' +
+                '{{ Form::textarea('description[]', null, ['class' => 'form-control pro_description', 'rows' => '2', 'placeholder' => __('Description')]) }}' +
+                '</div>' +
+                '</td>' +
+                '<td colspan="5"></td>' +
+                '</tr>' +
+                '</tbody>');
+            feather.replace();
         });
 
-        $(document).on('click', '[data-repeater-delete]', function() {
-            $(".price").change();
-            $(".discount").change();
+        $(document).on('click', '.delete_append_data', function(e) {
+            e.preventDefault();
+            $(this).closest('tbody').remove();
         });
     </script>
 @endsection
@@ -364,7 +364,7 @@
         </ol>
     </nav>
     <div class="row">
-        {{ Form::open(['route' => 'admin.purchase.store', 'method' =>'POST', 'class' => 'w-100']) }}
+        {{ Form::open(['route' => 'admin.purchase.store', 'method' => 'POST', 'class' => 'w-100']) }}
         <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
         <div class="col-12">
             <div class="card">
@@ -403,7 +403,8 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         {{ Form::label('purchase_number', __('Purchase Number'), ['class' => 'form-label']) }}
-                                        <input type="text" name="purchase_number" class="form-control" value="{{ $purchase_number }}" readonly>
+                                        <input type="text" name="purchase_number" class="form-control"
+                                            value="{{ $purchase_number }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -445,7 +446,7 @@
                             </thead>
                             <tbody class="ui-sortable" data-repeater-item>
                                 <tr>
-                                    <td width="25%" class="form-group pt-1">
+                                    <td width="25%" class="form-group">
                                         {{ Form::select('item[]', $product_services, '', ['class' => 'form-control select2 item', 'data-url' => route('admin.purchase.product'), 'required' => 'required']) }}
                                     </td>
                                     <td>

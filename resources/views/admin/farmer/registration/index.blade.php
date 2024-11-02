@@ -194,6 +194,7 @@
                                     <th>{{ __('Mobile') }}</th>
                                     <th>{{ __('Age') }}</th>
                                     <th>{{ __('Gender') }}</th>
+                                    <th>{{ __('Category') }}</th>
                                     <th>{{ __('Qualification') }}</th>
                                     <th>{{ __('State') }}</th>
                                     <th>{{ __('District') }}</th>
@@ -202,6 +203,8 @@
                                     <th>{{ __('Village') }}</th>
                                     <th>{{ __('Zone') }}</th>
                                     <th>{{ __('Center') }}</th>
+                                    <th>{{ __('Bank') }}</th>
+                                    <th>{{ __('Bank Branch') }}</th>
                                     <th>{{ __('Status') }}</th>
                                     <th>{{ __('Action') }}</th>
                                 </tr>
@@ -213,17 +216,19 @@
                                         <td>{{ $farming->name }}</td>
                                         <td>{{ $farming->father_name }}</td>
                                         <td>
-                                            @if ($farming->g_code != null)
+                                            {{-- @if ($farming->g_code != null)
                                                 {{ $farming->g_code }}
                                             @else
                                                 <span
                                                     class="status_badge text-capitalize badge bg-danger p-2 px-3 rounded">Not
                                                     Assigned</span>
-                                            @endif
+                                            @endif --}}
+                                            {{ $farming->old_g_code }}
                                         </td>
                                         <td>{{ $farming->mobile }}</td>
                                         <td>{{ $farming->age }}</td>
                                         <td>{{ $farming->gender }}</td>
+                                         <td>{{ $farming->farmer_category }}</td>
                                         <td>{{ $farming->qualification }}</td>
                                         <td>{{ $farming->state->name }}</td>
                                         <td>{{ $farming->district->name }}</td>
@@ -232,6 +237,8 @@
                                         <td>{{ $farming->village->name }}</td>
                                         <td>{{ $farming->zone->name }}</td>
                                         <td>{{ $farming->center->name }}</td>
+                                        <td>{{ @$farming->bank_data->name }}</td>
+                                        <td>{{ @$farming->bank_branch->name }}</td>
                                         <td>
                                             @if ($farming->is_validate)
                                                 <span

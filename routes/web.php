@@ -576,7 +576,7 @@ Route::group([
         Route::get('/bill/{id}/', 'PurchaseController@purchaseLink')->name('purchase.link.copy');
         Route::get('purchase/{id}/payment', [PurchaseController::class, 'payment'])->name('purchase.payment');
         Route::post('purchase/{id}/payment', [PurchaseController::class, 'createPayment'])->name('purchase.payment');
-        Route::post('purchase/{id}/payment/{pid}/destroy', [PurchaseController::class, 'paymentDestroy'])->name('purchase.payment.destroy');
+        Route::get('purchase/{id}/payment/{pid}/destroy', [PurchaseController::class, 'paymentDestroy'])->name('purchase.payment.destroy');
         Route::post('purchase/product/destroy', [PurchaseController::class, 'productDestroy'])->name('purchase.product.destroy');
         Route::post('purchase/vender', [PurchaseController::class, 'vender'])->name('purchase.vender');
         Route::post('purchase/product', [PurchaseController::class, 'product'])->name('purchase.product');

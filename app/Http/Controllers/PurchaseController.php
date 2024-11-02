@@ -104,7 +104,7 @@ class PurchaseController extends Controller
             $purchase->vender_id      = $request->vender_id;
             $purchase->warehouse_id   = $request->warehouse_id;
             $purchase->purchase_date  = $request->purchase_date;
-            $purchase->purchase_number= !empty($request->purchase_number) ? $request->purchase_number : 0;
+            $purchase->purchase_number = !empty($request->purchase_number) ? $request->purchase_number : 0;
             $purchase->status         =  0;
             $purchase->total_price    =  $request->total_amount;
             $purchase->category_id    = $request->category_id;
@@ -120,7 +120,7 @@ class PurchaseController extends Controller
                 $purchaseProduct->quantity    = $request['quantity'][$i];
                 $purchaseProduct->tax         = $request['tax'][$i];
                 $purchaseProduct->discount    = $request['discount'][$i];
-                $purchaseProduct->price       = $request['price'][$i] * $request['quantity'][$i];
+                $purchaseProduct->price       = $request['price'][$i];
                 $purchaseProduct->description = $request['description'][$i];
                 $purchaseProduct->save();
 
@@ -186,18 +186,17 @@ class PurchaseController extends Controller
     public function edit($idsd)
     {
         if (\Auth::user()->can('edit-purchase')) {
-
-            $idwww   = Crypt::decrypt($idsd);
-            $purchase     = Purchase::find($idwww);
+            $idwww    = Crypt::decrypt($idsd);
+            $purchase = Purchase::find($idwww);
             $category = ProductServiceCategory::where('created_by', \Auth::user()->creatorId())->where('type', 'expense')->get()->pluck('name', 'id');
             $category->prepend('Select Category', '');
-            $warehouse     = warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
-
-            $purchase_number      = \Auth::user()->purchaseNumberFormat($purchase->purchase_id);
+            $warehouse = warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
+            $purchase_number  = \Auth::user()->purchaseNumberFormat($purchase->purchase_id);
             $venders          = Vender::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $product_services = ProductService::where('created_by', \Auth::user()->creatorId())->where('type', '!=', 'service')->get()->pluck('name', 'id');
+            $vender = Vender::where('id', $purchase->vender_id)->first();
 
-            return view('admin.purchase.edit', compact('venders', 'product_services', 'purchase', 'warehouse', 'purchase_number', 'category'));
+            return view('admin.purchase.edit', compact('venders', 'vender', 'product_services', 'purchase', 'warehouse', 'purchase_number', 'category'));
         } else {
             return response()->json(['error' => __('Permission denied.')], 401);
         }
@@ -300,7 +299,7 @@ class PurchaseController extends Controller
     public function destroy($id)
     {
         if (\Auth::user()->can('delete-purchase')) {
-            $purchase = Purchase::findorfail($id);    
+            $purchase = Purchase::findorfail($id);
             if ($purchase->created_by == \Auth::user()->creatorId()) {
                 $purchase_products = PurchaseProduct::where('purchase_id', $purchase->id)->get();
                 // dd($purchase_products);
@@ -678,16 +677,18 @@ class PurchaseController extends Controller
         }
 
         $purchasePayment                 = new PurchasePayment();
-        $purchasePayment->purchase_id        = $purchase_id;
+        $purchasePayment->purchase_id    = $purchase_id;
         $purchasePayment->date           = $request->date;
         $purchasePayment->amount         = $request->amount;
         $purchasePayment->account_id     = $request->account_id;
         $purchasePayment->payment_method = 0;
         $purchasePayment->reference      = $request->reference;
         $purchasePayment->description    = $request->description;
-        if (!empty($request->add_receipt)) {
-            $fileName = time() . "_" . $request->add_receipt->getClientOriginalName();
-            $request->add_receipt->storeAs('uploads/payment', $fileName);
+
+        if ($request->hasFile('add_receipt')) {
+            $file = $request->file('add_receipt');
+            $fileName = $file->getClientOriginalName();
+            $file->move(public_path('uploads/payment'), $fileName);
             $purchasePayment->add_receipt = $fileName;
         }
         $purchasePayment->save();
@@ -754,10 +755,10 @@ class PurchaseController extends Controller
         return redirect()->back()->with('success', __('Payment successfully added.'));
     }
 
-    public function paymentDestroy(Request $request, $purchase_id, $payment_id)
+    public function paymentDestroy($purchase_id, $payment_id)
     {
         $payment = PurchasePayment::find($payment_id);
-        PurchasePayment::where('id', '=', $payment_id)->delete();
+        $payment->delete();
 
         $purchase = Purchase::where('id', $purchase_id)->first();
 

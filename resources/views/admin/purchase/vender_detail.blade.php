@@ -9,7 +9,7 @@
                         <span>{{$vender['billing_phone']}}</span><br>
                         <span>{{$vender['billing_address']}}</span><br>
                         <span>{{$vender['billing_zip']}}</span><br>
-                        <span>{{$vender['billing_country'] . ' , '.$vender['billing_city'].' , '.$vender['billing_state'].'.'}}</span>
+                        <span>{{$vender['billing_country'] . ' , ' . $vender['billing_city'].' , '.$vender['billing_state'].'.'}}</span>
                     </small>
                 @else
                     <br> -
@@ -25,7 +25,7 @@
                         <span>{{$vender['shipping_phone']}}</span><br>
                         <span>{{$vender['shipping_address']}}</span><br>
                         <span>{{$vender['shipping_zip']}}</span><br>
-                        <span>{{$vender['shipping_country'] . ' , '.$vender['shipping_state'].' , '.$vender['shipping_city'].'.'}}</span>
+                        <span>{{$vender['shipping_country'] . ' , ' . $vender['shipping_state'].' , '.$vender['shipping_city'].'.'}}</span>
                     </small>
                 @else
                     <br> -
