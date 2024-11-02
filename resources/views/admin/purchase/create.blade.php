@@ -325,7 +325,6 @@
                 '</div>' +
                 '</div>' +
                 '</td>' +
-
                 '<td class="text-end amount">' +
                 '0.00' +
                 '</td>' +

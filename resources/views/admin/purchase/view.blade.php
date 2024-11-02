@@ -241,14 +241,15 @@
                                                 <th class="text-dark">{{ __('Tax') }}</th>
                                                 <th class="text-dark">{{ __('Description') }}</th>
                                                 <th class="text-end text-dark" width="12%">{{ __('Price') }}<br>
-                                                    <small class="text-danger font-weight-bold">{{ __('after tax & discount') }}</small>
+                                                    <small
+                                                        class="text-danger font-weight-bold">{{ __('after tax & discount') }}</small>
                                                 </th>
                                                 <th></th>
                                             </tr>
                                             @php
                                                 $totalQuantity = 0;
                                                 $totalRate = 0;
-                                                $totalTaxPrice = 0;
+                                                $total_Rate = 0;
                                                 $totalDiscount = 0;
                                                 $taxesData = [];
                                             @endphp
@@ -261,6 +262,7 @@
                                                             $taxes[] = App\Models\Tax::find($tax);
                                                         }
                                                         $totalQuantity += $iteam->quantity;
+                                                        $total_Rate += $iteam->price * $iteam->quantity;
                                                         $totalRate = $iteam->price * $iteam->quantity;
                                                         $totalDiscount += $iteam->discount;
                                                         foreach ($taxes as $taxe) {
@@ -270,7 +272,7 @@
                                                                 $iteam->quantity,
                                                                 $iteam->discount,
                                                             );
-                                                            $totalTaxPrice += $taxDataPrice;
+
                                                             if (array_key_exists($taxe->name, $taxesData)) {
                                                                 $taxesData[$taxe->name] =
                                                                     $taxesData[$taxe->name] + $taxDataPrice;
@@ -289,6 +291,9 @@
                                                     <td>
                                                         @if (!empty($iteam->tax))
                                                             <table>
+                                                                @php
+                                                                    $totalTaxPrice = 0;
+                                                                @endphp
                                                                 @foreach ($taxes as $tax)
                                                                     @php
                                                                         $taxPrice = App\Models\Utility::taxRate(
@@ -297,6 +302,7 @@
                                                                             $iteam->quantity,
                                                                             $iteam->discount,
                                                                         );
+                                                                        $totalTaxPrice += $taxPrice;
                                                                     @endphp
                                                                     <tr>
                                                                         <td>{{ $tax->name . ' (' . $tax->rate . '%)' }}
@@ -322,7 +328,7 @@
                                                     <td></td>
                                                     <td><b>{{ __('Total') }}</b></td>
                                                     <td><b>{{ $totalQuantity }}</b></td>
-                                                    <td><b>{{ \Auth::user()->priceFormat($totalRate) }}</b></td>
+                                                    <td><b>{{ \Auth::user()->priceFormat($total_Rate) }}</b></td>
                                                     <td><b>{{ \Auth::user()->priceFormat($totalDiscount) }}</b></td>
                                                     <td><b>{{ \Auth::user()->priceFormat($totalTaxPrice) }}</b></td>
                                                 </tr>
@@ -421,7 +427,7 @@
                                     <td class="text-dark">
                                         <div class="text-center">
                                             <a class="deleteBtn" href="#"
-                                                data-href="{{ route('admin.purchase.payment.destroy',['id' => $purchase->id, 'pid' => $payment->id]) }}"
+                                                data-href="{{ route('admin.purchase.payment.destroy', ['id' => $purchase->id, 'pid' => $payment->id]) }}"
                                                 data-bs-toggle="tooltip" title="{{ __('Delete') }}">
                                                 <i class="link-icon" data-feather="trash"></i>
                                             </a>

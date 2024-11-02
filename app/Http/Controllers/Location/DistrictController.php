@@ -7,6 +7,7 @@ use App\Models\District;
 use App\Models\State;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DistrictController extends Controller
 {
@@ -51,10 +52,15 @@ class DistrictController extends Controller
     {
         if (\Auth::user()->can('create-district')) {
             try {
-                $this->validate($request, [
+                $validator = Validator::make($request->all(), [
                     'name' => 'required',
                     'state_id' => 'required',
                 ]);
+
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
+                }
+                
                 District::create($request->all());
                 return redirect()->route('admin.location.district.index')->with('success', 'District Added Successfully.');
             } catch (Exception $e) {

@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Http\Request;
 use App\Exports\VillagesExport;
 use App\Models\Block;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
 class VillageController extends Controller
@@ -66,7 +67,7 @@ class VillageController extends Controller
     {
         if (\Auth::user()->can('create-village')) {
             try {
-                $this->validate($request, [
+                $validator = Validator::make($request->all(), [
                     'name' => 'required',
                     'gram_panchyat_id' => 'required',
                     'zone_id' => 'required',
@@ -74,6 +75,10 @@ class VillageController extends Controller
                     'block_id' => 'required',
                 ]);
 
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
+                }
+                
                 $village = new Village;
                 $village->name = $request->name;
                 $village->district_id = $request->district_id;

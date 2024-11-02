@@ -7,6 +7,7 @@ use App\Models\Permission;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class ModulesController extends Controller
 {
@@ -119,11 +120,15 @@ class ModulesController extends Controller
             try {
                 $modules = Module::find($id);
 
-                $this->validate($request, [
+                $validator = Validator::make($request->all(), [
                     'name' => 'required|regex:/^[a-zA-Z0-9\-_\.]+$/|min:4|unique:modules,name,' . $modules->id,
                 ], [
                     'regex' => 'Invalid Entry! Only letters,underscores,hypens and numbers are allowed',
                 ]);
+
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
+                }
 
                 $permissions = DB::table('permissions')
                     ->where('name', 'like', '%' . $modules->name . '%')

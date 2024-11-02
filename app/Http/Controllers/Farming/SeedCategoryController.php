@@ -6,6 +6,7 @@ use App\Models\SeedCategory;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Support\Facades\Validator;
 
 class SeedCategoryController extends Controller
 {
@@ -41,11 +42,16 @@ class SeedCategoryController extends Controller
     {
         if (\Auth::user()->can('create-seed_category')) {
             try {
-                $this->validate($request, [
+                $validator = Validator::make($request->all(), [
                     'name' => 'required',
                     'category' => 'required',
                     'type' => 'required',
                 ]);
+
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
+                }
+                
                 SeedCategory::create($request->all());
                 return redirect()->route('admin.farmer.seed_category.index')->with('success', 'Seed Category Added Successfully.');
             } catch (Exception $e) {

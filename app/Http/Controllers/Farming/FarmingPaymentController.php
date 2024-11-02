@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class FarmingPaymentController extends Controller
 {
@@ -54,16 +55,20 @@ class FarmingPaymentController extends Controller
             }
             try {
                 if ($request->amount != null) {
-                    $this->validate($request, [
+                    $validator = Validator::make($request->all(), [
                         'farming_id' => 'required',
                         'created_by' => 'required',
                         'amount' => 'required|integer',
                     ]);
                 } else {
-                    $this->validate($request, [
+                    $validator = Validator::make($request->all(), [
                         'farming_id' => 'required',
                         'created_by' => 'required',
                     ]);
+                }
+                
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
                 }
 
                 if ($request->type != null) {
@@ -239,9 +244,9 @@ class FarmingPaymentController extends Controller
     {
         $farmer = Farming::find($request->farmer_id);
 
-            return response()->json([
-                'registration_id' => $farmer->registration_no,
-                'g_code' => $farmer->g_code
+        return response()->json([
+            'registration_id' => $farmer->registration_no,
+            'g_code' => $farmer->g_code
         ]);
     }
 }

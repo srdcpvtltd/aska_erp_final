@@ -7,6 +7,7 @@ use App\Models\State;
 use App\Models\Country;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class StateController extends Controller
 {
@@ -51,10 +52,15 @@ class StateController extends Controller
     {
         if (\Auth::user()->can('create-state')) {
             try {
-                $this->validate($request, [
+                $validator = Validator::make($request->all(), [
                     'name' => 'required',
                     'country_id' => 'required',
                 ]);
+
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
+                }
+                
                 State::create($request->all());
                 return redirect()->route('admin.location.state.index')->with('success', 'State Added Successfully.');
             } catch (Exception $e) {

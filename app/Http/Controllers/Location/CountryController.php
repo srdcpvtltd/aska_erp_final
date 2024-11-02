@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Country;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CountryController extends Controller
 {
@@ -48,9 +49,14 @@ class CountryController extends Controller
     {
         if (\Auth::user()->can('create-country')) {
             try {
-                $this->validate($request, [
+                $validator = Validator::make($request->all(), [
                     'name' => 'required',
                 ]);
+
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
+                }
+                
                 Country::create($request->all());
                 return redirect()->route('admin.location.country.index')->with('success', 'Country Added Successfully.');
             } catch (Exception $e) {

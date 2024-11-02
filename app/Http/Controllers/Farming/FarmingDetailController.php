@@ -15,6 +15,7 @@ use App\Models\Zone;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class FarmingDetailController extends Controller
 {
@@ -74,19 +75,19 @@ class FarmingDetailController extends Controller
     public function store(Request $request)
     {
         if (\Auth::user()->can('create-plot')) {
-            // dd($request->all());
             try {
-                $this->validate($request, [
+                $validator = Validator::make($request->all(), [
                     'farming_id' => 'required',
-                    'plot_number' => 'required',
-                    // 'kata_number' => 'required',
+                    'plot_number' => 'unique:farming_details,plot_number',
                     'area_in_acar' => 'required',
                     'date_of_harvesting' => 'required',
-                    // 'quantity' => 'required',
                     'seed_category_id' => 'required',
-                    // 'tentative_harvest_quantity' => 'required',
                     'created_by' => 'required',
                 ]);
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
+                }
+
                 FarmingDetail::create($request->all());
                 return redirect()->to(route('admin.farmer.farming_detail.index'))->with('success', 'Plot Details Added Successfully.');
             } catch (Exception $e) {
@@ -138,13 +139,17 @@ class FarmingDetailController extends Controller
         if (\Auth::user()->can('edit-plot')) {
             $farming_detail = FarmingDetail::find($id);
             try {
-                $this->validate($request, [
+                $validator = Validator::make($request->all(), [
                     'farming_id' => 'required',
                     'plot_number' => 'required',
                     'area_in_acar' => 'required',
                     'date_of_harvesting' => 'required',
                     'seed_category_id' => 'required',
                 ]);
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
+                }
+
                 $farming_detail->update($request->all());
                 return redirect()->back()->with('success', 'Plot Details Updated Successfully.');
             } catch (Exception $e) {
@@ -284,11 +289,16 @@ class FarmingDetailController extends Controller
         if (\Auth::user()->can('edit-plot')) {
             $farming_detail = FarmingDetail::find($request->id);
             try {
-                $this->validate($request, [
+                $validator = Validator::make($request->all(), [
                     'croploss' => 'required',
                     'total_planting_area' => 'required',
                     'tentative_harvest_quantity' => 'required',
                 ]);
+
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
+                }
+                
                 $farming_detail->update($request->all());
                 return redirect()->back()->with('success', 'Plot Details Updated Successfully.');
             } catch (Exception $e) {

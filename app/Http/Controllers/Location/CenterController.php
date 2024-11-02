@@ -7,6 +7,7 @@ use App\Models\Zone;
 use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CenterController extends Controller
 {
@@ -44,10 +45,15 @@ class CenterController extends Controller
     {
         if (\Auth::user()->can('create-center')) {
             try {
-                $this->validate($request, [
+                $validator = Validator::make($request->all(), [
                     'name' => 'required',
                     'zone_id' => 'required',
                 ]);
+                
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
+                }
+
                 Center::create($request->all());
                 return redirect()->route('admin.location.center.index')->with('success', 'Center Added Successfully.');
             } catch (Exception $e) {

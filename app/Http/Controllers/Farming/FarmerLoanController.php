@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class FarmerLoanController extends Controller
 {
@@ -54,10 +55,15 @@ class FarmerLoanController extends Controller
     {
         if (\Auth::user()->can('create-allotment')) {
             try {
-                $this->validate($request, [
+                $validator = Validator::make($request->all(), [
                     'farming_id' => 'required',
                     'created_by' => 'required',
                 ]);
+                
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
+                }
+
                 $encoded_loan_category_id = json_encode($request->loan_category_id);
                 $encoded_loan_type_id = json_encode($request->loan_type_id);
                 $encoded_price_kg = json_encode($request->price_kg);
