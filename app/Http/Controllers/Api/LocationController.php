@@ -78,9 +78,16 @@ class LocationController extends Controller
             ]);
         }
     }
-    public function get_center_Villages(Request $request)
+    public function get_center_and_zones(Request $request)
     {
-        $villages = Village::where('center_id', $request->center_id)->get();
+        $villages = Village::where('id', $request->village_id)
+            ->with(['zone', 'center'])
+            ->get()->map(function ($item) {
+                $item->zone_name = $item->zone->name;
+                $item->center_name = $item->center->name;
+                unset($item->zone, $item->center);
+                return $item;
+            });
         if (!$villages->isEmpty()) {
             return response()->json([
                 'data' => $villages,

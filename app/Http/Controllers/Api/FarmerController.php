@@ -24,7 +24,8 @@ class FarmerController extends Controller
             $request->validated();
             // Log::info($validatdData);
             $request->merge([
-                'registration_no' => "ACSI" . '-' . rand(0, 9999)
+                'registration_no' => "ACSI" . '-' . rand(0, 9999),
+                'created_by' => Auth::user()->id
             ]);
             $farming = Farming::create($request->all());
             if ($farming) {
