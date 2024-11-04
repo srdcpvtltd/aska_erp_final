@@ -7,6 +7,7 @@ use App\Models\Block;
 use App\Models\Center;
 use App\Models\District;
 use App\Models\GramPanchyat;
+use App\Models\Irrigation;
 use App\Models\State;
 use App\Models\Village;
 use Illuminate\Http\Request;
@@ -110,5 +111,12 @@ class LocationController extends Controller
                 'message' => "No data found",
             ]);
         }
+    }
+
+    public function get_irrigations(Request $request)
+    {
+        $irregation = Irrigation::where('category', $request->irregation_mode)->get();
+
+        return response()->json($irregation);
     }
 }
