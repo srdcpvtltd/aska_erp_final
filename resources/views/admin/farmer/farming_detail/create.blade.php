@@ -365,10 +365,6 @@
                                 </select>
                             </div>
                         </div>
-                        <!-- <div class="form-group col-md-6">
-                                                                {{ Form::label('kata_number', __('Khata Number'), ['class' => 'form-label']) }}
-                                                                {{ Form::text('kata_number', '', ['class' => 'form-control', 'required' => 'required']) }}
-                                                            </div> -->
                         <div class="form-group col-md-6">
                             {{ Form::label('area_in_acar', __('Area in acar'), ['class' => 'form-label']) }}
                             {{ Form::text('area_in_acar', '', ['class' => 'form-control', 'required' => 'required']) }}
@@ -377,14 +373,6 @@
                             {{ Form::label('date_of_harvesting', __('Date of Planting'), ['class' => 'form-label']) }}
                             {{ Form::date('date_of_harvesting', '', ['class' => 'form-control', 'required' => 'required']) }}
                         </div>
-                        <!-- <div class="form-group col-md-6">
-                                                                {{ Form::label('quantity', __('Quantity (In K.G)'), ['class' => 'form-label']) }}
-                                                                {{ Form::number('quantity', '', ['class' => 'form-control', 'required' => 'required']) }}
-                                                            </div> -->
-                        {{-- <div class="form-group col-md-6">
-                            {{ Form::label('tentative_harvest_quantity', __('Tentative Plant Quantity (In Ton)'), ['class' => 'form-label']) }}
-                            {{ Form::number('tentative_harvest_quantity', '', ['class' => 'form-control', 'required' => 'required']) }}
-                        </div> --}}
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('seed_category_id', __('Seed Variety'), ['class' => 'form-label']) }}

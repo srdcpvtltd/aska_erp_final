@@ -132,8 +132,6 @@
                                     parseFloat((item.product.purchase_price * 1) - discount);
                             }
 
-
-
                             $(el.parent().parent().parent().find('.itemTaxPrice')).val(itemTaxPrice
                                 .toFixed(2));
                             $(el.parent().parent().parent().find('.itemTaxRate')).val(
@@ -364,13 +362,6 @@
 
         })
 
-        $(document).on('click', '[data-repeater-create]', function() {
-            $('.item :selected').each(function() {
-                var id = $(this).val();
-                $(".item option[value=" + id + "]").prop("disabled", true);
-            });
-        })
-
         $(document).on('click', '[data-repeater-delete]', function() {
             // $('.delete_item').click(function () {
             if (confirm('Are you sure you want to delete this element?')) {
@@ -395,9 +386,9 @@
             }
         });
 
-        $(document).on('click', '[data-repeater-delete]', function() {
-            $(".price").change();
-            $(".discount").change();
+        $(document).on('click', '.delete_append_data', function(e) {
+            e.preventDefault();
+            $(this).closest('tbody').remove();
         });
     </script>
 @endsection
@@ -493,15 +484,14 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody class="ui-sortable" data-repeater-item>
-                                @php
-                                    $totalQuantity = 0;
-                                    $totalRate = 0;
-                                    $totalTaxPrice = 0;
-                                    $totalDiscount = 0;
-                                    $taxesData = [];
-                                @endphp
-                                @foreach ($purchase->items as $iteam)
+                            @php
+                                $totalQuantity = 0;
+                                $totalRate = 0;
+                                $totalDiscount = 0;
+                                $taxesData = [];
+                            @endphp
+                            @foreach ($purchase->items as $key => $iteam)
+                                <tbody class="ui-sortable">
                                     @if (!empty($iteam->tax))
                                         @php
                                             $taxArr = explode(',', $iteam->tax);
@@ -544,6 +534,7 @@
                                         <td>
                                             @if (!empty($iteam->tax))
                                                 @php
+                                                    $totalTaxPrice = 0;
                                                     foreach ($taxes as $taxe) {
                                                         $taxDataPrice = App\Models\Utility::taxRate(
                                                             $taxe->rate,
@@ -576,8 +567,13 @@
                                         <td class="text-end amount">
                                             {{ \Auth::user()->priceFormat($totalRate - $iteam->discount + $totalTaxPrice) }}
                                         </td>
-
-                                        <td></td>
+                                        <td>
+                                            @if ($key != 0)
+                                                <a href="#" class="delete_append_data">
+                                                    <i class="link-icon" data-feather="trash"></i>
+                                                </a>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td colspan="2">
@@ -586,8 +582,8 @@
                                             </div>
                                         </td>
                                     </tr>
-                                @endforeach
-                            </tbody>
+                                </tbody>
+                            @endforeach
                             <tfoot>
                                 <tr>
                                     <td>&nbsp;</td>

@@ -8,6 +8,7 @@ use App\Models\District;
 use App\Models\GramPanchyat;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class GramPanchyatController extends Controller
 {
@@ -53,11 +54,15 @@ class GramPanchyatController extends Controller
     {
         if (\Auth::user()->can('create-gram_panchyat')) {
             try {
-                $this->validate($request, [
+                $validator = Validator::make($request->all(), [
                     'name' => 'required',
                     'block_id' => 'required',
                 ]);
-                // GramPanchyat::create($request->all());
+
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
+                }
+                
                 $grampanchyat = new GramPanchyat();
                 $grampanchyat->name = $request->name;
                 $grampanchyat->block_id = $request->block_id;

@@ -125,7 +125,6 @@
 
         $(document).on('keyup', '.quantity', function() {
             var quntityTotalTaxPrice = 0;
-
             var el = $(this).parent().parent().parent().parent();
             var quantity = $(this).val();
             var price = $(el.find('.price')).val();
@@ -135,11 +134,8 @@
             }
 
             var totalItemPrice = (quantity * price) - discount;
-            var amount = (totalItemPrice);
-
 
             var amount = (totalItemPrice);
-
 
             var totalItemTaxRate = $(el.find('.itemTaxRate')).val();
             var itemTaxPrice = parseFloat((totalItemTaxRate / 100) * (totalItemPrice));
@@ -153,7 +149,6 @@
                 totalItemTaxPrice += parseFloat(itemTaxPriceInput[j].value);
             }
 
-
             var totalItemPrice = 0;
             var inputs_quantity = $(".quantity");
 
@@ -162,8 +157,7 @@
                 totalItemPrice += (parseFloat(priceInput[j].value) * parseFloat(inputs_quantity[j].value));
             }
 
-            var inputs = $(".amount");
-
+            var inputs = $(el.find(".amount"));
             var subTotal = 0;
             for (var i = 0; i < inputs.length; i++) {
                 subTotal = parseFloat(subTotal) + parseFloat($(inputs[i]).html());
@@ -301,7 +295,6 @@
                 '<td>' +
                 '<div class="form-group price-input input-group search-form">' +
                 '{{ Form::text('quantity[]', '', ['class' => 'form-control quantity', 'required' => 'required', 'placeholder' => __('Qty'), 'required' => 'required']) }}' +
-
                 '<span class="unit input-group-text bg-transparent"></span>' +
                 '</div>' +
                 '</td>' +
@@ -325,7 +318,6 @@
                 '</div>' +
                 '</div>' +
                 '</td>' +
-
                 '<td class="text-end amount">' +
                 '0.00' +
                 '</td>' +

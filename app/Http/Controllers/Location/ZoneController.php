@@ -6,6 +6,7 @@ use App\Models\Zone;
 use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ZoneController extends Controller
 {
@@ -41,9 +42,14 @@ class ZoneController extends Controller
     {
         if (\Auth::user()->can('create-zone')) {
             try {
-                $this->validate($request, [
+                $validator = Validator::make($request->all(), [
                     'name' => 'required',
                 ]);
+
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
+                }
+                
                 Zone::create($request->all());
                 return redirect()->route('admin.location.zone.index')->with('success', 'Zone Added Successfully.');
             } catch (Exception $e) {

@@ -7,6 +7,7 @@ use App\Models\Block;
 use App\Models\District;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class BlockController extends Controller
 {
@@ -51,10 +52,15 @@ class BlockController extends Controller
     {
         if (\Auth::user()->can('create-block')) {
             try {
-                $this->validate($request, [
+                $validator = Validator::make($request->all(), [
                     'name' => 'required',
                     'district_id' => 'required',
                 ]);
+
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
+                }
+                
                 Block::create($request->all());
                 return redirect()->route('admin.location.block.index')->with('success', 'Block Added Successfully.');
             } catch (Exception $e) {
