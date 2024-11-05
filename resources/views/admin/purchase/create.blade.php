@@ -315,6 +315,8 @@
                 '<div class="input-group">' +
                 '<div class="taxes"></div>' +
                 '{{ Form::hidden('tax[]', '', ['class' => 'form-control tax']) }}' +
+                '{{ Form::hidden('itemTaxPrice[]', '', ['class' => 'form-control itemTaxPrice']) }}' +
+                '{{ Form::hidden('itemTaxRate[]', '', ['class' => 'form-control itemTaxRate']) }}' +
                 '</div>' +
                 '</div>' +
                 '</td>' +
