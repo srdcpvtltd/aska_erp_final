@@ -136,8 +136,12 @@
                                     <th>{{ __('Farmer') }}</th>
                                     <th>{{ __('Father Name') }}</th>
                                     <th>{{ __('Plot Number') }}</th>
+                                    <th>{{ __('Can Field Village') }}</th>
                                     <th>{{ __('Area in Acar') }}</th>
                                     <th>{{ __('Date of Planting') }}</th>
+                                    <th>{{ __('Plant Type') }}</th>
+                                    <th>{{ __('Irrigation') }}</th>
+                                    <th>{{ __('Irrigation Code') }}</th>
                                     <th>{{ __('Tentative Plant Quantity') }}</th>
                                     <th>{{ __('Seed Category') }}</th>
                                     <th>{{ __('Cutting Order') }}</th>
@@ -154,6 +158,9 @@
                                         <td>{{ $farming_detail->plot_number }}</td>
                                         <td>{{ number_format($farming_detail->area_in_acar, 2) }}</td>
                                         <td>{{ date('d-m-Y', strtotime ($farming_detail->date_of_harvesting ))}}</td>
+                                        <td>{{ @$farming_detail->farming->planting_category }}</td>
+                                         <td>{{ @$farming_detail->irrigations->name }}</td>
+                                         <td>{{ @$farming_detail->irrigations->code }}</td>
                                         <td>{{ number_format($farming_detail->tentative_harvest_quantity, 2) }}</td>
                                         <td>{{ @$farming_detail->seed_category->name }}</td>
                                         <td>
