@@ -74,6 +74,11 @@ class FarmingDetail extends Model
         return $this->belongsTo(Center::class,'center_id');
     }
 
+    public function can_field_center()
+    {
+        return $this->belongsTo(Center::class,'can_field_center_id');
+    }
+
     public function irrig()
     {
         return $this->belongsTo(Irrigation::class,'irregation');

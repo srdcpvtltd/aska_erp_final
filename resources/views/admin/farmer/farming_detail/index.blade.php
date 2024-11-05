@@ -142,6 +142,7 @@
                                     <th>{{ __('Seed Category') }}</th>
                                     <th>{{ __('Cutting Order') }}</th>
                                     <th>{{ __('Can Field Village') }}</th>
+                                    <th>{{ __('Can Field Center') }}</th>
                                     <th>{{ __('Plant Category') }}</th>
                                     <th>{{ __('Irrigation Name') }}</th>
                                     <th>{{ __('Irrigation Code') }}</th>
@@ -170,6 +171,7 @@
                                             @endif
                                         </td>
                                         <td>{{ @$farming_detail->can_field_village->name }}</td>
+                                        <td>{{ @$farming_detail->can_field_center->name }}</td>
                                         <td>{{ $farming_detail->planting_category }}</td>
                                         <td>{{ @$farming_detail->irrig->name }}</td>
                                         <td>{{ @$farming_detail->irrig->code }}</td>

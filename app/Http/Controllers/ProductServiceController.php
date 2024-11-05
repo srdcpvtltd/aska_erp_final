@@ -76,7 +76,6 @@ class ProductServiceController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
         if (\Auth::user()->can('create-product_service')) {
 
             $rules = [
