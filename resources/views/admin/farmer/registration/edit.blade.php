@@ -383,6 +383,8 @@
                                 <option value="Minor Irrigation"
                                     {{ $farming->irregation_mode == 'Minor Irrigation' ? 'selected' : '' }}>Minor
                                     Irrigation</option>
+                                    <option value="Bore Well"
+                                    {{ $farming->irregation_mode == 'Bore Well' ? 'selected' : '' }}>Bore Well</option>
                                 <option value="Other Irrigation"
                                     {{ $farming->irregation_mode == 'Other Irrigation' ? 'selected' : '' }}>Other
                                     Irrigation</option>
