@@ -367,6 +367,7 @@
                                 <option value="Major Irrigation">Major Irrigation</option>
                                 <option value="Medium Irrigation">Medium Irrigation</option>
                                 <option value="Minor Irrigation">Minor Irrigation</option>
+                                <option value="Bore Well">Bore Well</option>
                                 <option value="Other Irrigation">Other Irrigation</option>
                             </select>
                         </div>
