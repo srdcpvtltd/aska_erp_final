@@ -119,8 +119,14 @@ class FarmerController extends Controller
     public function retrive_farmers(Request $request)
     {
         try {
+            if ($request->old_g_code) {
+                $query = Farming::where('old_g_code', $request->old_g_code)->with(['state', 'district', 'block']);
+            }
+
             if ($request->farmer_id) {
                 $query = Farming::where('id', $request->farmer_id)->with(['state', 'district', 'block']);
+            } elseif ($request->old_g_code) {
+                $query = Farming::where('old_g_code', $request->old_g_code)->with(['state', 'district', 'block']);
             } else {
                 $query = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
                     ->where('farmings.created_by', Auth::user()->id)
