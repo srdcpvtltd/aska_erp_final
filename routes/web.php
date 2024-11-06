@@ -219,6 +219,7 @@ Route::group([
         //bank_branches
         Route::resource('bank_branches', BankBranchController::class);
         Route::get('bank_branches/{id}/destroy', [BankBranchController::class, 'destroy'])->name('bank_branches.destroy');
+        Route::post('bank_branches/search_filter', [BankBranchController::class, 'search_filter'])->name('bank_branches.search_filter');
 
         /** Notification route */
         Route::get('notifications/get-nav-notification', [NotificationController::class, 'getNotificationForNavBar'])->name('nav-notifications');
