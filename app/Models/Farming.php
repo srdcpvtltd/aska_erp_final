@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Farming extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'name',
         'mobile',
@@ -101,12 +101,12 @@ class Farming extends Model
 
     public function center()
     {
-        return $this->belongsTo(Center::class,'center_id');
+        return $this->belongsTo(Center::class, 'center_id');
     }
 
     public function seed_category()
     {
-        return $this->belongsTo(SeedCategory::class,'seed_category_id'); 
+        return $this->belongsTo(SeedCategory::class, 'seed_category_id');
         return $this->belongsTo(Center::class, 'center_id');
     }
 

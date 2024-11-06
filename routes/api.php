@@ -156,7 +156,7 @@ Route::group([
         Route::post('register', [FarmerController::class, 'register']);
         Route::post('delete', [FarmerController::class, 'delete_farmer']);
         Route::post('update', [FarmerController::class, 'update_farmer']);
-        Route::get('retrive', [FarmerController::class, 'retrive_farmers']);
+        Route::post('retrive', [FarmerController::class, 'retrive_farmers']);
 
         //Farmer CRUD for guarantor
         Route::group(([
