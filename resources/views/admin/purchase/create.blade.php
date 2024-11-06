@@ -43,7 +43,7 @@
         })
 
         $(document).on('change', '.item', function() {
-            debugger;
+            // debugger;
             var iteams_id = $(this).val();
             var url = $(this).data('url');
             var el = $(this);
@@ -91,7 +91,7 @@
                     $(el.parent().parent().find('.tax')).val(tax);
                     $(el.parent().parent().find('.unit')).html(item.unit);
                     $(el.parent().parent().find('.discount')).val(0);
-                    $(el.parent().parent().find('.amount')).html(item.totalAmount);
+                    $(el.parent().parent().find('.amount')).html(item.totalAmount + itemTaxPrice);
 
 
                     var inputs = $(".amount");
@@ -125,7 +125,7 @@
         });
 
         $(document).on('keyup', '.quantity', function() {
-            debugger;
+            // debugger;
             var quntityTotalTaxPrice = 0;
             var el = $(this).parent().parent().parent().parent();
             var quantity = $(this).val();
@@ -169,9 +169,9 @@
             $('.subTotal').html(totalItemPrice.toFixed(2));
             $('.totalTax').html(totalItemTaxPrice.toFixed(2));
 
-            $('.totalAmount').html((parseFloat(subTotal) + parseFloat(totalItemTaxPrice))
+            $('.totalAmount').html((parseFloat(totalItemPrice) + parseFloat(totalItemTaxPrice))
                 .toFixed(2));
-            $('input[name=total_amount]').val((parseFloat(subTotal) + parseFloat(
+            $('input[name=total_amount]').val((parseFloat(totalItemPrice) + parseFloat(
                     totalItemTaxPrice))
                 .toFixed(2))
 
@@ -349,6 +349,31 @@
 
         $(document).on('click', '.delete_append_data', function(e) {
             e.preventDefault();
+            var el = $(this).closest('.ui-sortable');
+            var quantity = $(el).find('.quantity').val();
+            var price = $(el).find('.price').val();
+            var discount = $(el).find('.discount').val();
+            var itemTaxPrice = $(el).find('.itemTaxPrice').val();
+            var subTotal = parseFloat($('.subTotal').text()) || 0;
+            var totalTax = parseFloat($('.totalTax').text()) || 0;
+            var totalAmount = parseFloat($('.totalAmount').text()) || 0;
+
+            if (!discount) {
+                discount = 0;
+            }
+
+            var totalPrice = (quantity * price) - discount;
+            var totalItemPrice = subTotal - totalPrice;
+            var totalItemTaxPrice = totalTax - itemTaxPrice;
+            
+            $('.subTotal').html(totalItemPrice.toFixed(2));
+            $('.totalTax').html(totalItemTaxPrice.toFixed(2));
+
+            $('.totalAmount').html((parseFloat(totalItemPrice) + parseFloat(totalItemTaxPrice))
+                .toFixed(2));
+            $('input[name=total_amount]').val((parseFloat(totalItemPrice) + parseFloat(
+                    totalItemTaxPrice))
+                .toFixed(2));
             $(this).closest('tbody').remove();
         });
     </script>
@@ -444,7 +469,7 @@
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody class="ui-sortable" data-repeater-item>
+                            <tbody class="ui-sortable">
                                 <tr>
                                     <td width="25%" class="form-group">
                                         {{ Form::select('item[]', $product_services, '', ['class' => 'form-control select2 item', 'data-url' => route('admin.purchase.product'), 'required' => 'required']) }}
@@ -543,14 +568,14 @@
                         <input type="hidden" name="total_amount">
                     </div>
                 </div>
+                <div class="card-footer">
+                    <input type="button" value="{{ __('Cancel') }}"
+                        onclick="location.href = '{{ route('admin.purchase.index') }}';" class="btn btn-light">
+                    <input type="submit" value="{{ __('Create') }}" class="btn  btn-primary">
+                </div>
+                {{ Form::close() }}
             </div>
         </div>
 
-        <div class="card-footer">
-            <input type="button" value="{{ __('Cancel') }}"
-                onclick="location.href = '{{ route('admin.purchase.index') }}';" class="btn btn-light">
-            <input type="submit" value="{{ __('Create') }}" class="btn  btn-primary">
-        </div>
-        {{ Form::close() }}
     </div>
 @endsection
