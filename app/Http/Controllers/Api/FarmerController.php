@@ -116,23 +116,27 @@ class FarmerController extends Controller
         }
     }
 
-    public function retrive_farmers()
+    public function retrive_farmers(Request $request)
     {
         try {
-            $farmer_data = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
-                ->where('farmings.created_by', Auth::user()->id)
-                ->orWhere('users.supervisor_id', Auth::user()->id)
-                ->orderBy('id', 'desc')
-                ->get()->map(function ($items) {
-                    $data = $items->toArray();
-                    $data['state_name'] = $items->state->name ?? null;
-                    $data['district_name'] = $items->district->name ?? null;
-                    $data['block_name'] = $items->block->name ?? null;
-                    unset($data['district']);
-                    unset($data['state']);
-                    unset($data['block']);
-                    return $data;
-                });
+            if ($request->farmer_id) {
+                $query = Farming::where('id', $request->farmer_id)->with(['state', 'district', 'block']);
+            } else {
+                $query = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
+                    ->where('farmings.created_by', Auth::user()->id)
+                    ->orWhere('users.supervisor_id', Auth::user()->id)
+                    ->orderBy('id', 'desc');
+            }
+            $farmer_data = $query->get()->map(function ($items) {
+                $data = $items->toArray();
+                $data['state_name'] = $items->state->name ?? null;
+                $data['district_name'] = $items->district->name ?? null;
+                $data['block_name'] = $items->block->name ?? null;
+                unset($data['district']);
+                unset($data['state']);
+                unset($data['block']);
+                return $data;
+            });
 
             if ($farmer_data->isEmpty()) {
                 return response()->json([
