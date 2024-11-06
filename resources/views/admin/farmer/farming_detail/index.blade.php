@@ -141,6 +141,11 @@
                                     <th>{{ __('Tentative Plant Quantity') }}</th>
                                     <th>{{ __('Seed Category') }}</th>
                                     <th>{{ __('Cutting Order') }}</th>
+                                    <th>{{ __('Can Field Village') }}</th>
+                                    <th>{{ __('Can Field Center') }}</th>
+                                    <th>{{ __('Plant Category') }}</th>
+                                    <th>{{ __('Irrigation Name') }}</th>
+                                    <th>{{ __('Irrigation Code') }}</th>
                                     <th>{{ __('Created At') }}</th>
                                     <th>{{ __('Action') }}</th>
                                 </tr>
@@ -165,6 +170,11 @@
                                                     class="status_badge text-capitalize badge bg-danger p-2 px-3 rounded">No</span>
                                             @endif
                                         </td>
+                                        <td>{{ @$farming_detail->can_field_village->name }}</td>
+                                        <td>{{ @$farming_detail->can_field_center->name }}</td>
+                                        <td>{{ $farming_detail->planting_category }}</td>
+                                        <td>{{ @$farming_detail->irrig->name }}</td>
+                                        <td>{{ @$farming_detail->irrig->code }}</td>
                                         <td>{{ date('d-m-Y', strtotime($farming_detail->created_at)) }}</td>
                                         <td class="Action">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">

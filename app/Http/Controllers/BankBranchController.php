@@ -17,8 +17,8 @@ class BankBranchController extends Controller
     {
         if (\Auth::user()->can('manage-bank_branch')) {
             $bank_branch = Bank_branch::all();
-
-            return view('admin.bank_branch.index', compact('bank_branch'));
+            $banks = Bank::all();
+            return view('admin.bank_branch.index', compact('bank_branch', 'banks'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -97,7 +97,7 @@ class BankBranchController extends Controller
         if (\Auth::user()->can('edit-bank_branch')) {
             $bank_branches = Bank_branch::findorfail($id);
             $banks = Bank::all();
-            return view('admin.bank_branch.edit', compact('banks','bank_branches'));
+            return view('admin.bank_branch.edit', compact('banks', 'bank_branches'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -155,5 +155,12 @@ class BankBranchController extends Controller
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
+    }
+
+    public function search_filter(Request $request)
+    {
+        $bank_branch = Bank_branch::where('bank_id',$request->bank_id)->get();
+        $banks = Bank::all();
+        return view('admin.bank_branch.index', compact('bank_branch', 'banks'));
     }
 }

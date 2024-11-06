@@ -58,6 +58,11 @@ class FarmingDetail extends Model
     {
         return $this->belongsTo(Village::class,'village_id');
     } 
+    
+    public function can_field_village()
+    {
+        return $this->belongsTo(Village::class,'can_field_village_id');
+    } 
 
     public function zone()
     {
@@ -67,5 +72,15 @@ class FarmingDetail extends Model
     public function center()
     {
         return $this->belongsTo(Center::class,'center_id');
+    }
+
+    public function can_field_center()
+    {
+        return $this->belongsTo(Center::class,'can_field_center_id');
+    }
+
+    public function irrig()
+    {
+        return $this->belongsTo(Irrigation::class,'irregation');
     }
 }

@@ -43,6 +43,7 @@
         })
 
         $(document).on('change', '.item', function() {
+            debugger;
             var iteams_id = $(this).val();
             var url = $(this).data('url');
             var el = $(this);
@@ -124,6 +125,7 @@
         });
 
         $(document).on('keyup', '.quantity', function() {
+            debugger;
             var quntityTotalTaxPrice = 0;
             var el = $(this).parent().parent().parent().parent();
             var quantity = $(this).val();
@@ -162,12 +164,16 @@
             for (var i = 0; i < inputs.length; i++) {
                 subTotal = parseFloat(subTotal) + parseFloat($(inputs[i]).html());
             }
+            console.log(subTotal);
 
             $('.subTotal').html(totalItemPrice.toFixed(2));
             $('.totalTax').html(totalItemTaxPrice.toFixed(2));
 
-            $('.totalAmount').html((parseFloat(subTotal)).toFixed(2));
-            $('input[name=total_amount]').val((parseFloat(subTotal)).toFixed(2))
+            $('.totalAmount').html((parseFloat(subTotal) + parseFloat(totalItemTaxPrice))
+                .toFixed(2));
+            $('input[name=total_amount]').val((parseFloat(subTotal) + parseFloat(
+                    totalItemTaxPrice))
+                .toFixed(2))
 
         })
 
@@ -315,6 +321,8 @@
                 '<div class="input-group">' +
                 '<div class="taxes"></div>' +
                 '{{ Form::hidden('tax[]', '', ['class' => 'form-control tax']) }}' +
+                '{{ Form::hidden('itemTaxPrice[]', '', ['class' => 'form-control itemTaxPrice']) }}' +
+                '{{ Form::hidden('itemTaxRate[]', '', ['class' => 'form-control itemTaxRate']) }}' +
                 '</div>' +
                 '</div>' +
                 '</td>' +
@@ -527,7 +535,7 @@
                                     <td>&nbsp;</td>
                                     <td class="blue-text"><strong>{{ __('Total Amount') }}
                                             ({{ \Auth::user()->currencySymbol() }})</strong></td>
-                                    <td class="blue-text text-end totalAmount"></td>
+                                    <td class="blue-text text-end totalAmount">0.00</td>
                                     <td></td>
                                 </tr>
                             </tfoot>
