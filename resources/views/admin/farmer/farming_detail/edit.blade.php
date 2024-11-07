@@ -324,16 +324,11 @@
                                 {{ Form::label('village_id', __('Village'), ['class' => 'form-label']) }}
                                 <select class="form-control select" name="village_id" id="village_id"
                                     placeholder="Select Village" readonly>
-                                    @if ($farming_detail->village)
-                                        <option value="{{ $farming_detail->village_id }}">
-                                            {{ $farming_detail->village->name }}</option>
+                                    @if (@$farming_detail->farming->village)
+                                        <option value="{{ @$farming_detail->farming->village_id }}">
+                                            {{ @$farming_detail->farming->village->name }}</option>
                                     @else
-                                        @if (@$farming_detail->farming->village)
-                                            <option value="{{ @$farming_detail->farming->village_id }}">
-                                                {{ @$farming_detail->farming->village->name }}</option>
-                                        @else
-                                            <option value="">{{ __('Select Village') }}</option>
-                                        @endif
+                                        <option value="">{{ __('Select Village') }}</option>
                                     @endif
                                 </select>
                             </div>
@@ -421,9 +416,9 @@
                             </div>
                         </div>
                         <!-- <div class="form-group col-md-6">
-                                            {{ Form::label('kata_number', __('Kata Number'), ['class' => 'form-label']) }}
-                                            {{ Form::text('kata_number', $farming_detail->kata_number, ['class' => 'form-control', 'required' => 'required']) }}
-                                        </div> -->
+                                                {{ Form::label('kata_number', __('Kata Number'), ['class' => 'form-label']) }}
+                                                {{ Form::text('kata_number', $farming_detail->kata_number, ['class' => 'form-control', 'required' => 'required']) }}
+                                            </div> -->
                         <div class="form-group col-md-6">
                             {{ Form::label('area_in_acar', __('Area in acar'), ['class' => 'form-label']) }}
                             {{ Form::text('area_in_acar', $farming_detail->area_in_acar, ['class' => 'form-control', 'required' => 'required']) }}
@@ -433,9 +428,9 @@
                             {{ Form::date('date_of_harvesting', $farming_detail->date_of_harvesting, ['class' => 'form-control', 'required' => 'required']) }}
                         </div>
                         <!-- <div class="form-group col-md-6">
-                                            {{ Form::label('quantity', __('Quantity'), ['class' => 'form-label']) }}
-                                            {{ Form::number('quantity', $farming_detail->quantity, ['class' => 'form-control', 'required' => 'required']) }}
-                                        </div> -->
+                                                {{ Form::label('quantity', __('Quantity'), ['class' => 'form-label']) }}
+                                                {{ Form::number('quantity', $farming_detail->quantity, ['class' => 'form-control', 'required' => 'required']) }}
+                                            </div> -->
                         {{-- <div class="form-group col-md-6">
                             {{ Form::label('tentative_harvest_quantity', __('Tentative Plant Quantity (In Ton)'), ['class' => 'form-label']) }}
                             {{ Form::number('tentative_harvest_quantity', $farming_detail->tentative_harvest_quantity, ['class' => 'form-control', 'required' => 'required']) }}
@@ -443,8 +438,8 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('seed_category_id', __('Seed Variety'), ['class' => 'form-label']) }}
-                                <select class="form-control select" name="seed_category_id" id="seed_category_id"
-                                    required placeholder="Select Seed Category">
+                                <select class="form-control select" name="seed_category_id" id="seed_category_id" required
+                                    placeholder="Select Seed Category">
                                     <option value="">{{ __('Select Seed Variety') }}</option>
                                     @foreach ($seed_categories as $seed_category)
                                         <option
@@ -493,11 +488,21 @@
                             <select class="form-control select" name="irregation_mode" id="irregation_mode"
                                 placeholder="Select Seed Category">
                                 <option value="">{{ __('Select Irregation') }}</option>
-                                <option value="Major Irrigation" {{ $farming_detail->irregation_mode == 'Major Irrigation' ? 'selected':'' }}>Major Irrigation</option>
-                                <option value="Medium Irrigation" {{ $farming_detail->irregation_mode == 'Medium Irrigation' ? 'selected':'' }}>Medium Irrigation</option>
-                                <option value="Minor Irrigation" {{ $farming_detail->irregation_mode == 'Minor Irrigation' ? 'selected':'' }}>Minor Irrigation</option>
-                                <option value="Bore Well" {{ $farming_detail->irregation_mode == 'Bore Well' ? 'selected':'' }}>Bore Well</option>
-                                <option value="Other Irrigation" {{ $farming_detail->irregation_mode == 'Other Irrigation' ? 'selected':'' }}>Other Irrigation</option>
+                                <option value="Major Irrigation"
+                                    {{ $farming_detail->irregation_mode == 'Major Irrigation' ? 'selected' : '' }}>Major
+                                    Irrigation</option>
+                                <option value="Medium Irrigation"
+                                    {{ $farming_detail->irregation_mode == 'Medium Irrigation' ? 'selected' : '' }}>Medium
+                                    Irrigation</option>
+                                <option value="Minor Irrigation"
+                                    {{ $farming_detail->irregation_mode == 'Minor Irrigation' ? 'selected' : '' }}>Minor
+                                    Irrigation</option>
+                                <option value="Bore Well"
+                                    {{ $farming_detail->irregation_mode == 'Bore Well' ? 'selected' : '' }}>Bore Well
+                                </option>
+                                <option value="Other Irrigation"
+                                    {{ $farming_detail->irregation_mode == 'Other Irrigation' ? 'selected' : '' }}>Other
+                                    Irrigation</option>
                             </select>
                         </div>
                         <div class="form-group col-md-6">
@@ -505,7 +510,9 @@
                             <select class="form-control select" name="irregation" id="irregation">
                                 <option value="">{{ __('Select Irregation') }}</option>
                                 @foreach ($irrigations as $irrigation)
-                                <option value="{{ $irrigation->id }}" {{ $farming_detail->irregation == $irrigation->id ? 'selected':'' }}>{{ $irrigation->name }}</option>
+                                    <option value="{{ $irrigation->id }}"
+                                        {{ $farming_detail->irregation == $irrigation->id ? 'selected' : '' }}>
+                                        {{ $irrigation->name }}</option>
                                 @endforeach
                             </select>
                         </div>
