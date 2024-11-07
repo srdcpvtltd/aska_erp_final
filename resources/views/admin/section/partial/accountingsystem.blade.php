@@ -134,7 +134,7 @@
                         </div>
                     </li>
                 {{-- @endif --}}
-                {{--
+                
             @if (Gate::check('manage bill') || Gate::check('manage payment') || Gate::check('manage debit note'))
                 <li
                     class="nav-item {{ Request::segment(2) == 'bill' || Request::segment(2) == 'vender' || Request::segment(2) == 'expense' || Request::segment(2) == 'payment' || Request::segment(2) == 'debit-note' ? 'active' : '' }}">
@@ -168,6 +168,7 @@
                     </div>
                 </li>
             @endif
+            {{--
             @if (Gate::check('manage chart of account') || Gate::check('manage journal entry') || Gate::check('balance sheet report') || Gate::check('ledger report') || Gate::check('trial balance report'))
                 <li
                     class="nav-item {{ Request::segment(2) == 'chart-of-account' || Request::segment(2) == 'journal-entry' || Request::segment(2) == 'ledger' || Request::segment(2) == 'balance-sheet' || Request::segment(2) == 'trial-balance' ? 'active' : '' }}">

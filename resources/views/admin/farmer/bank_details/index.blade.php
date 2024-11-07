@@ -29,6 +29,7 @@
                     <table class="data_table table datatable">
                         <thead>
                             <tr>
+                                <th>{{ __('G Code') }}</th>
                                 <th>{{ __('Farmer') }}</th>
                                 <th>{{ __('Finance Category') }}</th>
                                 <th>{{ __('Loan Type') }}</th>
@@ -36,14 +37,15 @@
                                 <th>{{ __('Account Number') }}</th>
                                 <th>{{ __('IFSC Code') }}</th>
                                 <th>{{ __('Branch') }}</th>
-                                <th>{{ __('Co-Operative Name') }}</th>
-                                <th>{{ __('Co-Operative Branch') }}</th>
+                                <th>{{ __('Village') }}</th>
+                                {{-- <th>{{ __('Co-Operative Branch') }}</th> --}}
                                 <th>{{ __('Action') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($farmings as $farming_detail)
                             <tr class="font-style">
+                                <td>{{ $farming_detail->old_g_code }}</td>
                                 <td>{{ $farming_detail->name ?? "N/A" }}</td>
                                 <td>{{ $farming_detail->finance_category  ?? "N/A" }}</td>
                                 <td>{{ $farming_detail->non_loan_type ?? "N/A" }}</td>
@@ -51,8 +53,8 @@
                                 <td>{{ $farming_detail->account_number ?? "N/A" }}</td>
                                 <td>{{ $farming_detail->ifsc_code ?? "N/A" }}</td>
                                 <td>{{ $farming_detail->bank_branch->name ?? "N/A" }}</td>
-                                <td>{{ $farming_detail->name_of_cooperative ?? "N/A" }}</td>
-                                <td>{{ $farming_detail->cooperative_address ?? "N/A" }}</td>
+                                <td>{{ $farming_detail->village->name ?? "N/A" }}</td>
+                                {{-- <td>{{ $farming_detail->cooperative_address ?? "N/A" }}</td> --}}
                                 <td class="Action">
                                     <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                         @can('edit-bank_detail')

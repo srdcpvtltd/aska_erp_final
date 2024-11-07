@@ -56,15 +56,13 @@
                                             onclick="document.getElementById('transfer_form').submit(); return false;"
                                             data-bs-toggle="tooltip" title="{{ __('Apply') }}"
                                             data-original-title="{{ __('apply') }}">
-                                            <span class="btn-inner--icon"><i class="link-icon"
-                                                    data-feather="search"></i></span>
+                                            Search
                                         </a>
 
                                         <a href="{{ route('admin.bank-transfer.index') }}" class="btn btn-danger "
                                             data-bs-toggle="tooltip" title="{{ __('Reset') }}"
                                             data-original-title="{{ __('Reset') }}">
-                                            <span class="btn-inner--icon"><i class="link-icon"
-                                                    data-feather="trash"></i></span>
+                                            RESET
                                         </a>
                                     </div>
                                 </div>
