@@ -362,33 +362,94 @@
 
         })
 
-        $(document).on('click', '[data-repeater-delete]', function() {
-            // $('.delete_item').click(function () {
-            if (confirm('Are you sure you want to delete this element?')) {
-                var el = $(this).parent().parent();
-                var id = $(el.find('.id')).val();
-
-                $.ajax({
-                    url: '{{ route('admin.purchase.product.destroy') }}',
-                    type: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': jQuery('#token').val()
-                    },
-                    data: {
-                        'id': id
-                    },
-                    cache: false,
-                    success: function(data) {
-
-                    },
-                });
-
-            }
+        $(document).on('click', '.add_more_btn', function() {
+            $('#table').append('<tbody class="ui-sortable">' +
+                '<tr>' +
+                '<td width="25%" class="form-group">' +
+                '{{ Form::select('item[]', $product_services, '', ['class' => 'form-control select2 item', 'data-url' => route('admin.purchase.product'), 'required' => 'required']) }}' +
+                '</td>' +
+                '<td>' +
+                '<div class="form-group price-input input-group search-form">' +
+                '{{ Form::text('quantity[]', '', ['class' => 'form-control quantity', 'required' => 'required', 'placeholder' => __('Qty'), 'required' => 'required']) }}' +
+                '<span class="unit input-group-text bg-transparent"></span>' +
+                '</div>' +
+                '</td>' +
+                '<td>' +
+                '<div class="form-group price-input input-group search-form">' +
+                '{{ Form::text('price[]', '', ['class' => 'form-control price', 'required' => 'required', 'placeholder' => __('Price'), 'required' => 'required']) }}' +
+                '<span class="input-group-text bg-transparent">{{ \Auth::user()->currencySymbol() }}</span>' +
+                '</div>' +
+                '</td>' +
+                '<td>' +
+                '<div class="form-group price-input input-group search-form">' +
+                '{{ Form::text('discount[]', '', ['class' => 'form-control discount', 'required' => 'required', 'placeholder' => __('Discount')]) }}' +
+                '<span class="input-group-text bg-transparent">{{ \Auth::user()->currencySymbol() }}</span>' +
+                '</div>' +
+                '</td>' +
+                '<td>' +
+                '<div class="form-group">' +
+                '<div class="input-group">' +
+                '<div class="taxes"></div>' +
+                '{{ Form::hidden('tax[]', '', ['class' => 'form-control tax']) }}' +
+                '{{ Form::hidden('itemTaxPrice[]', '', ['class' => 'form-control itemTaxPrice']) }}' +
+                '{{ Form::hidden('itemTaxRate[]', '', ['class' => 'form-control itemTaxRate']) }}' +
+                '</div>' +
+                '</div>' +
+                '</td>' +
+                '<td class="text-end amount">' +
+                '0.00' +
+                '</td>' +
+                '<td>' +
+                '<a href="#" class="delete_append_data">' +
+                '<i class="link-icon" data-feather="trash"></i>' +
+                '</a>' +
+                '</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td colspan="2">' +
+                '<div class="form-group">' +
+                '{{ Form::textarea('description[]', null, ['class' => 'form-control pro_description', 'rows' => '2', 'placeholder' => __('Description')]) }}' +
+                '</div>' +
+                '</td>' +
+                '<td colspan="5"></td>' +
+                '</tr>' +
+                '</tbody>');
+            feather.replace();
         });
+
 
         $(document).on('click', '.delete_append_data', function(e) {
             e.preventDefault();
-            $(this).closest('tbody').remove();
+            var el = $(this).closest('.ui-sortable');
+            var quantity = $(el).find('.quantity').val();
+            var price = $(el).find('.price').val();
+            var discount = $(el).find('.discount').val();
+            var itemTaxPrice = $(el).find('.itemTaxPrice').val();
+            console.log(itemTaxPrice);
+            var subTotal = parseFloat($('.subTotal').text()) || 0;
+            console.log(subTotal);
+            var totalTax = parseFloat($('.totalTax').text()) || 0;
+            console.log(totalTax);
+            var totalAmount = parseFloat($('.totalAmount').text()) || 0;
+            console.log(totalAmount);
+
+            if (!discount) {
+                discount = 0;
+            }
+
+            var totalPrice = (quantity * price) - discount;
+            var totalItemPrice = subTotal - totalPrice;
+            var totalItemTaxPrice = totalTax - itemTaxPrice;
+
+            // $('.subTotal').html(totalItemPrice.toFixed(2));
+            // $('.totalTax').html(totalItemTaxPrice.toFixed(2));
+
+            // $('.totalAmount').html((parseFloat(totalItemPrice) + parseFloat(totalItemTaxPrice))
+            //     .toFixed(2));
+            // $('input[name=total_amount]').val((parseFloat(totalItemPrice) + parseFloat(
+            //         totalItemTaxPrice))
+            //     .toFixed(2));
+            // $(this).closest('tbody').remove();
         });
     </script>
 @endsection
@@ -461,9 +522,8 @@
                     <div class="row justify-content-between align-items-center">
                         <div class="col-md-12 d-flex align-items-center justify-content-between justify-content-md-end">
                             <div class="all-button-box me-2">
-                                <a href="#" data-repeater-create="" class="btn btn-primary" data-bs-toggle="modal"
-                                    data-target="#add-bank">
-                                    <i class="ti ti-plus"></i> {{ __('Add item') }}
+                                <a class="btn btn-primary add_more_btn text-white">
+                                    {{ __('Add item') }}
                                 </a>
                             </div>
                         </div>
@@ -471,7 +531,7 @@
                 </div>
                 <div class="card-body table-border-style ">
                     <div class="table-responsive">
-                        <table class="table  mb-0" data-repeater-list="items" id="sortable-table">
+                        <table class="table mb-0" id="table">
                             <thead>
                                 <tr>
                                     <th>{{ __('Items') }}</th>
@@ -489,6 +549,9 @@
                                 $totalRate = 0;
                                 $totalDiscount = 0;
                                 $taxesData = [];
+                                $totalTaxPrice = 0;
+                                $totalTaxRate = 0;
+                                $totalTax = 0;
                             @endphp
                             @foreach ($purchase->items as $key => $iteam)
                                 <tbody class="ui-sortable">
@@ -505,7 +568,7 @@
                                         @endphp
                                     @endif
                                     <tr>
-                                        {{ Form::hidden('id', null, ['class' => 'form-control id']) }}
+                                        {{ Form::hidden('id[]', $iteam->id, ['class' => 'form-control id']) }}
                                         <td width="25%">
                                             <div class="form-group">
                                                 {{ Form::select('item[]', $product_services, $iteam->product_id, ['class' => 'form-control select item', 'data-url' => route('admin.purchase.product')]) }}
@@ -534,7 +597,6 @@
                                         <td>
                                             @if (!empty($iteam->tax))
                                                 @php
-                                                    $totalTaxPrice = 0;
                                                     foreach ($taxes as $taxe) {
                                                         $taxDataPrice = App\Models\Utility::taxRate(
                                                             $taxe->rate,
@@ -542,6 +604,7 @@
                                                             $iteam->quantity,
                                                             $iteam->discount,
                                                         );
+                                                        $totalTaxRate += $taxe->rate;
                                                         $totalTaxPrice += $taxDataPrice;
                                                         if (array_key_exists($taxe->name, $taxesData)) {
                                                             $taxesData[$taxe->name] =
@@ -551,21 +614,29 @@
                                                         }
                                                     }
                                                 @endphp
-                                                @foreach ($taxes as $taxe)
-                                                    <div>
-                                                        <div class="input-group">
-                                                            <div class="taxes">
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <div class="taxes">
+                                                            @foreach ($taxes as $taxe)
                                                                 <span
                                                                     class="badge bg-primary mt-1 mr-2">{{ $taxe->name . ' (' . $taxe->rate . '%)' }}</span>
-                                                            </div>
-                                                            {{ Form::hidden('tax[]', $taxe->id, ['class' => 'form-control tax']) }}
+                                                            @endforeach
                                                         </div>
+                                                        {{ Form::hidden('tax[]', $taxe->id, ['class' => 'form-control tax']) }}
+                                                        {{ Form::hidden('itemTaxPrice[]', $totalTaxPrice, ['class' => 'form-control itemTaxPrice']) }}
+                                                        {{ Form::hidden('itemTaxRate[]', $totalTaxRate, ['class' => 'form-control itemTaxRate']) }}
                                                     </div>
-                                                @endforeach
+                                                </div>
+                                            @else
+                                                @php
+                                                    $totalTaxPrice = 0;
+                                                @endphp
+                                                {{ Form::hidden('itemTaxPrice[]', 0, ['class' => 'form-control itemTaxPrice']) }}
+                                                {{ Form::hidden('itemTaxRate[]', 0, ['class' => 'form-control itemTaxRate']) }}
                                             @endif
                                         </td>
                                         <td class="text-end amount">
-                                            {{ \Auth::user()->priceFormat($totalRate - $iteam->discount + $totalTaxPrice) }}
+                                            {{ \Auth::user()->priceFormat($iteam->price * $iteam->quantity - $iteam->discount + $totalTaxPrice) }}
                                         </td>
                                         <td>
                                             @if ($key != 0)
@@ -608,14 +679,20 @@
                                 </tr>
                                 @if (!empty($taxesData))
                                     @foreach ($taxesData as $taxName => $taxPrice)
-                                        <tr>
-                                            <td colspan="4"></td>
-                                            <td class="text-end"><b>{{ $taxName }}</b></td>
-                                            <td class="text-end">
-                                                {{ \Auth::user()->priceFormat($taxPrice) }}</td>
-                                        </tr>
+                                        @php
+                                            $totalTax += $taxPrice;
+                                        @endphp
                                     @endforeach
                                 @endif
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td></td>
+                                    <td><strong>{{ __('Tax') }} ({{ \Auth::user()->currencySymbol() }})</strong></td>
+                                    <td class="text-end totalTax">{{ \Auth::user()->priceFormat($totalTax) }}</td>
+                                    <td></td>
+                                </tr>
                                 <tr>
                                     <td>&nbsp;</td>
                                     <td>&nbsp;</td>
@@ -629,6 +706,7 @@
                                 </tr>
                             </tfoot>
                         </table>
+                        <input type="text" name="total_amount">
                     </div>
                 </div>
             </div>

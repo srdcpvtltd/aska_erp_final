@@ -210,8 +210,9 @@ class PurchaseController extends Controller
      */
     public function update(Request $request, Purchase $purchase)
     {
+        // dd($request->all()); 
         if (\Auth::user()->can('edit-purchase')) {
-
+dd($purchase->created_by,\Auth::user()->creatorId());
             if ($purchase->created_by == \Auth::user()->creatorId()) {
                 $validator = \Validator::make(
                     $request->all(),
@@ -232,7 +233,7 @@ class PurchaseController extends Controller
                 $purchase->category_id    = $request->category_id;
                 $purchase->save();
                 $products = $request->items;
-
+                dd($products);
                 for ($i = 0; $i < count($products); $i++) {
                     $purchaseProduct = PurchaseProduct::find($products[$i]['id']);
                     $old_qty = $purchaseProduct->quantity;

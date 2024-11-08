@@ -284,18 +284,12 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('block_id', __('Block'), ['class' => 'form-label']) }}
-                                <select class="form-control select" name="block_id" id="block_id"
-                                    placeholder="Select Block" readonly>
-                                    @if ($farming_detail->block)
-                                        <option value="{{ $farming_detail->block_id }}">{{ $farming_detail->block->name }}
-                                        </option>
+                                <select class="form-control select" name="block_id" id="block_id" readonly>
+                                    @if (@$farming_detail->farming->block)
+                                        <option value="{{ @$farming_detail->farming->block_id }}">
+                                            {{ @$farming_detail->farming->block->name }}</option>
                                     @else
-                                        @if (@$farming_detail->farming->block)
-                                            <option value="{{ @$farming_detail->farming->block_id }}">
-                                                {{ @$farming_detail->farming->block->name }}</option>
-                                        @else
-                                            <option value="">{{ __('Select Block') }}</option>
-                                        @endif
+                                        <option value="">{{ __('Select Block') }}</option>
                                     @endif
                                 </select>
                             </div>
@@ -303,18 +297,12 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('gram_panchyat_id', __('Gram Panchyat'), ['class' => 'form-label']) }}
-                                <select class="form-control select" name="gram_panchyat_id" id="gram_panchyat_id"
-                                    placeholder="Select Gram Panchyat" readonly>
-                                    @if ($farming_detail->gram_panchyat)
-                                        <option value="{{ $farming_detail->gram_panchyat_id }}">
-                                            {{ $farming_detail->gram_panchyat->name }}</option>
+                                <select class="form-control select" name="gram_panchyat_id" id="gram_panchyat_id" readonly>
+                                    @if (@$farming_detail->farming->gram_panchyat)
+                                        <option value="{{ @$farming_detail->farming->gram_panchyat_id }}">
+                                            {{ @$farming_detail->farming->gram_panchyat->name }}</option>
                                     @else
-                                        @if (@$farming_detail->farming->gram_panchyat)
-                                            <option value="{{ @$farming_detail->farming->gram_panchyat_id }}">
-                                                {{ @$farming_detail->farming->gram_panchyat->name }}</option>
-                                        @else
-                                            <option value="">{{ __('Select Gram Panchyat') }}</option>
-                                        @endif
+                                        <option value="">{{ __('Select Gram Panchyat') }}</option>
                                     @endif
                                 </select>
                             </div>
@@ -336,18 +324,12 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('zone_id', __('Zone'), ['class' => 'form-label']) }}
-                                <select class="form-control select" name="zone_id" id="zone_id" readonly
-                                    placeholder="Select Country">
-                                    @if ($farming_detail->zone)
-                                        <option value="{{ $farming_detail->zone_id }}">{{ $farming_detail->zone->name }}
-                                        </option>
+                                <select class="form-control select" name="zone_id" id="zone_id" readonly>
+                                    @if (@$farming_detail->farming->zone)
+                                        <option value="{{ @$farming_detail->farming->zone_id }}">
+                                            {{ @$farming_detail->farming->zone->name }}</option>
                                     @else
-                                        @if (@$farming_detail->farming->zone)
-                                            <option value="{{ @$farming_detail->farming->zone_id }}">
-                                                {{ @$farming_detail->farming->zone->name }}</option>
-                                        @else
-                                            <option value="">{{ __('Select Zone') }}</option>
-                                        @endif
+                                        <option value="">{{ __('Select Zone') }}</option>
                                     @endif
                                 </select>
                             </div>
@@ -355,18 +337,12 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('center_id', __('Center'), ['class' => 'form-label']) }}
-                                <select class="form-control select" name="center_id" id="center_id"
-                                    placeholder="Select Center" readonly>
-                                    @if ($farming_detail->center)
-                                        <option value="{{ $farming_detail->center_id }}">
-                                            {{ $farming_detail->center->name }}</option>
+                                <select class="form-control select" name="center_id" id="center_id" readonly>
+                                    @if (@$farming_detail->farming->center)
+                                        <option value="{{ @$farming_detail->farming->center_id }}">
+                                            {{ @$farming_detail->farming->center->name }}</option>
                                     @else
-                                        @if (@$farming_detail->farming->center)
-                                            <option value="{{ @$farming_detail->farming->center_id }}">
-                                                {{ @$farming_detail->farming->center->name }}</option>
-                                        @else
-                                            <option value="">{{ __('Select Center') }}</option>
-                                        @endif
+                                        <option value="">{{ __('Select Center') }}</option>
                                     @endif
                                 </select>
                             </div>
@@ -416,9 +392,9 @@
                             </div>
                         </div>
                         <!-- <div class="form-group col-md-6">
-                                                {{ Form::label('kata_number', __('Kata Number'), ['class' => 'form-label']) }}
-                                                {{ Form::text('kata_number', $farming_detail->kata_number, ['class' => 'form-control', 'required' => 'required']) }}
-                                            </div> -->
+                                                            {{ Form::label('kata_number', __('Kata Number'), ['class' => 'form-label']) }}
+                                                            {{ Form::text('kata_number', $farming_detail->kata_number, ['class' => 'form-control', 'required' => 'required']) }}
+                                                        </div> -->
                         <div class="form-group col-md-6">
                             {{ Form::label('area_in_acar', __('Area in acar'), ['class' => 'form-label']) }}
                             {{ Form::text('area_in_acar', $farming_detail->area_in_acar, ['class' => 'form-control', 'required' => 'required']) }}
@@ -428,9 +404,9 @@
                             {{ Form::date('date_of_harvesting', $farming_detail->date_of_harvesting, ['class' => 'form-control', 'required' => 'required']) }}
                         </div>
                         <!-- <div class="form-group col-md-6">
-                                                {{ Form::label('quantity', __('Quantity'), ['class' => 'form-label']) }}
-                                                {{ Form::number('quantity', $farming_detail->quantity, ['class' => 'form-control', 'required' => 'required']) }}
-                                            </div> -->
+                                                            {{ Form::label('quantity', __('Quantity'), ['class' => 'form-label']) }}
+                                                            {{ Form::number('quantity', $farming_detail->quantity, ['class' => 'form-control', 'required' => 'required']) }}
+                                                        </div> -->
                         {{-- <div class="form-group col-md-6">
                             {{ Form::label('tentative_harvest_quantity', __('Tentative Plant Quantity (In Ton)'), ['class' => 'form-label']) }}
                             {{ Form::number('tentative_harvest_quantity', $farming_detail->tentative_harvest_quantity, ['class' => 'form-control', 'required' => 'required']) }}
