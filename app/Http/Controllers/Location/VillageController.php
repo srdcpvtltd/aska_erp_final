@@ -12,6 +12,8 @@ use Exception;
 use Illuminate\Http\Request;
 use App\Exports\VillagesExport;
 use App\Models\Block;
+use App\Models\Farming;
+use App\Models\FarmingDetail;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -30,7 +32,7 @@ class VillageController extends Controller
             $blocks->prepend('Select Blocks', '');
             $zones = Zone::all()->pluck('name', 'id');
             $zones->prepend('Select Zones', '');
-            return view('admin.location.village.index', compact('villages','blocks','zones'));
+            return view('admin.location.village.index', compact('villages', 'blocks', 'zones'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -78,7 +80,7 @@ class VillageController extends Controller
                 if ($validator->fails()) {
                     return redirect()->back()->withErrors($validator);
                 }
-                
+
                 $village = new Village;
                 $village->name = $request->name;
                 $village->district_id = $request->district_id;
@@ -145,17 +147,38 @@ class VillageController extends Controller
     public function update(Request $request, $id)
     {
         if (\Auth::user()->can('edit-village')) {
-            $village = Village::find($id);
-            $village->name = $request->name;
-            $village->district_id = $request->district_id;
-            $village->block_id = $request->block_id;
-            $village->gram_panchyat_id = $request->gram_panchyat_id;
-            $village->zone_id = $request->zone_id;
-            $village->center_id = $request->center_id;
-            $village->km = $request->km;
-            $village->update();
-            
-            return redirect()->route('admin.location.village.index')->with('success', 'Village Updated Successfully.');
+            try {
+                $village = Village::find($id);
+
+                $farmer = Farming::where('village_id', $id)
+                    ->where('zone_id', $village->zone_id)
+                    ->where('center_id', $village->center_id)
+                    ->update([
+                        'zone_id' => $request->zone_id,
+                        'center_id' => $request->center_id
+                    ]);
+                $farming_details = FarmingDetail::where('village_id', $id)
+                    ->where('zone_id', $village->zone_id)
+                    ->where('center_id', $village->center_id)
+                    ->update([
+                        'zone_id' => $request->zone_id,
+                        'center_id' => $request->center_id
+                    ]);
+
+                $village->name = $request->name;
+                $village->district_id = $request->district_id;
+                $village->block_id = $request->block_id;
+                $village->gram_panchyat_id = $request->gram_panchyat_id;
+                $village->zone_id = $request->zone_id;
+                $village->center_id = $request->center_id;
+                $village->km = $request->km;
+                $village->update();
+
+                return redirect()->route('admin.location.village.index')->with('success', 'Village Updated Successfully.');
+            } catch (Exception $e) {
+                dd($e);
+                return redirect()->back()->with('error', $e->getMessage());
+            }
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -180,7 +203,7 @@ class VillageController extends Controller
 
     public function search_filter(Request $request)
     {
-        $villages = Village::where(function($query) use ($request) {
+        $villages = Village::where(function ($query) use ($request) {
             if ($request->block_id != '') {
                 $query->where('block_id', $request->block_id);
             }
@@ -200,6 +223,6 @@ class VillageController extends Controller
         $zones = Zone::all()->pluck('name', 'id');
         $zones->prepend('Select Zones', '');
 
-        return view('admin.location.village.index', compact('villages','blocks','zones'));
+        return view('admin.location.village.index', compact('villages', 'blocks', 'zones'));
     }
 }

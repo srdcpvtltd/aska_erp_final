@@ -318,6 +318,7 @@ class FarmingDetailController extends Controller
         })
         ->orderBy('id', 'DESC')
         ->get();
+
         $zones = Zone::all();
         return view('admin.farmer.farming_detail.index', compact('farming_details', 'zones'));
     }
