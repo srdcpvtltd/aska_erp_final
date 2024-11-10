@@ -417,39 +417,65 @@
             feather.replace();
         });
 
-
         $(document).on('click', '.delete_append_data', function(e) {
             e.preventDefault();
+            // Verify the click event is firing
+            console.log("Delete button clicked");
+
+            // Target the closest `.ui-sortable` container
             var el = $(this).closest('.ui-sortable');
+            console.log("Found container:", el);
+
+            // Retrieve specific values from the container
             var quantity = $(el).find('.quantity').val();
             var price = $(el).find('.price').val();
             var discount = $(el).find('.discount').val();
-            var itemTaxPrice = $(el).find('.itemTaxPrice').val();
-            console.log(itemTaxPrice);
-            var subTotal = parseFloat($('.subTotal').text()) || 0;
-            console.log(subTotal);
-            var totalTax = parseFloat($('.totalTax').text()) || 0;
-            console.log(totalTax);
-            var totalAmount = parseFloat($('.totalAmount').text()) || 0;
-            console.log(totalAmount);
+            var itemTaxPrice = parseFloat($(el).find('.itemTaxPrice').val()) || 0;
 
+            // Log each retrieved value for debugging
+            console.log("Quantity:", quantity);
+            console.log("Price:", price);
+            console.log("Discount:", discount);
+            console.log("Item Tax Price:", itemTaxPrice);
+
+            // Retrieve global summary values
+            var subTotal = parseFloat($('.subTotal').text()) || 0;
+            var totalTax = parseFloat($('.totalTax').text()) || 0;
+            var totalAmount = parseFloat($('.totalAmount').text()) || 0;
+
+            console.log("Subtotal before update:", subTotal);
+            console.log("Total Tax before update:", totalTax);
+            console.log("Total Amount before update:", totalAmount);
+
+            // Set discount to 0 if it's not a valid number
             if (!discount) {
                 discount = 0;
             }
 
+            // Parse numeric values to ensure accurate calculations
+            quantity = parseFloat(quantity) || 0;
+            price = parseFloat(price) || 0;
+            discount = parseFloat(discount) || 0;
+
+            // Calculate the total price and adjustments
             var totalPrice = (quantity * price) - discount;
             var totalItemPrice = subTotal - totalPrice;
             var totalItemTaxPrice = totalTax - itemTaxPrice;
 
-            // $('.subTotal').html(totalItemPrice.toFixed(2));
-            // $('.totalTax').html(totalItemTaxPrice.toFixed(2));
+            // Log calculated values to verify
+            console.log("Total Price:", totalPrice);
+            console.log("Total Item Price after update:", totalItemPrice);
+            console.log("Total Item Tax Price after update:", totalItemTaxPrice);
 
-            // $('.totalAmount').html((parseFloat(totalItemPrice) + parseFloat(totalItemTaxPrice))
-            //     .toFixed(2));
-            // $('input[name=total_amount]').val((parseFloat(totalItemPrice) + parseFloat(
-            //         totalItemTaxPrice))
-            //     .toFixed(2));
-            // $(this).closest('tbody').remove();
+            $('.subTotal').html(totalItemPrice.toFixed(2));
+            $('.totalTax').html(totalItemTaxPrice.toFixed(2));
+
+            $('.totalAmount').html((parseFloat(totalItemPrice) + parseFloat(totalItemTaxPrice))
+                .toFixed(2));
+            $('input[name=total_amount]').val((parseFloat(totalItemPrice) + parseFloat(
+                    totalItemTaxPrice))
+                .toFixed(2));
+            $(this).closest('tbody').remove();
         });
     </script>
 @endsection
@@ -706,7 +732,7 @@
                                 </tr>
                             </tfoot>
                         </table>
-                        <input type="text" name="total_amount">
+                        <input type="text" name="total_amount" value="{{ $purchase->total_price }}">
                     </div>
                 </div>
             </div>
