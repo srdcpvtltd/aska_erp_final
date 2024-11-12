@@ -171,9 +171,7 @@
                                         <option value="">{{ __('Select') }}</option>
                                         <option value="Bank" {{ $farmings->non_loan_type === 'Bank' ? 'selected' : '' }}>
                                             Bank</option>
-                                        <option value="Co-Operative"
-                                            {{ $farmings->non_loan_type === 'Co-Operative' ? 'selected' : '' }}>
-                                            Co-Operative</option>
+
                                     </select>
                                 </div>
                             </div>
