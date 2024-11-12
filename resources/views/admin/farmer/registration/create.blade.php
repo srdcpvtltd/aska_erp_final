@@ -328,6 +328,7 @@
                                 <option value="Bachelor Degree">{{ __('Bachelor Degree') }}</option>
                                 <option value="Master Degree">{{ __('Master Degree') }}</option>
                                 <option value="PHD">{{ __('PHD') }}</option>
+                                <option value="PHD">{{ __('N/A') }}</option>
                             </select>
                         </div>
                         <div class="form-group col-md-6">

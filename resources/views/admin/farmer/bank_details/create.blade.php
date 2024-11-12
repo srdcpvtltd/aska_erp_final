@@ -192,7 +192,6 @@
                                     placeholder="Select Loan Type">
                                     <option value="">{{ __('Select') }}</option>
                                     <option value="Bank">Bank</option>
-                                    <option value="Co-Operative">Co-Operative</option>
                                 </select>
                             </div>
                         </div>

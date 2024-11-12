@@ -331,6 +331,8 @@
                                     value="Master Degree">{{ __('Master Degree') }}</option>
                                 <option {{ $farming->qualification == 'PHD' ? 'selected' : '' }} value="PHD">
                                     {{ __('PHD') }}</option>
+                                 <option {{ $farming->qualification == 'N/A' ? 'selected' : '' }} value="N/A">
+                                    {{ __('N/A') }}</option>
                             </select>
                         </div>
                         <div class="form-group col-md-6">
