@@ -160,7 +160,7 @@ class FarmingController extends Controller
                 'irrigations',
             ));
         } else {
-            return Redirect::back()->with('error', 'Permission denied.');
+            return redirect()->back()->with('error', 'Permission denied.');
         }
     }
 
@@ -177,7 +177,7 @@ class FarmingController extends Controller
                 ]);
             }
             $farming->update($request->all());
-            return Redirect::back()->with('success', 'Farming Updated Successfully.');
+            return redirect()->back()->with('success', 'Farming Updated Successfully.');
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
         }
