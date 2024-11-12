@@ -213,14 +213,7 @@
                             {{-- @endif
                         @endif --}}
                         {{-- @if ($farmings->non_loan_type === 'Co-Operative') --}}
-                            <div class="form-group col-md-6 coperative_fields">
-                                {{ Form::label('name_of_cooperative', __('Co-Operative Name'), ['class' => 'form-label']) }}
-                                {{ Form::text('name_of_cooperative', $farmings->name_of_cooperative, ['class' => 'form-control']) }}
-                            </div>
-                            <div class="form-group col-md-6 coperative_fields">
-                                {{ Form::label('cooperative_address', __('Co-Operative Branch'), ['class' => 'form-label']) }}
-                                {{ Form::text('cooperative_address', $farmings->cooperative_address, ['class' => 'form-control']) }}
-                            </div>
+
                         {{-- @endif --}}
                         {{-- @if ($farmings->finance_category === 'Non-loan') --}}
                             <div class="col-md-6 non_loan_fields">
