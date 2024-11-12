@@ -43,7 +43,6 @@
         })
 
         $(document).on('change', '.item', function() {
-            // debugger;
             var iteams_id = $(this).val();
             var url = $(this).data('url');
             var el = $(this);

@@ -177,7 +177,7 @@ class FarmingController extends Controller
                 ]);
             }
             $farming->update($request->all());
-            return redirect()->back()->with('success', 'Farming Updated Successfully.');
+            return redirect()->to(route('admin.farmer.farming_registration.index'))->with('success', 'Farming Updated Successfully.');
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
         }
@@ -357,7 +357,6 @@ class FarmingController extends Controller
             })
             ->get();
 
-        // dd($farmings);
         $blocks = Block::all()->pluck('name', 'id');
         $blocks->prepend('Select Blocks', '');
         $zones = Zone::all()->pluck('name', 'id');

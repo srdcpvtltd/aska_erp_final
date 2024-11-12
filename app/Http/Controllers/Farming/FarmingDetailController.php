@@ -151,7 +151,7 @@ class FarmingDetailController extends Controller
                 }
 
                 $farming_detail->update($request->all());
-                return redirect()->back()->with('success', 'Plot Details Updated Successfully.');
+                return redirect()->to(route('admin.farmer.farming_detail.index'))->with('success', 'Plot Details Updated Successfully.');
             } catch (Exception $e) {
                 return redirect()->back()->with('error', $e->getMessage());
             }
@@ -173,6 +173,7 @@ class FarmingDetailController extends Controller
             return redirect()->back()->with('error', 'Permission denied.');
         }
     }
+
     public function getFarmingDetail(Request $request)
     {
         $farming = Farming::find($request->farming_id);
@@ -274,6 +275,7 @@ class FarmingDetailController extends Controller
             'village_id' => $village_id,
         ]);
     }
+
     public function getFarmingDetailData(Request $request)
     {
         $plot_details = FarmingDetail::findorfail($request->id);
@@ -284,6 +286,7 @@ class FarmingDetailController extends Controller
             'farmer_name' => $farmer->name
         ]);
     }
+
     public function servey_data(Request $request)
     {
         if (\Auth::user()->can('edit-plot')) {

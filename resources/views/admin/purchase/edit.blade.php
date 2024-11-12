@@ -49,10 +49,10 @@
 
         var purchase_id = '{{ $purchase->id }}';
 
-        function changeItem(element) {
-            var iteams_id = element.val();
-            var url = element.data('url');
-            var el = element;
+        $(document).on('change', '.item', function() {
+            var iteams_id = $(this).val();
+            var url = $(this).data('url');
+            var el = $(this).closest('.ui-sortable');
             $.ajax({
                 url: url,
                 type: 'POST',
@@ -65,145 +65,73 @@
                 cache: false,
                 success: function(data) {
                     var item = JSON.parse(data);
-                    $.ajax({
-                        url: '{{ route('admin.purchase.items') }}',
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': jQuery('#token').val()
-                        },
-                        data: {
-                            'purchase_id': purchase_id,
-                            'product_id': iteams_id,
-                        },
-                        cache: false,
-                        success: function(data) {
-                            var purchaseItems = JSON.parse(data);
-                            console.log(purchaseItems);
 
-                            if (purchaseItems != null) {
-                                var amount = (purchaseItems.price * purchaseItems.quantity);
-                                $(el.parent().parent().parent().find('.quantity')).val(purchaseItems
-                                    .quantity);
-                                $(el.parent().parent().parent().find('.price')).val(purchaseItems
-                                    .price);
-                                $(el.parent().parent().parent().find('.discount')).val(purchaseItems
-                                    .discount);
-                                $(el.parent().parent().parent().parent().find('.pro_description'))
-                                    .val(purchaseItems.description);
+                    $(el.find('.quantity')).val(1);
+                    $(el.find('.price')).val(item.product.purchase_price);
+                    $(el.find('.pro_description')).val(item.product
+                        .description);
 
-                                // $('.pro_description').text(purchaseItems.description);
-                            } else {
+                    var taxes = '';
+                    var tax = [];
 
-                                $(el.parent().parent().parent().find('.quantity')).val(1);
-                                $(el.parent().parent().parent().find('.price')).val(item.product
-                                    .purchase_price);
-                                $(el.parent().parent().parent().find('.discount')).val(0);
-                                $(el.parent().parent().parent().find('.pro_description')).val(item
-                                    .product.purchase_price);
-                                // $('.pro_description').text(item.product.purchase_price);
-                                $(el.parent().parent().parent().parent().find('.pro_description'))
-                                    .val(item.product.description);
+                    var totalItemTaxRate = 0;
+                    if (item.taxes == 0) {
+                        taxes += '-';
+                    } else {
+                        for (var i = 0; i < item.taxes.length; i++) {
 
-                            }
-
-                            var taxes = '';
-                            var tax = [];
-
-                            var totalItemTaxRate = 0;
-                            for (var i = 0; i < item.taxes.length; i++) {
-
-                                taxes +=
-                                    '<span class="badge bg-primary p-2 px-3 rounded mt-1 mr-1">' +
-                                    item.taxes[i].name + ' ' + '(' + item.taxes[i].rate + '%)' +
-                                    '</span>';
-                                tax.push(item.taxes[i].id);
-                                totalItemTaxRate += parseFloat(item.taxes[i].rate);
-
-                            }
-
-                            var discount = $(el.parent().parent().parent().find('.discount')).val();
-
-                            if (purchaseItems != null) {
-                                var itemTaxPrice = parseFloat((totalItemTaxRate / 100)) *
-                                    parseFloat((purchaseItems.price * purchaseItems.quantity) -
-                                        discount);
-                            } else {
-                                var itemTaxPrice = parseFloat((totalItemTaxRate / 100)) *
-                                    parseFloat((item.product.purchase_price * 1) - discount);
-                            }
-
-                            $(el.parent().parent().parent().find('.itemTaxPrice')).val(itemTaxPrice
-                                .toFixed(2));
-                            $(el.parent().parent().parent().find('.itemTaxRate')).val(
-                                totalItemTaxRate.toFixed(2));
-                            $(el.parent().parent().parent().find('.taxes')).html(taxes);
-                            $(el.parent().parent().parent().find('.tax')).val(tax);
-                            $(el.parent().parent().parent().find('.unit')).html(item.unit);
-
-
-                            var inputs = $(".amount");
-                            var subTotal = 0;
-                            for (var i = 0; i < inputs.length; i++) {
-                                subTotal = parseFloat(subTotal) + parseFloat($(inputs[i]).html());
-                            }
-
-                            var totalItemPrice = 0;
-                            var inputs_quantity = $(".quantity");
-                            var priceInput = $('.price');
-                            for (var j = 0; j < priceInput.length; j++) {
-                                totalItemPrice += (parseFloat(priceInput[j].value) * parseFloat(
-                                    inputs_quantity[j].value));
-                            }
-
-
-
-                            var totalItemTaxPrice = 0;
-                            var itemTaxPriceInput = $('.itemTaxPrice');
-                            for (var j = 0; j < itemTaxPriceInput.length; j++) {
-                                totalItemTaxPrice += parseFloat(itemTaxPriceInput[j].value);
-                                if (purchaseItems != null) {
-                                    $(el.parent().parent().parent().find('.amount')).html(
-                                        parseFloat(amount) + parseFloat(itemTaxPrice) -
-                                        parseFloat(discount));
-                                } else {
-                                    $(el.parent().parent().parent().find('.amount')).html(
-                                        parseFloat(item.totalAmount) + parseFloat(itemTaxPrice));
-                                }
-
-                            }
-
-
-                            var totalItemDiscountPrice = 0;
-                            var itemDiscountPriceInput = $('.discount');
-
-                            for (var k = 0; k < itemDiscountPriceInput.length; k++) {
-                                totalItemDiscountPrice += parseFloat(itemDiscountPriceInput[k]
-                                    .value);
-                            }
-
-
-                            $('.subTotal').html(totalItemPrice.toFixed(2));
-                            $('.totalTax').html(totalItemTaxPrice.toFixed(2));
-                            $('.totalAmount').html((parseFloat(totalItemPrice) - parseFloat(
-                                    totalItemDiscountPrice) + parseFloat(totalItemTaxPrice))
-                                .toFixed(2));
-                            $('.totalDiscount').html(totalItemDiscountPrice.toFixed(2));
+                            taxes += '<span class="badge bg-primary mt-1 mr-2">' + item.taxes[i].name +
+                                ' ' + '(' + item.taxes[i].rate + '%)' + '</span>';
+                            tax.push(item.taxes[i].id);
+                            totalItemTaxRate += parseFloat(item.taxes[i].rate);
 
                         }
-                    });
+                    }
+                    var itemTaxPrice = parseFloat((totalItemTaxRate / 100) * (item.product
+                        .purchase_price * 1));
+
+                    $(el.find('.itemTaxPrice')).val(itemTaxPrice.toFixed(2));
+                    $(el.find('.itemTaxRate')).val(totalItemTaxRate.toFixed(2));
+                    $(el.find('.taxes')).html(taxes);
+                    $(el.find('.tax')).val(tax);
+                    $(el.find('.unit')).html(item.unit);
+                    $(el.find('.discount')).val(0);
+                    $(el.find('.amount')).html(item.totalAmount + itemTaxPrice);
 
 
+                    var inputs = $(".amount");
+                    var subTotal = 0;
+                    for (var i = 0; i < inputs.length; i++) {
+                        subTotal = parseFloat(subTotal) + parseFloat($(inputs[i]).html());
+                    }
+                    
+                    var totalItemPrice = 0;
+                    var priceInput = $('.price');
+                    for (var j = 0; j < priceInput.length; j++) {
+                        totalItemPrice += parseFloat(priceInput[j].value);
+                    }
+                    
+                    var totalItemTaxPrice = 0;
+                    var itemTaxPriceInput = $('.itemTaxPrice');
+                    for (var j = 0; j < itemTaxPriceInput.length; j++) {
+                        totalItemTaxPrice += parseFloat(itemTaxPriceInput[j].value);
+                    }
+                    
+                    $('.subTotal').html(subTotal.toFixed(2));
+                    $('.totalTax').html(totalItemTaxPrice.toFixed(2));
+                    $('.totalAmount').html((parseFloat(subTotal) + parseFloat(totalItemTaxPrice))
+                        .toFixed(2));
+                    $('input[name=total_amount]').val((parseFloat(subTotal) + parseFloat(
+                            totalItemTaxPrice))
+                        .toFixed(2))
                 },
             });
-        }
-        $(document).on('change', '.item', function() {
-            changeItem($(this));
         });
 
         $(document).on('keyup', '.quantity', function() {
             var quntityTotalTaxPrice = 0;
 
-            var el = $(this).parent().parent().parent().parent();
+            var el = $(this).closest('.ui-sortable');
 
             var quantity = $(this).val();
             var price = $(el.find('.price')).val();
@@ -228,7 +156,6 @@
             for (var j = 0; j < itemTaxPriceInput.length; j++) {
                 totalItemTaxPrice += parseFloat(itemTaxPriceInput[j].value);
             }
-
 
             var totalItemPrice = 0;
             var inputs_quantity = $(".quantity");
@@ -419,55 +346,32 @@
 
         $(document).on('click', '.delete_append_data', function(e) {
             e.preventDefault();
-            // Verify the click event is firing
-            console.log("Delete button clicked");
-
-            // Target the closest `.ui-sortable` container
             var el = $(this).closest('.ui-sortable');
-            console.log("Found container:", el);
 
-            // Retrieve specific values from the container
             var quantity = $(el).find('.quantity').val();
             var price = $(el).find('.price').val();
             var discount = $(el).find('.discount').val();
             var itemTaxPrice = parseFloat($(el).find('.itemTaxPrice').val()) || 0;
+            var subTotal = parseFloat($('.Sub_Total').val()) || 0;
+            var totalDiscount = parseFloat($('.Total_discount').val()) || 0;
+            var totalTax = parseFloat($('.Total_tax').val()) || 0;
+            var totalAmount = parseFloat($('.Total_Amount').val()) || 0;
 
-            // Log each retrieved value for debugging
-            console.log("Quantity:", quantity);
-            console.log("Price:", price);
-            console.log("Discount:", discount);
-            console.log("Item Tax Price:", itemTaxPrice);
-
-            // Retrieve global summary values
-            var subTotal = parseFloat($('.subTotal').text()) || 0;
-            var totalTax = parseFloat($('.totalTax').text()) || 0;
-            var totalAmount = parseFloat($('.totalAmount').text()) || 0;
-
-            console.log("Subtotal before update:", subTotal);
-            console.log("Total Tax before update:", totalTax);
-            console.log("Total Amount before update:", totalAmount);
-
-            // Set discount to 0 if it's not a valid number
             if (!discount) {
                 discount = 0;
             }
 
-            // Parse numeric values to ensure accurate calculations
             quantity = parseFloat(quantity) || 0;
             price = parseFloat(price) || 0;
             discount = parseFloat(discount) || 0;
 
-            // Calculate the total price and adjustments
+            var total_Discount = totalDiscount - discount;
             var totalPrice = (quantity * price) - discount;
             var totalItemPrice = subTotal - totalPrice;
             var totalItemTaxPrice = totalTax - itemTaxPrice;
 
-            // Log calculated values to verify
-            console.log("Total Price:", totalPrice);
-            console.log("Total Item Price after update:", totalItemPrice);
-            console.log("Total Item Tax Price after update:", totalItemTaxPrice);
-
             $('.subTotal').html(totalItemPrice.toFixed(2));
+            $('.totalDiscount').html(total_Discount.toFixed(2));
             $('.totalTax').html(totalItemTaxPrice.toFixed(2));
 
             $('.totalAmount').html((parseFloat(totalItemPrice) + parseFloat(totalItemTaxPrice))
@@ -716,7 +620,9 @@
                                     <td>&nbsp;</td>
                                     <td></td>
                                     <td><strong>{{ __('Tax') }} ({{ \Auth::user()->currencySymbol() }})</strong></td>
-                                    <td class="text-end totalTax">{{ \Auth::user()->priceFormat($totalTax) }}</td>
+                                    <td class="text-end totalTax">
+                                        {{ \Auth::user()->priceFormat($totalTax) }}
+                                    </td>
                                     <td></td>
                                 </tr>
                                 <tr>
@@ -732,7 +638,11 @@
                                 </tr>
                             </tfoot>
                         </table>
-                        <input type="text" name="total_amount" value="{{ $purchase->total_price }}">
+                        <input type="hidden" name="total_amount" value="{{ $purchase->total_price }}">
+                        <input type="hidden" class="Total_discount" value="{{ $purchase->getTotalDiscount() }}">
+                        <input type="hidden" class="Total_tax" value="{{ $totalTax }}">
+                        <input type="hidden" class="Sub_Total" value="{{ $purchase->getSubTotal() }}">
+                        <input type="hidden" class="Total_Amount" value="{{ $purchase->total_price }}">
                     </div>
                 </div>
             </div>
