@@ -22,7 +22,8 @@
         "milon/barcode": "^11.0",
         "psr/simple-cache": "2.0",
         "simplesoftwareio/simple-qrcode": "~4",
-        "spatie/laravel-permission": "^6.9"
+        "spatie/laravel-permission": "^6.9",
+        "yajra/laravel-datatables": "^9.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.8",

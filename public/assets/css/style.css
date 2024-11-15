@@ -22499,7 +22499,7 @@ body {
   padding: 0;
   position: fixed;
   right: 0;
-  left: 280px;
+  /* left: 280px; */
   z-index: 978;
   box-shadow: 3px 0 10px 0 rgba(183, 192, 206, 0.2);
   transition: width 0.1s ease, left 0.1s ease;

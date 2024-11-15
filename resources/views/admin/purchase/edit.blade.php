@@ -99,24 +99,26 @@
                     $(el.find('.amount')).html(item.totalAmount + itemTaxPrice);
 
 
-                    var inputs = $(".amount");
+                    var inputs = $(el.find(".amount"));
                     var subTotal = 0;
-                    for (var i = 0; i < inputs.length; i++) {
-                        subTotal = parseFloat(subTotal) + parseFloat($(inputs[i]).html());
-                    }
+                    console.log(inputs.length);
                     
+                    for (var i = 0; i < inputs.length; i++) {
+                        subTotal += parseFloat(subTotal) + parseFloat($(inputs[i]).html());
+                    }
+
                     var totalItemPrice = 0;
                     var priceInput = $('.price');
                     for (var j = 0; j < priceInput.length; j++) {
                         totalItemPrice += parseFloat(priceInput[j].value);
                     }
-                    
+
                     var totalItemTaxPrice = 0;
                     var itemTaxPriceInput = $('.itemTaxPrice');
                     for (var j = 0; j < itemTaxPriceInput.length; j++) {
                         totalItemTaxPrice += parseFloat(itemTaxPriceInput[j].value);
                     }
-                    
+
                     $('.subTotal').html(subTotal.toFixed(2));
                     $('.totalTax').html(totalItemTaxPrice.toFixed(2));
                     $('.totalAmount').html((parseFloat(subTotal) + parseFloat(totalItemTaxPrice))

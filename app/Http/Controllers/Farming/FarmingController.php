@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Farming;
 
+use App\DataTables\FarmerDataTable;
 use App\Models\Farming;
 use App\Http\Controllers\Controller;
 use App\Models\Bank_branch;
@@ -29,18 +30,19 @@ class FarmingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(FarmerDataTable $table)
     {
         if (\Auth::user()->can('manage-farmer_registration')) {
-            $farmings = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
-                ->where('farmings.created_by', Auth::user()->id)
-                ->orWhere('users.supervisor_id', Auth::user()->id)->get();
+            // $farmings = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
+            //     ->where('farmings.created_by', Auth::user()->id)
+            //     ->orWhere('users.supervisor_id', Auth::user()->id)->get();
             $blocks = Block::all()->pluck('name', 'id');
             $blocks->prepend('Select Blocks', '');
             $zones = Zone::all()->pluck('name', 'id');
             $zones->prepend('Select Zones', '');
 
-            return view('admin.farmer.registration.index', compact('farmings', 'blocks', 'zones'));
+            // return view('admin.farmer.registration.index', compact('farmings', 'blocks', 'zones'));
+            return $table->render('admin.farmer.registration.index', compact('blocks', 'zones'));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
         }
