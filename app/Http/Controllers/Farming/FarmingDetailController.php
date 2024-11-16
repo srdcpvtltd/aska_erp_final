@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Farming;
 
+use App\DataTables\PlotdetailsDataTable;
 use App\Models\FarmingDetail;
 use App\Http\Controllers\Controller;
 use App\Models\Block;
@@ -22,17 +23,18 @@ class FarmingDetailController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(PlotdetailsDataTable $table)
     {
         if (\Auth::user()->can('manage-plot')) {
-            $farming_details = FarmingDetail::query()->select('farming_details.*')
-                ->join('users', 'users.id', 'farming_details.created_by')
-                ->where('farming_details.created_by', Auth::user()->id)
-                ->orWhere('users.supervisor_id', Auth::user()->id)
-                ->orderBy('farming_details.id', 'ASC')
-                ->get();
+            // $farming_details = FarmingDetail::query()->select('farming_details.*')
+            //     ->join('users', 'users.id', 'farming_details.created_by')
+            //     ->where('farming_details.created_by', Auth::user()->id)
+            //     ->orWhere('users.supervisor_id', Auth::user()->id)
+            //     ->orderBy('farming_details.id', 'ASC')
+            //     ->get();
             $zones = Zone::all();
-            return view('admin.farmer.farming_detail.index', compact('farming_details', 'zones'));
+            // return view('admin.farmer.farming_detail.index', compact('farming_details', 'zones'));
+            return $table->render('admin.farmer.farming_detail.index', compact('zones'));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
         }

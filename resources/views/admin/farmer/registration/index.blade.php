@@ -21,7 +21,7 @@
 
         $('#filter').on('click', function() {
             table.DataTable().ajax.reload();
-            return false;
+            return true;
         });
         $('#reset').on('click', function() {
             table.on('preXhr.dt', function(e, settings, data) {

@@ -32,39 +32,39 @@ class FarmerDataTable extends DataTable
                                                     Assigned</span>';
             })
             ->editColumn('state_id', function (Farming $farming) {
-                return ($farming->state_id != null) ? $farming->state->name:'-';
+                return ($farming->state_id != null) ? $farming->state->name : '-';
             })
             ->editColumn('district_id', function (Farming $farming) {
-                return ($farming->district_id != null) ? $farming->district->name:'-';
+                return ($farming->district_id != null) ? $farming->district->name : '-';
             })
             ->editColumn('block_id', function (Farming $farming) {
-                return ($farming->block_id != null) ? $farming->block->name:'-';
+                return ($farming->block_id != null) ? $farming->block->name : '-';
             })
             ->editColumn('gram_panchyat_id', function (Farming $farming) {
-                return ($farming->gram_panchyat_id != null) ? $farming->gram_panchyat->name:'-';
+                return ($farming->gram_panchyat_id != null) ? $farming->gram_panchyat->name : '-';
             })
             ->editColumn('village_id', function (Farming $farming) {
-                return ($farming->village_id != null) ? $farming->village->name:'-';
+                return ($farming->village_id != null) ? $farming->village->name : '-';
             })
             ->editColumn('zone_id', function (Farming $farming) {
-                return ($farming->zone_id != null) ? $farming->zone->name:'-';
+                return ($farming->zone_id != null) ? $farming->zone->name : '-';
             })
             ->editColumn('center_id', function (Farming $farming) {
-                return ($farming->center_id != null) ? $farming->center->name:'-';
+                return ($farming->center_id != null) ? $farming->center->name : '-';
             })
             ->editColumn('bank', function (Farming $farming) {
-                return ($farming->bank != null) ? $farming->bank_data->name:'-';
+                return ($farming->bank != null) ? $farming->bank_data->name : '-';
             })
             ->editColumn('branch', function (Farming $farming) {
-                return ($farming->branch != null) ? $farming->bank_branch->name:'-';
+                return ($farming->branch != null) ? $farming->bank_branch->name : '-';
             })
             ->editColumn('is_validate', function (Farming $farming) {
-                return ($farming->is_validate != 0) ? 
-                '<span class="status_badge text-capitalize badge bg-success p-2 px-3 rounded">Validated</span>' : 
-                '<span class="status_badge text-capitalize badge bg-danger p-2 px-3 rounded">Not
+                return ($farming->is_validate != 0) ?
+                    '<span class="status_badge text-capitalize badge bg-success p-2 px-3 rounded">Validated</span>' :
+                    '<span class="status_badge text-capitalize badge bg-danger p-2 px-3 rounded">Not
                                                     Validated</span>';
             })
-            ->rawColumns(['is_validate','g_code'])
+            ->rawColumns(['is_validate', 'g_code'])
             ->addColumn('action', function (Farming $farming) {
                 return view('admin.farmer.registration.action', compact('farming'));
             });
@@ -80,34 +80,35 @@ class FarmerDataTable extends DataTable
     {
         $query = $model->newQuery()->select('farmings.*')
             ->join('users', 'users.id', 'farmings.created_by')
-            ->where('farmings.created_by', Auth::user()->id)
-            ->orWhere('users.supervisor_id', Auth::user()->id);
-
+            ->where(function ($query) {
+                $query->where('farmings.created_by', '=', Auth::user()->id)
+                    ->orWhere('users.supervisor_id', '=', Auth::user()->id);
+            });
+            
         $block_id =  $this->request()->get(key: 'block_id');
         $gp_id = $this->request()->get(key: 'grampanchyat_id');
         $village_id = $this->request()->get(key: 'village_id');
         $zone_id = $this->request()->get(key: 'zone_id');
         $center_id = $this->request()->get(key: 'center_id');
 
-        if (!empty($block_id)){
-
-            $query = $query->where('farmings.block_id',$block_id);
+        if (!empty($block_id)) {
+            $query = $query->where('farmings.block_id', $block_id);
         }
-        if (!empty($gp_id)){
+        if (!empty($gp_id)) {
 
-            $query = $query->where('farmings.gram_panchyat_id',$gp_id);
+            $query = $query->where('farmings.gram_panchyat_id', $gp_id);
         }
-        if (!empty($village_id)){
+        if (!empty($village_id)) {
 
-            $query = $query->where('farmings.village_id',$village_id);
+            $query = $query->where('farmings.village_id', $village_id);
         }
-        if (!empty($zone_id)){
+        if (!empty($zone_id)) {
 
-            $query = $query->where('farmings.zone_id',$zone_id);
+            $query = $query->where('farmings.zone_id', $zone_id);
         }
-        if (!empty($center_id)){
+        if (!empty($center_id)) {
 
-            $query = $query->where('farmings.center_id',$center_id);
+            $query = $query->where('farmings.center_id', $center_id);
         }
         return $query;
     }
@@ -126,17 +127,13 @@ class FarmerDataTable extends DataTable
             ->dom('Bfrtip')
             ->orderBy(1)
             ->buttons(
-                Button::make('export')->className('btn-light '),
+                Button::make('export')->className('btn-success '),
                 Button::make('print')->className('btn-light '),
-                Button::make('reset')->className('btn-light '),
-                Button::make('reload')->className('btn-light '),
                 Button::make('pageLength')->className('btn-light ')
             )->language([
                 'buttons' => [
                     'export' => __('Export'),
                     'print' => __('Print'),
-                    'reset' => __('Reset'),
-                    'reload' => __('Reload'),
                     'excel' => __('Excel'),
                     'csv' => __('CSV'),
                     'pageLength' => __('Show %d rows'),

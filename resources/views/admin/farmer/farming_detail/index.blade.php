@@ -2,57 +2,34 @@
 @section('title')
     {{ __('Plot Detail') }}
 @endsection
+@section('styles')
+    @include('layouts.datatables_css')
+@endsection
 @section('scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
+    @include('layouts.datatables_js')
+    {{ $dataTable->scripts() }}
     <script>
-        document.getElementById('exportButton').addEventListener('click', function() {
-            // Get the DataTable instance
-            var table = $('#plot_details_datatable').DataTable(); // Replace with your DataTable's ID
+        const table = $('#farming_details-table');
 
-            // Get all data from the DataTable (including non-visible rows)
-            var data = table.rows({
-                search: 'applied'
-            }).nodes().toArray(); // Fetch rows as DOM nodes to extract text content directly
-
-            // Create a new workbook
-            var wb = XLSX.utils.book_new();
-
-            // Create an array to store rows of data
-            var ws_data = [];
-
-            // Get headers from the table, excluding the "Action" column
-            var headers = [];
-            var actionColumnIndex = -1; // Initialize action column index
-            $('#plot_details_datatable thead tr th').each(function(index) {
-                var headerText = $(this).text();
-                if (headerText.toLowerCase() !== 'action') {
-                    headers.push(headerText); // Only add non-"Action" headers
-                } else {
-                    actionColumnIndex = index; // Store the index of the "Action" column
-                }
-            });
-            ws_data.push(headers); // Add headers to ws_data
-
-            // Add rows of data from the DataTable, excluding the "Action" column
-            data.forEach(function(row) {
-                var filteredRow = [];
-                $(row).find('td').each(function(index) {
-                    if (index !== actionColumnIndex) { // Exclude "Action" column
-                        filteredRow.push($(this).text().trim()); // Get plain text, strip HTML
-                    }
-                });
-                ws_data.push(filteredRow); // Add filtered row to ws_data
-            });
-
-            // Convert the data array to a worksheet
-            var ws = XLSX.utils.aoa_to_sheet(ws_data);
-
-            // Append the worksheet to the workbook
-            XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-
-            // Export the workbook to an Excel file
-            XLSX.writeFile(wb, 'Plot_details.xlsx');
+        table.on('preXhr.dt', function(e, settings, data) {
+            data.zone_id = $('#zone_id').val();
+            data.center_id = $('#center_id').val();
         });
+
+        $('#filter').on('click', function() {
+            table.DataTable().ajax.reload();
+            return false;
+        });
+        $('#reset').on('click', function() {
+            table.on('preXhr.dt', function(e, settings, data) {
+                data.zone_id = '';
+                data.center_id = '';
+            });
+
+            table.DataTable().ajax.reload();
+            return false;
+        });
+
         $('#zone_id').change(function() {
             let zone_id = $(this).val();
             $.ajax({
@@ -87,7 +64,6 @@
         </ol>
 
         <div class="float-end">
-            <button id="exportButton" class="btn btn-success">Export</button>
             @can('create-plot')
                 <a href="{{ route('admin.farmer.farming_detail.create') }}" class="btn btn-primary">
                     Add
@@ -101,8 +77,7 @@
             <div class="card">
                 <div class="card-body table-border-style">
                     <div class="col-12">
-                        <form action="{{ route('admin.farmer.farming_detail.search_filter') }}" method="post">
-                            @csrf
+                        <form>
                             <div class="row align-items-center">
                                 <div class="form-group col-md-4">
                                     {{ Form::label('zone_id', __('Zone'), ['class' => 'form-label']) }}
@@ -118,18 +93,16 @@
                                     {{ Form::select('center_id', ['' => 'Select center'], null, ['class' => 'form-control select']) }}
                                 </div>
                                 <div class="col-md-1">
-                                    <button type="submit" class="btn btn-primary">Filter</button>
+                                    <button type="button" class="btn btn-primary" id="filter">Filter</button>
                                 </div>
                                 <div class="col-md-1">
-                                    <a href="{{ route('admin.farmer.farming_detail.index') }}">
-                                        <button type="button" class="btn btn-primary">Reset</button>
-                                    </a>
+                                    <button type="button" class="btn btn-danger" id="reset">Reset</button>
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="table-responsive">
-                        <table class="data_table table datatable" id="plot_details_datatable">
+                        {{-- <table class="data_table table datatable" id="plot_details_datatable">
                             <thead>
                                 <tr>
                                     <th>{{ __('GCode') }}</th>
@@ -212,7 +185,8 @@
                                     </tr>
                                 @endforeach
                             </tbody>
-                        </table>
+                        </table> --}}
+                        {{ $dataTable->table(['width' => '100%', 'class' => 'table table-responsive-sm table-striped']) }}
                     </div>
                 </div>
             </div>
