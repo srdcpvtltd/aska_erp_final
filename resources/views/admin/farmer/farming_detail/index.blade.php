@@ -4,11 +4,22 @@
 @endsection
 @section('styles')
     @include('layouts.datatables_css')
+    <style>
+        .modal.show .modal-dialog {
+            top: 0%;
+        }
+    </style>
 @endsection
 @section('scripts')
     @include('layouts.datatables_js')
     {{ $dataTable->scripts() }}
     <script>
+        function reportmodal() {
+            //alert(125);
+            $("#reportModal").modal('show');
+
+        }
+
         const table = $('#farming_details-table');
 
         table.on('preXhr.dt', function(e, settings, data) {
