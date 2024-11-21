@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-    {{ __('Warehouse') }}
+    {{ __('Challan') }}
 @endsection
 
 @section('main-content')
@@ -20,12 +20,12 @@
     <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
         <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-            <li class="breadcrumb-item">{{ __('Warehouse') }}</li>
+            <li class="breadcrumb-item">{{ __('Challan') }}</li>
         </ol>
         <div class="float-end">
-            <a href="{{ route('admin.warehouse.create') }}" data-size="lg" data-url="{{ route('admin.warehouse.create') }}"
+            <a href="{{ route('admin.challan.create') }}" data-size="lg" data-url="{{ route('admin.challan.create') }}"
                 data-ajax-popup="true" data-bs-toggle="tooltip" title="{{ __('Create') }}"
-                data-title="{{ __('Create Warehouse') }}" class="btn btn-primary">
+                data-title="{{ __('Create Challan') }}" class="btn btn-primary">
                 Add
             </a>
         </div>
@@ -38,49 +38,57 @@
                         <table class="data_table table datatable">
                             <thead>
                                 <tr>
-                                    <th>{{ __('Name') }}</th>
-                                    <th>{{ __('Address') }}</th>
-                                    <th>{{ __('City') }}</th>
-                                    <th>{{ __('Zip Code') }}</th>
+                                    <th>{{ __('Sl No.') }}</th>
+                                    <th>{{ __('Warehouse') }}</th>
+                                    <th>{{ __('Challan No.') }}</th>
+                                    <th>{{ __('Product') }}</th>
+                                    <th>{{ __('Receive Date') }}</th>
+                                    <th>{{ __('Vehicle No.') }}</th>
+                                    <th>{{ __('Quantity') }}</th>
+                                    <th>{{ __('Amount') }}</th>
                                     <th class="text-center">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($warehouses as $warehouse)
+                                @foreach ($challans as $key=>$challan)
                                     <tr class="font-style">
-                                        <td>{{ $warehouse->name }}</td>
-                                        <td>{{ $warehouse->address }}</td>
-                                        <td>{{ $warehouse->city }}</td>
-                                        <td>{{ $warehouse->city_zip }}</td>
-                                        <td class="Action">
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $Challan->warehouse_id }}</td>
+                                        <td>{{ $Challan->challan_no }}</td>
+                                        <td>{{ $Challan->product_id }}</td>
+                                        <td>{{ $Challan->receive_date }}</td>
+                                        <td>{{ $Challan->vehicle_no }}</td>
+                                        <td>{{ $Challan->quantity }}</td>
+                                        <td>{{ $Challan->amount }}</td>
+                                        {{-- <td class="Action">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                                @can('show-warehouse')
+                                                @can('show-Challan')
                                                     <li class="me-2">
-                                                        <a href="{{ route('admin.warehouse.show', $warehouse->id) }}"
+                                                        <a href="{{ route('admin.challan.show', $Challan->id) }}"
                                                             data-bs-toggle="tooltip" title="{{ __('View') }}"><i
                                                                 class="link-icon" data-feather="eye"></i></a>
                                                     </li>
                                                 @endcan
-                                                @can('edit-warehouse')
+                                                @can('edit-Challan')
                                                     <li class="me-2">
-                                                        <a href="{{ route('admin.warehouse.edit', $warehouse->id) }}"
+                                                        <a href="{{ route('admin.challan.edit', $Challan->id) }}"
                                                             data-bs-toggle="tooltip" title="{{ __('Edit') }}"
-                                                            data-title="{{ __('Edit Warehouse') }}">
+                                                            data-title="{{ __('Edit Challan') }}">
                                                             <i class="link-icon" data-feather="edit"></i>
                                                         </a>
                                                     </li>
                                                 @endcan
-                                                @can('delete-warehouse')
+                                                @can('delete-Challan')
                                                     <li>
                                                         <a class="deleteBtn" href="#"
-                                                            data-href="{{ route('admin.warehouse.destroy', $warehouse->id) }}"
+                                                            data-href="{{ route('admin.challan.destroy', $Challan->id) }}"
                                                             data-bs-toggle="tooltip" title="{{ __('Delete') }}">
                                                             <i class="link-icon" data-feather="delete"></i>
                                                         </a>
                                                     </li>
                                                 @endcan
                                             </ul>
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                 @endforeach
                             </tbody>

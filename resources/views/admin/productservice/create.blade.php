@@ -41,13 +41,13 @@
                                     {{ Form::text('name', '', ['class' => 'form-control', 'required' => 'required']) }}
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            {{-- <div class="col-md-6">
                                 <div class="form-group">
                                     {{ Form::label('sku', __('SKU'), ['class' => 'form-label']) }}<span
                                         class="text-danger">*</span>
                                     {{ Form::text('sku', '', ['class' => 'form-control', 'required' => 'required']) }}
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -92,18 +92,11 @@
                                 {{ Form::select('unit_id', $unit, null, ['class' => 'form-control select', 'required' => 'required']) }}
                             </div>
                             <div class="col-md-6 form-group">
-                                {{ Form::label('pro_image', __('Product Image'), ['class' => 'form-label']) }}
+                                {{ Form::label('unit_weight', __('Unit weight'), ['class' => 'form-label']) }}
                                 <div class="choose-file ">
-                                    <label for="pro_image" class="form-label">
-                                        <input type="file" class="form-control" name="pro_image" id="pro_image"
-                                            data-filename="pro_image_create">
-                                        <img id="image" class="mt-3" style="width:25%;" />
-
-                                    </label>
+                                    <input type="text" class="form-control" name="unit_weight">
                                 </div>
                             </div>
-
-
 
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -118,24 +111,24 @@
                                                         for="customRadio5">{{ __('Product') }}</label>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            {{-- <div class="col-md-6">
                                                 <div class="form-check form-check-inline">
                                                     <input type="radio" class="form-check-input type" id="customRadio6"
                                                         name="type" value="service">
                                                     <label class="form-label"
                                                         for="customRadio6">{{ __('Service') }}</label>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="form-group col-md-6 quantity">
+                            {{-- <div class="form-group col-md-6 quantity">
                                 {{ Form::label('quantity', __('Quantity'), ['class' => 'form-label']) }}<span
                                     class="text-danger">*</span>
                                 {{ Form::text('quantity', null, ['class' => 'form-control']) }}
-                            </div>
+                            </div> --}}
 
                             <div class="form-group col-md-12">
                                 {{ Form::label('description', __('Description'), ['class' => 'form-label']) }}

@@ -13,7 +13,7 @@
         <div class="float-end">
             <a href="#" data-size="md" data-bs-toggle="tooltip" title="{{ __('Import') }}"
                 data-url="{{ route('admin.productservice.file.import') }}" data-ajax-popup="true"
-                data-title="{{ __('Import product CSV file') }}" class="btn btn-primary popup">
+                data-title="{{ __('Import product CSV file') }}" class="btn btn-success popup">
                 Import
             </a>
             <a href="{{ route('admin.productservice.export') }}" data-bs-toggle="tooltip" title="{{ __('Export') }}"
@@ -67,13 +67,13 @@
                             <thead>
                                 <tr>
                                     <th>{{ __('Name') }}</th>
-                                    <th>{{ __('Sku') }}</th>
+                                    {{-- <th>{{ __('Sku') }}</th> --}}
                                     <th>{{ __('Sale Price') }}</th>
                                     <th>{{ __('Purchase Price') }}</th>
                                     <th>{{ __('Tax') }}</th>
                                     <th>{{ __('Category') }}</th>
                                     <th>{{ __('Unit') }}</th>
-                                    <th>{{ __('Quantity') }}</th>
+                                    {{-- <th>{{ __('Quantity') }}</th> --}}
                                     <th>{{ __('Type') }}</th>
                                     <th>{{ __('Action') }}</th>
                                 </tr>
@@ -82,7 +82,7 @@
                                 @foreach ($productServices as $productService)
                                     <tr class="font-style">
                                         <td>{{ $productService->name }}</td>
-                                        <td>{{ $productService->sku }}</td>
+                                        {{-- <td>{{ $productService->sku }}</td> --}}
                                         <td>{{ \Auth::user()->priceFormat($productService->sale_price) }}</td>
                                         <td>{{ \Auth::user()->priceFormat($productService->purchase_price) }}</td>
                                         <td>
@@ -102,11 +102,11 @@
                                         <td>{{ !empty($productService->category) ? $productService->category->name : '' }}
                                         </td>
                                         <td>{{ !empty($productService->unit) ? $productService->unit->name : '' }}</td>
-                                        @if ($productService->type == 'product')
+                                        {{-- @if ($productService->type == 'product')
                                             <td>{{ $productService->quantity }}</td>
                                         @else
                                             <td>-</td>
-                                        @endif
+                                        @endif --}}
                                         <td>{{ ucwords($productService->type) }}</td>
 
                                         {{-- @if (Gate::check('edit product & service') || Gate::check('delete product & service')) --}}

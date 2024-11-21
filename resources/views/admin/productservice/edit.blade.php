@@ -42,13 +42,13 @@
                                         {{ Form::text('name', null, ['class' => 'form-control', 'required' => 'required']) }}
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                {{-- <div class="col-md-6">
                                     <div class="form-group">
                                         {{ Form::label('sku', __('SKU'), ['class' => 'form-label']) }}<span
                                             class="text-danger">*</span>
                                         {{ Form::text('sku', null, ['class' => 'form-control', 'required' => 'required']) }}
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -90,14 +90,9 @@
                                 </div>
 
                                 <div class="col-md-6 form-group">
-                                    {{ Form::label('pro_image', __('Product Image'), ['class' => 'form-label']) }}
+                                    {{ Form::label('unit_weight', __('Unit weight'), ['class' => 'form-label']) }}
                                     <div class="choose-file ">
-                                        <label for="pro_image" class="form-label">
-                                            <input type="file" class="form-control" name="pro_image" id="pro_image"
-                                                data-filename="pro_image_create">
-                                            <img id="image" class="mt-3" width="100"
-                                                src="@if ($productService->pro_image) {{ asset(Storage::url('uploads/pro_image/' . $productService->pro_image)) }}@else{{ asset(Storage::url('uploads/pro_image/user-2_1654779769.jpg')) }} @endif" />
-                                        </label>
+                                        <input type="text" class="form-control" name="unit_weight" value="{{ $productService->unit_weight }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -113,7 +108,7 @@
                                                         for="customRadio5">{{ __('Product') }}</label>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            {{-- <div class="col-md-6">
                                                 <div class="form-check form-check-inline">
                                                     <input type="radio" class="form-check-input type" id="customRadio6"
                                                         name="type" value="service"
@@ -121,17 +116,17 @@
                                                     <label class="form-label"
                                                         for="customRadio6">{{ __('Service') }}</label>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                         </div>
                                     </div>
                                 </div>
 
-                                <div
+                                {{-- <div
                                     class="form-group col-md-6 quantity {{ $productService->type == 'service' ? 'd-none' : '' }}">
                                     {{ Form::label('quantity', __('Quantity'), ['class' => 'form-label']) }}<span
                                         class="text-danger">*</span>
                                     {{ Form::text('quantity', null, ['class' => 'form-control', 'required' => 'required']) }}
-                                </div>
+                                </div> --}}
                                 <div class="form-group  col-md-12">
                                     {{ Form::label('description', __('Description'), ['class' => 'form-label']) }}
                                     {!! Form::textarea('description', null, ['class' => 'form-control', 'rows' => '2']) !!}

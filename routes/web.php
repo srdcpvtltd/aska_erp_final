@@ -7,6 +7,7 @@ use App\Http\Controllers\BankController;
 use App\Http\Controllers\BankTransferController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\ChallanController;
 use App\Http\Controllers\ChartOfAccountController;
 use App\Http\Controllers\CreditNoteController;
 use App\Http\Controllers\CustomerController;
@@ -768,6 +769,9 @@ Route::group([
         Route::get('export/invoice', [InvoiceController::class, 'export'])->name('invoice.export');
         Route::get('export/proposal', [ProposalController::class, 'export'])->name('proposal.export');
         Route::get('export/bill', [BillController::class, 'export'])->name('bill.export');
+
+        //Challan
+        Route::resource('challan', ChallanController::class);
     });
 });
 

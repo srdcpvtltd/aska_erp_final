@@ -15,9 +15,7 @@
     {{ $dataTable->scripts() }}
     <script>
         function reportmodal() {
-            //alert(125);
             $("#reportModal").modal('show');
-
         }
 
         const table = $('#farming_details-table');
@@ -113,90 +111,6 @@
                         </form>
                     </div>
                     <div class="table-responsive">
-                        {{-- <table class="data_table table datatable" id="plot_details_datatable">
-                            <thead>
-                                <tr>
-                                    <th>{{ __('GCode') }}</th>
-                                    <th>{{ __('Farmer') }}</th>
-                                    <th>{{ __('Father Name') }}</th>
-                                    <th>{{ __('Plot Number') }}</th>
-                                    <th>{{ __('Area in Acar') }}</th>
-                                    <th>{{ __('Date of Planting') }}</th>
-                                    <th>{{ __('Tentative Plant Quantity') }}</th>
-                                    <th>{{ __('Seed Category') }}</th>
-                                    <th>{{ __('Cutting Order') }}</th>
-                                    <th>{{ __('Can Field Village') }}</th>
-                                    <th>{{ __('Can Field Center') }}</th>
-                                    <th>{{ __('Plant Category') }}</th>
-                                    <th>{{ __('Irrigation Name') }}</th>
-                                    <th>{{ __('Irrigation Code') }}</th>
-                                    <th>{{ __('Created At') }}</th>
-                                    <th>{{ __('Action') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($farming_details as $farming_detail)
-                                    <tr class="font-style">
-                                        <td>{{ @$farming_detail->farming->old_g_code }}</td>
-                                        <td>{{ @$farming_detail->farming->name }}</td>
-                                        <td>{{ @$farming_detail->farming->father_name }}</td>
-                                        <td>{{ $farming_detail->plot_number }}</td>
-                                        <td>{{ number_format($farming_detail->area_in_acar, 2) }}</td>
-                                        <td>{{ date('d-m-Y', strtotime ($farming_detail->date_of_harvesting ))}}</td>
-                                        <td>{{ number_format($farming_detail->tentative_harvest_quantity, 2) }}</td>
-                                        <td>{{ @$farming_detail->seed_category->name }}</td>
-                                        <td>
-                                            @if (@$farming_detail->is_cutting_order)
-                                                <span
-                                                    class="status_badge text-capitalize badge bg-success p-2 px-3 rounded">Yes</span>
-                                            @else
-                                                <span
-                                                    class="status_badge text-capitalize badge bg-danger p-2 px-3 rounded">No</span>
-                                            @endif
-                                        </td>
-                                        <td>{{ @$farming_detail->can_field_village->name }}</td>
-                                        <td>{{ @$farming_detail->can_field_center->name }}</td>
-                                        <td>{{ $farming_detail->planting_category }}</td>
-                                        <td>{{ @$farming_detail->irrig->name }}</td>
-                                        <td>{{ @$farming_detail->irrig->code }}</td>
-                                        <td>{{ date('d-m-Y', strtotime($farming_detail->created_at)) }}</td>
-                                        <td class="Action">
-                                            <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                                @if ($farming_detail->is_cutting_order != '1')
-                                                    @can('edit-plot')
-                                                        <li class="me-2">
-                                                            <a href="{{ route('admin.farmer.farming_detail.edit', $farming_detail->id) }}"
-                                                                data-bs-toggle="tooltip" title="{{ __('Edit') }}">
-                                                                <i class="link-icon" data-feather="edit"></i>
-                                                            </a>
-                                                        </li>
-                                                    @endcan
-                                                    @if ($farming_detail->croploss == null)
-                                                        <li class="me-2">
-                                                            <a href="#" data-bs-toggle="tooltip"
-                                                                title="{{ __('Report') }}" class="reportmodal"
-                                                                data-id="{{ $farming_detail->id }}">
-                                                                <i class="link-icon" data-feather="file-text"></i>
-                                                            </a>
-                                                        </li>
-                                                    @endif
-                                                    @can('delete-plot')
-                                                        <li>
-                                                            <a class="deleteBtn" href="#"
-                                                                data-href="{{ route('admin.farmer.farming_detail.destroy', $farming_detail->id) }}"
-                                                                data-bs-toggle="tooltip" title="{{ __('Delete') }}">
-                                                                <i class="link-icon" data-feather="delete"></i>
-                                                            </a>
-                                                        </li>
-                                                    @endcan
-                                                @else
-                                                @endif
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table> --}}
                         {{ $dataTable->table(['width' => '100%', 'class' => 'table table-responsive-sm table-striped']) }}
                     </div>
                 </div>

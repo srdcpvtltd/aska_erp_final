@@ -26,6 +26,9 @@ class PlotdetailsDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
+            ->filterColumn('name', function ($query, $keyword) {
+                $query->where('farmings.name', 'like', "%{$keyword}%");
+            })
             ->addColumn('g_code', function (FarmingDetail $farming_details) {
                 return ($farming_details->farming != null) ? $farming_details->farming->old_g_code : '-';
             })
@@ -82,6 +85,7 @@ class PlotdetailsDataTable extends DataTable
     public function query(FarmingDetail $model): QueryBuilder
     {
         $query = $model->newQuery()->select('farming_details.*')
+            ->join('farmings', 'farmings.id', '=', 'farming_details.farming_id')
             ->join('users', 'users.id', 'farming_details.created_by')
             ->where(function ($query) {
                 $query->where('farming_details.created_by', Auth::user()->id)

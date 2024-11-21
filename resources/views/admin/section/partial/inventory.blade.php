@@ -1,6 +1,6 @@
 @canany(['manage-warehouse', 'manage-purchase','manage-transfer', 'manage-print_barcode', 'manage-print_settings'])
 <li
-    class="nav-item {{ Request::segment(2) == 'warehouse' || Request::segment(2) == 'purchase' || Request::segment(2) == 'warehouse-transfer' || Request::route()->getName() == 'admin.pos.barcode' || Request::route()->getName() == 'admin.pos.print.setting' || Request::route()->getName() == 'admin.pos.show' ? 'active' : '' }} ">
+    class="nav-item {{ Request::segment(2) == 'warehouse' || Request::segment(2) == 'purchase' || Request::segment(2) == 'warehouse-transfer' || Request::route()->getName() == 'admin.pos.barcode' || Request::route()->getName() == 'admin.pos.print.setting' || Request::route()->getName() == 'admin.pos.show' || Request::route()->getName() == 'admin.challan.index' || Request::route()->getName() == 'admin.challan.create' ? 'active' : '' }} ">
     <a data-href="#" class="nav-link" data-bs-toggle="collapse" href="#inventory" role="button" aria-expanded="false"
         aria-controls="company">
         <i class="link-icon" data-feather="users"></i>
@@ -8,7 +8,7 @@
         <i class="link-arrow" data-feather="chevron-down"></i>
     </a>
 
-    <div class="{{ Request::segment(2) == 'warehouse' || Request::segment(2) == 'purchase' || Request::segment(2) == 'warehouse-transfer' || Request::route()->getName() == 'admin.pos.barcode' || Request::route()->getName() == 'admin.pos.print.setting' || Request::route()->getName() == 'admin.pos.show' ? '' : 'collapse' }}"
+    <div class="{{ Request::segment(2) == 'warehouse' || Request::segment(2) == 'purchase' || Request::segment(2) == 'warehouse-transfer' || Request::route()->getName() == 'admin.pos.barcode' || Request::route()->getName() == 'admin.pos.print.setting' || Request::route()->getName() == 'admin.pos.show' || Request::route()->getName() == 'admin.challan.index' || Request::route()->getName() == 'admin.challan.create' ? '' : 'collapse' }}"
         id="inventory">
         <ul
             class="nav sub-menu">
@@ -42,6 +42,11 @@
                 <a class="nav-link {{ Request::route()->getName() == 'admin.pos.print.setting' ? ' active' : '' }}" href="{{ route('admin.pos.print.setting') }}">{{ __('Print Settings') }}</a>
             </li>
             @endcan
+            {{-- @can('manage-challan') --}}
+            <li class="nav-item">
+                <a class="nav-link {{ Request::route()->getName() == 'admin.challan.index' || Request::route()->getName() == 'admin.challan.create' ? ' active' : '' }}" href="{{ route('admin.challan.index') }}">{{ __('Challan') }}</a>
+            </li>
+            {{-- @endcan --}}
         </ul>
     </div>
 </li>

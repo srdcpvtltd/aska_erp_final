@@ -42,8 +42,7 @@ class ProductServiceController extends Controller
 
             return view('admin.productservice.index', compact('productServices', 'category'));
         } else {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
@@ -80,12 +79,12 @@ class ProductServiceController extends Controller
 
             $rules = [
                 'name' => 'required',
-                'sku' => [
-                    'required',
-                    Rule::unique('product_services')->where(function ($query) {
-                        return $query->where('created_by', \Auth::user()->id);
-                    })
-                ],
+                // 'sku' => [
+                //     'required',
+                //     Rule::unique('product_services')->where(function ($query) {
+                //         return $query->where('created_by', \Auth::user()->id);
+                //     })
+                // ],
                 'sale_price' => 'required|numeric',
                 'purchase_price' => 'required|numeric',
                 'category_id' => 'required',
@@ -104,13 +103,13 @@ class ProductServiceController extends Controller
             $productService                      = new ProductService();
             $productService->name                = $request->name;
             $productService->description         = $request->description;
-            $productService->sku                 = $request->sku;
+            // $productService->sku                 = $request->sku;
             $productService->sale_price          = $request->sale_price;
             $productService->purchase_price      = $request->purchase_price;
             $productService->tax_id              = !empty($request->tax_id) ? implode(',', $request->tax_id) : '';
             $productService->unit_id             = $request->unit_id;
             if (!empty($request->quantity)) {
-                $productService->quantity        = $request->quantity;
+                // $productService->quantity        = $request->quantity;
             } else {
                 $productService->quantity   = 0;
             }
@@ -118,25 +117,26 @@ class ProductServiceController extends Controller
             $productService->sale_chartaccount_id       = $request->sale_chartaccount_id;
             $productService->expense_chartaccount_id    = $request->expense_chartaccount_id;
             $productService->category_id                = $request->category_id;
+            $productService->unit_weight                = $request->unit_weight;
 
-            if (!empty($request->pro_image)) {
+            // if (!empty($request->pro_image)) {
 
-                if ($productService->pro_image) {
-                    $path = storage_path('uploads/pro_image' . $productService->pro_image);
-                    if (file_exists($path)) {
-                        File::delete($path);
-                    }
-                }
-                $fileName = $request->pro_image->getClientOriginalName();
-                $productService->pro_image = $fileName;
-                $dir        = 'uploads/pro_image';
-                if (!is_dir($dir)) {
-                    File::makeDirectory($dir, $mode = 0777, true, true);
-                }
-                $path = Utility::upload_file($request, 'pro_image', $fileName, $dir, []);
-                // $request->pro_image  = '';
-                $productService->save();
-            }
+            //     if ($productService->pro_image) {
+            //         $path = storage_path('uploads/pro_image' . $productService->pro_image);
+            //         if (file_exists($path)) {
+            //             File::delete($path);
+            //         }
+            //     }
+            //     $fileName = $request->pro_image->getClientOriginalName();
+            //     $productService->pro_image = $fileName;
+            //     $dir        = 'uploads/pro_image';
+            //     if (!is_dir($dir)) {
+            //         File::makeDirectory($dir, $mode = 0777, true, true);
+            //     }
+            //     $path = Utility::upload_file($request, 'pro_image', $fileName, $dir, []);
+            //     // $request->pro_image  = '';
+            // $productService->save();
+            // }
 
             $productService->created_by       = \Auth::user()->creatorId();
             $productService->save();
@@ -144,8 +144,7 @@ class ProductServiceController extends Controller
 
             return redirect()->route('admin.productservice.index')->with('success', __('Product successfully created.'));
         } else {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
@@ -199,8 +198,8 @@ class ProductServiceController extends Controller
             if ($productService->created_by == \Auth::user()->creatorId()) {
                 $rules = [
                     'name' => 'required',
-                    'sku' => 'required',
-                    Rule::unique('product_services')->ignore($productService->id),
+                    // 'sku' => 'required',
+                    // Rule::unique('product_services')->ignore($productService->id),
                     'sale_price' => 'required|numeric',
                     'purchase_price' => 'required|numeric',
                     'category_id' => 'required',
@@ -219,14 +218,14 @@ class ProductServiceController extends Controller
 
                 $productService->name           = $request->name;
                 $productService->description    = $request->description;
-                $productService->sku            = $request->sku;
+                // $productService->sku            = $request->sku;
                 $productService->sale_price     = $request->sale_price;
                 $productService->purchase_price = $request->purchase_price;
                 $productService->tax_id         = !empty($request->tax_id) ? implode(',', $request->tax_id) : '';
                 $productService->unit_id        = $request->unit_id;
 
                 if (!empty($request->quantity)) {
-                    $productService->quantity   = $request->quantity;
+                    // $productService->quantity   = $request->quantity;
                 } else {
                     $productService->quantity   = 0;
                 }
@@ -234,21 +233,22 @@ class ProductServiceController extends Controller
                 $productService->sale_chartaccount_id       = $request->sale_chartaccount_id;
                 $productService->expense_chartaccount_id    = $request->expense_chartaccount_id;
                 $productService->category_id                = $request->category_id;
+                $productService->unit_weight                = $request->unit_weight;
 
-                if (!empty($request->pro_image)) {
+                // if (!empty($request->pro_image)) {
 
-                    $dir = 'uploads/pro_image/';
-                    if ($productService->pro_image && Storage::disk('public')->exists($dir . $productService->pro_image)) {
-                        Storage::disk('public')->delete($dir . $productService->pro_image);
-                    }
+                //     $dir = 'uploads/pro_image/';
+                //     if ($productService->pro_image && Storage::disk('public')->exists($dir . $productService->pro_image)) {
+                //         Storage::disk('public')->delete($dir . $productService->pro_image);
+                //     }
 
-                    $fileName = $request->pro_image->getClientOriginalName();
-                    $extension = $request->pro_image->getClientOriginalExtension();
-                    $file_name = \Str::random(10) . '.' . $extension;
+                //     $fileName = $request->pro_image->getClientOriginalName();
+                //     $extension = $request->pro_image->getClientOriginalExtension();
+                //     $file_name = \Str::random(10) . '.' . $extension;
 
-                    $path = Utility::upload_file($request, 'pro_image', $file_name, $dir, []);
-                    $productService->pro_image = $file_name;
-                }
+                //     $path = Utility::upload_file($request, 'pro_image', $file_name, $dir, []);
+                //     $productService->pro_image = $file_name;
+                // }
 
                 $productService->created_by     = \Auth::user()->creatorId();
                 $productService->save();
@@ -256,12 +256,10 @@ class ProductServiceController extends Controller
 
                 return redirect()->route('admin.productservice.index')->with('success', __('Product successfully updated.'));
             } else {
-                            return redirect()->back()->with('danger', __('Permission denied.'));
-
+                return redirect()->back()->with('danger', __('Permission denied.'));
             }
         } else {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
@@ -275,12 +273,10 @@ class ProductServiceController extends Controller
 
                 return redirect()->route('admin.productservice.index')->with('success', __('Product successfully deleted.'));
             } else {
-                            return redirect()->back()->with('danger', __('Permission denied.'));
-
+                return redirect()->back()->with('danger', __('Permission denied.'));
             }
         } else {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
