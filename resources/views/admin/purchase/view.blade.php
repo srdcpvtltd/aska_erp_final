@@ -313,25 +313,20 @@
                                                                 @endforeach
                                                             </table>
                                                         @else
+                                                            @php
+                                                                $totalTaxPrice = 0;
+                                                            @endphp
                                                             -
                                                         @endif
                                                     </td>
 
                                                     <td>{{ !empty($iteam->description) ? $iteam->description : '-' }}</td>
                                                     <td class="text-end">
-                                                        {{ \Auth::user()->priceFormat($totalRate - $iteam->discount + $totalTaxPrice) }}
+                                                        {{ \Auth::user()->priceFormat($iteam->price * $iteam->quantity - $iteam->discount + $totalTaxPrice) }}
                                                     </td>
                                                 </tr>
                                             @endforeach
                                             <tfoot>
-                                                <tr>
-                                                    <td></td>
-                                                    <td><b>{{ __('Total') }}</b></td>
-                                                    <td><b>{{ $totalQuantity }}</b></td>
-                                                    <td><b>{{ \Auth::user()->priceFormat($total_Rate) }}</b></td>
-                                                    <td><b>{{ \Auth::user()->priceFormat($totalDiscount) }}</b></td>
-                                                    <td><b>{{ \Auth::user()->priceFormat($totalTaxPrice) }}</b></td>
-                                                </tr>
                                                 <tr>
                                                     <td colspan="6"></td>
                                                     <td class="text-end"><b>{{ __('Sub Total') }}</b></td>

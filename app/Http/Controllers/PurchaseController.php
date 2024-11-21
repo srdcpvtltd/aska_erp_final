@@ -193,7 +193,12 @@ class PurchaseController extends Controller
             $warehouse = warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $purchase_number  = \Auth::user()->purchaseNumberFormat($purchase->purchase_id);
             $venders          = Vender::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
-            $product_services = ProductService::where('created_by', \Auth::user()->creatorId())->where('type', '!=', 'service')->get()->pluck('name', 'id');
+            $services = ProductService::where('created_by', \Auth::user()->creatorId())->where('type', '!=', 'service')->get()->pluck('name', 'id')->toArray();
+            $select = [
+                '' => '-',
+            ];
+            $product_services = $select + $services;
+
             $vender = Vender::where('id', $purchase->vender_id)->first();
 
             return view('admin.purchase.edit', compact('venders', 'vender', 'product_services', 'purchase', 'warehouse', 'purchase_number', 'category'));
@@ -212,14 +217,13 @@ class PurchaseController extends Controller
     {
         // dd($request->all()); 
         if (\Auth::user()->can('edit-purchase')) {
-dd($purchase->created_by,\Auth::user()->creatorId());
             if ($purchase->created_by == \Auth::user()->creatorId()) {
                 $validator = \Validator::make(
                     $request->all(),
                     [
                         'vender_id' => 'required',
                         'purchase_date' => 'required',
-                        'items' => 'required',
+                        'item' => 'required',
                     ]
                 );
                 if ($validator->fails()) {
@@ -229,37 +233,37 @@ dd($purchase->created_by,\Auth::user()->creatorId());
                 }
                 $purchase->vender_id      = $request->vender_id;
                 $purchase->purchase_date      = $request->purchase_date;
-                //                $purchase->discount_apply = isset($request->discount_apply) ? 1 : 0;
+                // $purchase->discount_apply = isset($request->discount_apply) ? 1 : 0;
                 $purchase->category_id    = $request->category_id;
                 $purchase->save();
-                $products = $request->items;
-                dd($products);
-                for ($i = 0; $i < count($products); $i++) {
-                    $purchaseProduct = PurchaseProduct::find($products[$i]['id']);
+                $products = $request;
+                for ($i = 0; $i < count($products->id); $i++) {
+                    $purchaseProduct = PurchaseProduct::find($products['id'][$i]);
+                    // dd($purchaseProduct);
                     $old_qty = $purchaseProduct->quantity;
 
                     if ($purchaseProduct == null) {
                         $purchaseProduct             = new PurchaseProduct();
                         $purchaseProduct->purchase_id    = $purchase->id;
-                        Utility::total_quantity('plus', $products[$i]['quantity'], $products[$i]['items']);
+                        Utility::total_quantity('plus', $products['quantity'][$i], $products['items'][$i]);
                     } else {
 
                         Utility::total_quantity('minus', $purchaseProduct->quantity, $purchaseProduct->product_id);
                     }
 
-                    if (isset($products[$i]['item'])) {
-                        $purchaseProduct->product_id = $products[$i]['item'];
+                    if (isset($products['item'][$i])) {
+                        $purchaseProduct->product_id = $products['item'][$i];
                     }
 
-                    $purchaseProduct->quantity    = $products[$i]['quantity'];
-                    $purchaseProduct->tax         = $products[$i]['tax'];
-                    //                    $purchaseProduct->discount    = isset($products[$i]['discount']) ? $products[$i]['discount'] : 0;
-                    $purchaseProduct->discount    = $products[$i]['discount'];
-                    $purchaseProduct->price       = $products[$i]['price'];
-                    $purchaseProduct->description = $products[$i]['description'];
+                    $purchaseProduct->quantity    = $products['quantity'][$i];
+                    $purchaseProduct->tax         = $products['tax'][$i];
+                    // $purchaseProduct->discount    = isset($products[$i]['discount']) ? $products[$i]['discount'] : 0;
+                    $purchaseProduct->discount    = $products['discount'][$i];
+                    $purchaseProduct->price       = $products['price'][$i];
+                    $purchaseProduct->description = $products['description'][$i];
                     $purchaseProduct->save();
 
-                    if ($products[$i]['id'] > 0) {
+                    if ($products['id'][$i] > 0) {
                         Utility::total_quantity('plus', $products[$i]['quantity'], $purchaseProduct->product_id);
                     }
 

@@ -8,6 +8,13 @@
     <script src="{{ asset('js/jquery.repeater.min.js') }}"></script>
     <script>
         $(document).ready(function() {
+            var planting_type = '{{ $farming_detail->type }}';
+            if (planting_type  == 'Plant') {
+                $('#ratun_type').hide();
+            } else if (planting_type  == 'Ratun'){
+                $('#plant_type').hide();
+            }
+
             $('#g_code').keyup(function() {
                 let g_code = $(this).val();
                 console.log(g_code);
@@ -392,9 +399,9 @@
                             </div>
                         </div>
                         <!-- <div class="form-group col-md-6">
-                                                            {{ Form::label('kata_number', __('Kata Number'), ['class' => 'form-label']) }}
-                                                            {{ Form::text('kata_number', $farming_detail->kata_number, ['class' => 'form-control', 'required' => 'required']) }}
-                                                        </div> -->
+                                                                    {{ Form::label('kata_number', __('Kata Number'), ['class' => 'form-label']) }}
+                                                                    {{ Form::text('kata_number', $farming_detail->kata_number, ['class' => 'form-control', 'required' => 'required']) }}
+                                                                </div> -->
                         <div class="form-group col-md-6">
                             {{ Form::label('area_in_acar', __('Area in acar'), ['class' => 'form-label']) }}
                             {{ Form::text('area_in_acar', $farming_detail->area_in_acar, ['class' => 'form-control', 'required' => 'required']) }}
@@ -404,9 +411,9 @@
                             {{ Form::date('date_of_harvesting', $farming_detail->date_of_harvesting, ['class' => 'form-control', 'required' => 'required']) }}
                         </div>
                         <!-- <div class="form-group col-md-6">
-                                                            {{ Form::label('quantity', __('Quantity'), ['class' => 'form-label']) }}
-                                                            {{ Form::number('quantity', $farming_detail->quantity, ['class' => 'form-control', 'required' => 'required']) }}
-                                                        </div> -->
+                                                                    {{ Form::label('quantity', __('Quantity'), ['class' => 'form-label']) }}
+                                                                    {{ Form::number('quantity', $farming_detail->quantity, ['class' => 'form-control', 'required' => 'required']) }}
+                                                                </div> -->
                         {{-- <div class="form-group col-md-6">
                             {{ Form::label('tentative_harvest_quantity', __('Tentative Plant Quantity (In Ton)'), ['class' => 'form-label']) }}
                             {{ Form::number('tentative_harvest_quantity', $farming_detail->tentative_harvest_quantity, ['class' => 'form-control', 'required' => 'required']) }}
@@ -434,30 +441,27 @@
                         </div>
                         <div class="form-group col-md-6" id="planting_category">
                             {{ Form::label('type', __('Planting Category'), ['class' => 'form-label']) }}
-                            @if ($farming_detail->type == 'Plant')
-                                <select class="form-control select" id="plant_type">
-                                    <option value="">{{ __('Select') }}</option>
-                                    <option value="Plant"
-                                        {{ $farming_detail->planting_category == 'Plant' ? 'selected' : '' }}>Plant
-                                    </option>
-                                    <option value="Seed"
-                                        {{ $farming_detail->planting_category == 'Seed' ? 'selected' : '' }}>Seed</option>
-                                </select>
-                            @elseif($farming_detail->type == 'Ratun')
-                                <select class="form-control select" id="ratun_type">
-                                    <option value="">{{ __('Select') }}</option>
-                                    <option value="R-1"
-                                        {{ $farming_detail->planting_category == 'R-1' ? 'selected' : '' }}>R-1</option>
-                                    <option value="R-2"
-                                        {{ $farming_detail->planting_category == 'R-2' ? 'selected' : '' }}>R-2</option>
-                                    <option value="R-3"
-                                        {{ $farming_detail->planting_category == 'R-3' ? 'selected' : '' }}>R-3</option>
-                                    <option value="R-4"
-                                        {{ $farming_detail->planting_category == 'R-4' ? 'selected' : '' }}>R-4</option>
-                                    <option value="R-5"
-                                        {{ $farming_detail->planting_category == 'R-5' ? 'selected' : '' }}>R-5</option>
-                                </select>
-                            @endif
+                            <select class="form-control select" id="plant_type">
+                                <option value="">{{ __('Select') }}</option>
+                                <option value="Plant"
+                                    {{ $farming_detail->planting_category == 'Plant' ? 'selected' : '' }}>Plant
+                                </option>
+                                <option value="Seed"
+                                    {{ $farming_detail->planting_category == 'Seed' ? 'selected' : '' }}>Seed</option>
+                            </select>
+                            <select class="form-control select" id="ratun_type">
+                                <option value="">{{ __('Select') }}</option>
+                                <option value="R-1"
+                                    {{ $farming_detail->planting_category == 'R-1' ? 'selected' : '' }}>R-1</option>
+                                <option value="R-2"
+                                    {{ $farming_detail->planting_category == 'R-2' ? 'selected' : '' }}>R-2</option>
+                                <option value="R-3"
+                                    {{ $farming_detail->planting_category == 'R-3' ? 'selected' : '' }}>R-3</option>
+                                <option value="R-4"
+                                    {{ $farming_detail->planting_category == 'R-4' ? 'selected' : '' }}>R-4</option>
+                                <option value="R-5"
+                                    {{ $farming_detail->planting_category == 'R-5' ? 'selected' : '' }}>R-5</option>
+                            </select>
                         </div>
                         <div class="form-group col-md-6 irregation_fields">
                             {{ Form::label('irregation', __('Mode of Irregation'), ['class' => 'form-label']) }}
