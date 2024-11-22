@@ -53,25 +53,25 @@
                                 @foreach ($challans as $key=>$challan)
                                     <tr class="font-style">
                                         <td>{{ $key + 1 }}</td>
-                                        <td>{{ $Challan->warehouse_id }}</td>
-                                        <td>{{ $Challan->challan_no }}</td>
-                                        <td>{{ $Challan->product_id }}</td>
-                                        <td>{{ $Challan->receive_date }}</td>
-                                        <td>{{ $Challan->vehicle_no }}</td>
-                                        <td>{{ $Challan->quantity }}</td>
-                                        <td>{{ $Challan->amount }}</td>
-                                        {{-- <td class="Action">
+                                        <td>{{ $challan->warehouse->name }}</td>
+                                        <td>{{ $challan->challan_no }}</td>
+                                        <td>{{ $challan->product->name }}</td>
+                                        <td>{{ $challan->receive_date }}</td>
+                                        <td>{{ $challan->vehicle_no }}</td>
+                                        <td>{{ $challan->quantity }}</td>
+                                        <td>{{ $challan->amount }}</td>
+                                        <td class="Action">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                                 @can('show-Challan')
                                                     <li class="me-2">
-                                                        <a href="{{ route('admin.challan.show', $Challan->id) }}"
+                                                        <a href="{{ route('admin.challan.show', $challan->id) }}"
                                                             data-bs-toggle="tooltip" title="{{ __('View') }}"><i
                                                                 class="link-icon" data-feather="eye"></i></a>
                                                     </li>
                                                 @endcan
                                                 @can('edit-Challan')
                                                     <li class="me-2">
-                                                        <a href="{{ route('admin.challan.edit', $Challan->id) }}"
+                                                        <a href="{{ route('admin.challan.edit', $challan->id) }}"
                                                             data-bs-toggle="tooltip" title="{{ __('Edit') }}"
                                                             data-title="{{ __('Edit Challan') }}">
                                                             <i class="link-icon" data-feather="edit"></i>
@@ -81,14 +81,14 @@
                                                 @can('delete-Challan')
                                                     <li>
                                                         <a class="deleteBtn" href="#"
-                                                            data-href="{{ route('admin.challan.destroy', $Challan->id) }}"
+                                                            data-href="{{ route('admin.challan.destroy', $challan->id) }}"
                                                             data-bs-toggle="tooltip" title="{{ __('Delete') }}">
                                                             <i class="link-icon" data-feather="delete"></i>
                                                         </a>
                                                     </li>
                                                 @endcan
                                             </ul>
-                                        </td> --}}
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
