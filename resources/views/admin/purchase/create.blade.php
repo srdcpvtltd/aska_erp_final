@@ -295,23 +295,23 @@
             $('#table').append('<tbody class="ui-sortable" data-repeater-item>' +
                 '<tr>' +
                 '<td width="25%" class="form-group">' +
-                '{{ Form::select('item[]', $product_services, '', ['class' => 'form-control select2 item', 'data-url' => route('admin.purchase.product'), 'required' => 'required']) }}' +
+                '{{ Form::select('item[]', $product_services, '', ['class' => 'form-control select2 item', 'data-url' => route('admin.purchase.product')]) }}' +
                 '</td>' +
                 '<td>' +
                 '<div class="form-group price-input input-group search-form">' +
-                '{{ Form::text('quantity[]', '', ['class' => 'form-control quantity', 'required' => 'required', 'placeholder' => __('Qty'), 'required' => 'required']) }}' +
+                '{{ Form::text('quantity[]', '', ['class' => 'form-control quantity', 'placeholder' => __('Qty')]) }}' +
                 '<span class="unit input-group-text bg-transparent"></span>' +
                 '</div>' +
                 '</td>' +
                 '<td>' +
                 '<div class="form-group price-input input-group search-form">' +
-                '{{ Form::text('price[]', '', ['class' => 'form-control price', 'required' => 'required', 'placeholder' => __('Price'), 'required' => 'required']) }}' +
+                '{{ Form::text('price[]', '', ['class' => 'form-control price', 'placeholder' => __('Price')]) }}' +
                 '<span class="input-group-text bg-transparent">{{ \Auth::user()->currencySymbol() }}</span>' +
                 '</div>' +
                 '</td>' +
                 '<td>' +
                 '<div class="form-group price-input input-group search-form">' +
-                '{{ Form::text('discount[]', '', ['class' => 'form-control discount', 'required' => 'required', 'placeholder' => __('Discount')]) }}' +
+                '{{ Form::text('discount[]', '', ['class' => 'form-control discount', 'placeholder' => __('Discount')]) }}' +
                 '<span class="input-group-text bg-transparent">{{ \Auth::user()->currencySymbol() }}</span>' +
                 '</div>' +
                 '</td>' +
@@ -397,7 +397,7 @@
                         <div class="col-md-6">
                             <div class="form-group" id="vender-box">
                                 {{ Form::label('vender_id', __('Vendor'), ['class' => 'form-label']) }}
-                                {{ Form::select('vender_id', $venders, $vendorId, ['class' => 'form-control select', 'id' => 'vender', 'data-url' => route('admin.bill.vender'), 'required' => 'required']) }}
+                                {{ Form::select('vender_id', $venders, $vendorId, ['class' => 'form-control select', 'id' => 'vender', 'data-url' => route('admin.bill.vender')]) }}
                             </div>
                             <div id="vender_detail" class="d-none">
                             </div>
@@ -407,13 +407,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         {{ Form::label('warehouse_id', __('Warehouse'), ['class' => 'form-label']) }}
-                                        {{ Form::select('warehouse_id', $warehouse, null, ['class' => 'form-control select', 'required' => 'required']) }}
+                                        {{ Form::select('warehouse_id', $warehouse, null, ['class' => 'form-control select']) }}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         {{ Form::label('category_id', __('Category'), ['class' => 'form-label']) }}
-                                        {{ Form::select('category_id', $category, null, ['class' => 'form-control select', 'required' => 'required']) }}
+                                        {{ Form::select('category_id', $category, null, ['class' => 'form-control select']) }}
                                     </div>
                                 </div>
                             </div>
@@ -421,7 +421,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         {{ Form::label('purchase_date', __('Purchase Date'), ['class' => 'form-label']) }}
-                                        {{ Form::date('purchase_date', null, ['class' => 'form-control', 'required' => 'required']) }}
+                                        {{ Form::date('purchase_date', null, ['class' => 'form-control']) }}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -471,25 +471,25 @@
                             <tbody class="ui-sortable">
                                 <tr>
                                     <td width="25%" class="form-group">
-                                        {{ Form::select('item[]', $product_services, '', ['class' => 'form-control select2 item', 'data-url' => route('admin.purchase.product'), 'required' => 'required']) }}
+                                        {{ Form::select('item[]', $product_services, '', ['class' => 'form-control select2 item', 'data-url' => route('admin.purchase.product')]) }}
                                     </td>
                                     <td>
                                         <div class="form-group price-input input-group search-form">
-                                            {{ Form::text('quantity[]', '', ['class' => 'form-control quantity', 'required' => 'required', 'placeholder' => __('Qty'), 'required' => 'required']) }}
+                                            {{ Form::text('quantity[]', '', ['class' => 'form-control quantity', 'placeholder' => __('Qty')]) }}
 
                                             <span class="unit input-group-text bg-transparent"></span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group price-input input-group search-form">
-                                            {{ Form::text('price[]', '', ['class' => 'form-control price', 'required' => 'required', 'placeholder' => __('Price'), 'required' => 'required']) }}
+                                            {{ Form::text('price[]', '', ['class' => 'form-control price', 'placeholder' => __('Price')]) }}
                                             <span
                                                 class="input-group-text bg-transparent">{{ \Auth::user()->currencySymbol() }}</span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group price-input input-group search-form">
-                                            {{ Form::text('discount[]', '', ['class' => 'form-control discount', 'required' => 'required', 'placeholder' => __('Discount')]) }}
+                                            {{ Form::text('discount[]', '', ['class' => 'form-control discount', 'placeholder' => __('Discount')]) }}
                                             <span
                                                 class="input-group-text bg-transparent">{{ \Auth::user()->currencySymbol() }}</span>
                                         </div>
@@ -575,6 +575,5 @@
                 {{ Form::close() }}
             </div>
         </div>
-
     </div>
 @endsection

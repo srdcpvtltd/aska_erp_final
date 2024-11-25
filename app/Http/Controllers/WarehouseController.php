@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Utility;
-use App\Models\warehouse;
+use App\Models\Warehouse;
 use App\Models\WarehouseProduct;
 use DB;
 use Illuminate\Http\Request;
@@ -18,7 +18,7 @@ class WarehouseController extends Controller
     public function index()
     {
         if (\Auth::user()->can('manage-warehouse')) {
-            $warehouses = warehouse::where('created_by', '=', \Auth::user()->creatorId())->get();
+            $warehouses = Warehouse::where('created_by', '=', \Auth::user()->creatorId())->get();
 
             return view('admin.warehouse.index', compact('warehouses'));
         } else {
@@ -165,7 +165,7 @@ class WarehouseController extends Controller
     public function destroy($id)
     {
         if (\Auth::user()->can('delete-warehouse')) {
-            $warehouse = warehouse::findorfail($id);
+            $warehouse = Warehouse::findorfail($id);
             if ($warehouse->created_by == \Auth::user()->creatorId()) {
                 $warehouse->delete();
 

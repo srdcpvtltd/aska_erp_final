@@ -20,7 +20,7 @@
                             <thead>
                                 <tr>
                                     <th>{{ __('Name') }}</th>
-                                    <th>{{ __('Sku') }}</th>
+                                    {{-- <th>{{ __('Sku') }}</th> --}}
                                     <th>{{ __('Current Quantity') }}</th>
                                     <th>{{ __('Action') }}</th>
                                 </tr>
@@ -29,7 +29,7 @@
                                 @foreach ($productServices as $productService)
                                     <tr class="font-style">
                                         <td>{{ $productService->name }}</td>
-                                        <td>{{ $productService->sku }}</td>
+                                        {{-- <td>{{ $productService->sku }}</td> --}}
                                         <td>{{ $productService->quantity }}</td>
 
                                         <td class="Action">

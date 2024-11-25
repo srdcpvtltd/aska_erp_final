@@ -18,7 +18,7 @@ use App\Models\Utility;
 use App\Models\WarehouseProduct;
 use App\Models\WarehouseTransfer;
 use Illuminate\Support\Facades\Crypt;
-use App\Models\warehouse;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -61,7 +61,7 @@ class PurchaseController extends Controller
             $venders     = Vender::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $venders->prepend('Select Vender', '');
 
-            $warehouse     = warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
+            $warehouse     = Warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $warehouse->prepend('Select Warehouse', '');
 
             $product_services = ProductService::where('created_by', \Auth::user()->creatorId())->where('type', '!=', 'service')->get()->pluck('name', 'id');
@@ -82,7 +82,6 @@ class PurchaseController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         if (\Auth::user()->can('create-purchase')) {
             $validator = \Validator::make(
                 $request->all(),
@@ -97,7 +96,7 @@ class PurchaseController extends Controller
             if ($validator->fails()) {
                 $messages = $validator->getMessageBag();
 
-                return redirect()->back()->with('error', $messages->first());
+                return redirect()->back()->with('danger', $messages->first());
             }
             $purchase                 = new Purchase();
             $purchase->purchase_id    = $this->purchaseNumber();
@@ -106,7 +105,7 @@ class PurchaseController extends Controller
             $purchase->purchase_date  = $request->purchase_date;
             $purchase->purchase_number = !empty($request->purchase_number) ? $request->purchase_number : 0;
             $purchase->status         =  0;
-            $purchase->total_price    =  $request->total_amount;
+            $purchase->total_price    = $request->total_amount;
             $purchase->category_id    = $request->category_id;
             $purchase->created_by     = \Auth::user()->creatorId();
             $purchase->save();
@@ -190,7 +189,7 @@ class PurchaseController extends Controller
             $purchase = Purchase::find($idwww);
             $category = ProductServiceCategory::where('created_by', \Auth::user()->creatorId())->where('type', 'expense')->get()->pluck('name', 'id');
             $category->prepend('Select Category', '');
-            $warehouse = warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
+            $warehouse = Warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $purchase_number  = \Auth::user()->purchaseNumberFormat($purchase->purchase_id);
             $venders          = Vender::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $services = ProductService::where('created_by', \Auth::user()->creatorId())->where('type', '!=', 'service')->get()->pluck('name', 'id')->toArray();

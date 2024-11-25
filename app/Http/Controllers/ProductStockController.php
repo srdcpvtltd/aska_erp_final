@@ -21,8 +21,7 @@ class ProductStockController extends Controller
 
             return view('admin.productstock.index', compact('productServices'));
         } else {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
@@ -105,15 +104,12 @@ class ProductStockController extends Controller
                 $description = $request->quantity . '  ' . __('quantity added by manually');
                 Utility::addProductStock($productService->id, $request->quantity, $type, $description, $type_id);
 
-
                 return redirect()->route('admin.productstock.index')->with('success', __('Product quantity updated manually.'));
             } else {
-                            return redirect()->back()->with('danger', __('Permission denied.'));
-
+                return redirect()->back()->with('danger', __('Permission denied.'));
             }
         } else {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 

@@ -3597,7 +3597,6 @@ class Utility extends Model
     //inventory management (Quantity)
     public static function total_quantity($type, $quantity, $product_id)
     {
-
         $product      = ProductService::find($product_id);
         if (($product->type == 'product')) {
             $pro_quantity = $product->quantity;
@@ -3659,7 +3658,6 @@ class Utility extends Model
     //add quantity in product stock
     public static function addProductStock($product_id, $quantity, $type, $description, $type_id)
     {
-
         $stocks             = new StockReport();
         $stocks->product_id = $product_id;
         $stocks->quantity     = $quantity;
@@ -3788,7 +3786,6 @@ class Utility extends Model
     //add quantity in warehouse stock
     public static function addWarehouseStock($product_id, $quantity, $warehouse_id)
     {
-
         $product     = WarehouseProduct::where('product_id', $product_id)->where('warehouse_id', $warehouse_id)->first();
         if ($product) {
             $pro_quantity = $product->quantity;
@@ -3805,7 +3802,6 @@ class Utility extends Model
 
     public static function starting_number($id, $type)
     {
-
         if ($type == 'invoice') {
             $data = DB::table('settings')->where('created_by', \Auth::user()->creatorId())->where('name', 'invoice_starting_number')->update(array('value' => $id));
         } elseif ($type == 'proposal') {

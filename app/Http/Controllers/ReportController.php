@@ -44,7 +44,7 @@ use App\Models\User;
 use App\Models\UserDeal;
 use App\Models\Utility;
 use App\Models\Vender;
-use App\Models\warehouse;
+use App\Models\Warehouse;
 use App\Models\WarehouseProduct;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -1947,8 +1947,8 @@ class ReportController extends Controller
     public function warehouseReport()
     {
 
-        $warehouse = warehouse::where('created_by', \Auth::user()->id)->get();
-        $totalWarehouse = warehouse::where('created_by', \Auth::user()->id)->count();
+        $warehouse = Warehouse::where('created_by', \Auth::user()->id)->get();
+        $totalWarehouse = Warehouse::where('created_by', \Auth::user()->id)->count();
         $totalProduct = WarehouseProduct::where('created_by', '=', \Auth::user()->creatorId())->count();
         $warehousename = [];
         $warehouseProductData = [];
@@ -1965,7 +1965,7 @@ class ReportController extends Controller
     public function purchaseDailyReport(Request $request)
     {
 //        dd($request->all());
-        $warehouse = warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
+        $warehouse = Warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
         $warehouse->prepend('All Warehouse', 0);
         $vendor = Vender::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
         $vendor->prepend('All Vendor', 0);
@@ -2011,7 +2011,7 @@ class ReportController extends Controller
 
         $filter['startDate'] = $first_date;
         $filter['endDate'] = $end_date;
-        $warehouses = warehouse::where('id', '=', $request->warehouse)->where('created_by', \Auth::user()->creatorId())->first();
+        $warehouses = Warehouse::where('id', '=', $request->warehouse)->where('created_by', \Auth::user()->creatorId())->first();
         $filter['warehouse'] = !empty($warehouses) ? $warehouses->name : '';
         $vendors = Vender::where('id', '=', $request->vendor)->where('created_by', \Auth::user()->creatorId())->first();
         $filter['vendor'] = !empty($vendors) ? $vendors->name : '';
@@ -2023,7 +2023,7 @@ class ReportController extends Controller
     {
         $monthList = $this->yearMonth();
         $yearList = $this->yearList();
-        $warehouse = warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
+        $warehouse = Warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
         $warehouse->prepend('All Warehouse', 0);
         $vendor = Vender::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
         $vendor->prepend('All Vendor', 0);
@@ -2064,7 +2064,7 @@ class ReportController extends Controller
 
         $filter['startMonth'] = 'Jan-' . $year;
         $filter['endMonth'] = 'Dec-' . $year;
-        $warehouses = warehouse::where('id', '=', $request->warehouse)->where('created_by', \Auth::user()->creatorId())->first();
+        $warehouses = Warehouse::where('id', '=', $request->warehouse)->where('created_by', \Auth::user()->creatorId())->first();
         $filter['warehouse'] = !empty($warehouses) ? $warehouses->name : '';
         $vendors = Vender::where('id', '=', $request->vendor)->where('created_by', \Auth::user()->creatorId())->first();
         $filter['vendor'] = !empty($vendors) ? $vendors->name : '';
@@ -2076,7 +2076,7 @@ class ReportController extends Controller
     {
 
 //        dd($request->all());
-        $warehouse = warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
+        $warehouse = Warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
         $warehouse->prepend('All Warehouse', 0);
 
         $customer = Customer::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
@@ -2125,7 +2125,7 @@ class ReportController extends Controller
 
         $filter['startDate'] = $first_date;
         $filter['endDate'] = $end_date;
-        $warehouses = warehouse::where('id', '=', $request->warehouse)->where('created_by', \Auth::user()->creatorId())->first();
+        $warehouses = Warehouse::where('id', '=', $request->warehouse)->where('created_by', \Auth::user()->creatorId())->first();
         $filter['warehouse'] = !empty($warehouses) ? $warehouses->name : '';
         $customers = Customer::where('id', '=', $request->customer)->where('created_by', \Auth::user()->creatorId())->first();
         $filter['customer'] = !empty($customers) ? $customers->name : '';
@@ -2138,7 +2138,7 @@ class ReportController extends Controller
         $monthList = $this->yearMonth();
         $yearList = $this->yearList();
 
-        $warehouse = warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
+        $warehouse = Warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
         $warehouse->prepend('All Warehouse', 0);
         $customer = Customer::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
         $customer->prepend('All Customer', 0);
@@ -2179,7 +2179,7 @@ class ReportController extends Controller
 
         $filter['startMonth'] = 'Jan-' . $year;
         $filter['endMonth'] = 'Dec-' . $year;
-        $warehouses = warehouse::where('id', '=', $request->warehouse)->where('created_by', \Auth::user()->creatorId())->first();
+        $warehouses = Warehouse::where('id', '=', $request->warehouse)->where('created_by', \Auth::user()->creatorId())->first();
         $filter['warehouse'] = !empty($warehouses) ? $warehouses->name : '';
         $customers = Customer::where('id', '=', $request->customer)->where('created_by', \Auth::user()->creatorId())->first();
         $filter['customer'] = !empty($customers) ? $customers->name : '';

@@ -11,7 +11,7 @@ use App\Models\ProductService;
 use App\Models\StockReport;
 use App\Models\User;
 use App\Models\Utility;
-use App\Models\warehouse;
+use App\Models\Warehouse;
 use App\Models\WarehouseProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +32,7 @@ class PosController extends Controller
         if (\Auth::user()->can('manage-print_barcode')) {
             $customers      = Customer::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'name');
             $customers->prepend('Walk-in-customer', '');
-            $warehouses = warehouse::select('*', \DB::raw("CONCAT(name) AS name"))->where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
+            $warehouses = Warehouse::select('*', \DB::raw("CONCAT(name) AS name"))->where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             //            $warehouses->prepend('Select Warehouse', '');
             $user = Auth::user();
             $details = [
@@ -68,7 +68,7 @@ class PosController extends Controller
 
 
             $customer = Customer::where('name', '=', $request->vc_name)->where('created_by', $user->creatorId())->first();
-            $warehouse = warehouse::where('id', '=', $request->warehouse_name)->where('created_by', $user->creatorId())->first();
+            $warehouse = Warehouse::where('id', '=', $request->warehouse_name)->where('created_by', $user->creatorId())->first();
 
             $details = [
                 'pos_id' => $user->posNumberFormat($this->invoicePosNumber()),
@@ -157,7 +157,7 @@ class PosController extends Controller
 
             $user_id = Auth::user()->creatorId();
             $customer_id      = Customer::customer_id($request->vc_name);
-            $warehouse_id      = warehouse::warehouse_id($request->warehouse_name);
+            $warehouse_id      = Warehouse::warehouse_id($request->warehouse_name);
             $pos_id       = $this->invoicePosNumber();
             $sales            = session()->get('pos');
             //            dd($sales);
@@ -360,7 +360,7 @@ class PosController extends Controller
     public function printBarcode()
     {
         if (\Auth::user()->can('manage-print_barcode')) {
-            $warehouses = warehouse::select('*', \DB::raw("CONCAT(name) AS name"))->where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
+            $warehouses = Warehouse::select('*', \DB::raw("CONCAT(name) AS name"))->where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
 
             return view('admin.pos.print', compact('warehouses'));
         } else {
@@ -656,7 +656,7 @@ class PosController extends Controller
         $settings = Utility::settings();
 
         $customer = Customer::where('name', '=', $request->vc_name)->where('created_by', $user->creatorId())->first();
-        $warehouse = warehouse::where('id', '=', $request->warehouse_name)->where('created_by', $user->creatorId())->first();
+        $warehouse = Warehouse::where('id', '=', $request->warehouse_name)->where('created_by', $user->creatorId())->first();
 
         $details = [
             'pos_id' => $user->posNumberFormat($this->invoicePosNumber()),

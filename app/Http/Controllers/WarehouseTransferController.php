@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ProductService;
 use App\Models\Purchase;
 use App\Models\Utility;
-use App\Models\warehouse;
+use App\Models\Warehouse;
 use App\Models\WarehouseProduct;
 use App\Models\WarehouseTransfer;
 use DB;
@@ -28,8 +28,8 @@ class WarehouseTransferController extends Controller
     public function create()
     {
         if (\Auth::user()->can('create-transfer')) {
-            $from_warehouses = warehouse::where('created_by', '=', \Auth::user()->creatorId())->get();
-            $to_warehouses = warehouse::where('created_by', \Auth::user()->creatorId())->get();
+            $from_warehouses = Warehouse::where('created_by', '=', \Auth::user()->creatorId())->get();
+            $to_warehouses = Warehouse::where('created_by', \Auth::user()->creatorId())->get();
 
             $ware_pro = WarehouseProduct::join('product_services', 'warehouse_products.product_id', '=', 'product_services.id')
                 ->pluck('name', 'product_id');
@@ -113,13 +113,13 @@ class WarehouseTransferController extends Controller
             $ware_products = WarehouseProduct::join('product_services', 'warehouse_products.product_id', '=', 'product_services.id')
                 ->get()
                 ->pluck('name', 'product_id')->toArray();
-            $to_warehouses     = warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
+            $to_warehouses     = Warehouse::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
         } else {
             $ware_products = WarehouseProduct::join('product_services', 'warehouse_products.product_id', '=', 'product_services.id')
                 ->where('warehouse_id', $request->warehouse_id)
                 ->get()
                 ->pluck('name', 'product_id')->toArray();
-            $to_warehouses     = warehouse::where('id', '!=', $request->warehouse_id)->where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
+            $to_warehouses     = Warehouse::where('id', '!=', $request->warehouse_id)->where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
         }
         $result = [];
         $result['ware_products'] = $ware_products;

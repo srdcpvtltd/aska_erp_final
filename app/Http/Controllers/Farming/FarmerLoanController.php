@@ -173,6 +173,7 @@ class FarmerLoanController extends Controller
             return redirect()->back()->with('error', 'Permission denied.');
         }
     }
+    
     public function getProductServiceByCategory(Request $request)
     {
         $product_services = ProductService::where('category_id', $request->loan_category_id)->get();
@@ -180,6 +181,7 @@ class FarmerLoanController extends Controller
             'product_services' => $product_services,
         ]);
     }
+
     public function getProductServiceDetail(Request $request)
     {
         $product_service = ProductService::find($request->loan_type_id);
@@ -191,6 +193,7 @@ class FarmerLoanController extends Controller
             'product_service' => $product_service,
         ]);
     }
+
     public function getFarmingDetail(Request $request)
     {
         $farming = Farming::find($request->farming_id);

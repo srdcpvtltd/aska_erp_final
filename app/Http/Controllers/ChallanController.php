@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Challan;
 use App\Models\ProductService;
-use App\Models\warehouse;
+use App\Models\Utility;
+use App\Models\Warehouse;
 use App\Models\WarehouseProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +21,7 @@ class ChallanController extends Controller
 
     public function create()
     {
-        $warehouses = warehouse::where('created_by', Auth::user()->id)->get();
+        $warehouses = Warehouse::where('created_by', Auth::user()->id)->get();
         $products = ProductService::where('created_by', Auth::user()->id)->get();
         return view('admin.challan.create', compact('warehouses', 'products'));
     }
@@ -56,13 +57,22 @@ class ChallanController extends Controller
         $challan->created_by = $request->created_by;
         $challan->save();
 
-        $product = new WarehouseProduct();
-        $product->challan_no = $challan->id;
-        $product->warehouse_id = $request->warehouse_id;
-        $product->product_id = $request->product_id;
-        $product->quantity = $request->quantity;
-        $product->created_by = $request->created_by;
-        $product->save();
+        //inventory management (Quantity)
+        Utility::total_quantity('plus', $challan->quantity, $challan->product_id);
+
+        //Product Stock Report
+        $type = 'challan';
+        $type_id = 0;
+        $description = $request->quantity . '  ' . __(' quantity added by challan') . ' ' . $challan->challan_no;
+        Utility::addProductStock($request->product_id, $request->quantity, $type, $description, $type_id);
+
+        //Warehouse Stock Report
+        if (isset($request->product_id)) {
+            Utility::addWarehouseStock($request->product_id, $request->quantity, $request->warehouse_id);
+            $product = WarehouseProduct::where('product_id', $request->product_id)->where('warehouse_id', $request->warehouse_id)->first();
+            $product->challan_no = $challan->id;
+            $product->save();
+        }
 
         return redirect()->route('admin.challan.index')->with('success', __('Challan successfully created.'));
     }
@@ -70,7 +80,7 @@ class ChallanController extends Controller
     public function edit($id)
     {
         $challan = Challan::findorfail($id);
-        $warehouses = warehouse::where('created_by', Auth::user()->id)->get();
+        $warehouses = Warehouse::where('created_by', Auth::user()->id)->get();
         $products = ProductService::where('created_by', Auth::user()->id)->get();
 
         return view('admin.challan.edit', compact('challan', 'warehouses', 'products'));
@@ -93,7 +103,7 @@ class ChallanController extends Controller
     {
         $challan = Challan::findorfail($id);
         $challan->delete();
-        
+
         $product = WarehouseProduct::where('challan_no', $id);
         $product->delete();
 
