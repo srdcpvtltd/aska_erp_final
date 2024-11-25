@@ -62,13 +62,6 @@
                                         <td>{{ $challan->amount }}</td>
                                         <td class="Action">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                                @can('show-Challan')
-                                                    <li class="me-2">
-                                                        <a href="{{ route('admin.challan.show', $challan->id) }}"
-                                                            data-bs-toggle="tooltip" title="{{ __('View') }}"><i
-                                                                class="link-icon" data-feather="eye"></i></a>
-                                                    </li>
-                                                @endcan
                                                 @can('edit-Challan')
                                                     <li class="me-2">
                                                         <a href="{{ route('admin.challan.edit', $challan->id) }}"

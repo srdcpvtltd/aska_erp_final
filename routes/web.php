@@ -772,6 +772,7 @@ Route::group([
 
         //Challan
         Route::resource('challan', ChallanController::class);
+        Route::get('challan/{id}/destroy', [ChallanController::class, 'destroy'])->name('challan.destroy');
     });
 });
 
