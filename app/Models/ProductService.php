@@ -91,7 +91,6 @@ class ProductService extends Model
         $product_id = $this->id;
         $purchases = Purchase::where('created_by', $authuser->creatorId());
 
-
         if ($authuser->isUser()) {
             $purchases = $purchases->where('warehouse_id', $authuser->warehouse_id);
         }

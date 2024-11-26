@@ -59,7 +59,7 @@ class FarmerLoanController extends Controller
                     'farming_id' => 'required',
                     'created_by' => 'required',
                 ]);
-                
+
                 if ($validator->fails()) {
                     return redirect()->back()->withErrors($validator);
                 }
@@ -103,7 +103,7 @@ class FarmerLoanController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id) 
+    public function edit($id)
     {
         if (\Auth::user()->can('edit-allotment')) {
             $farmings = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
@@ -173,7 +173,7 @@ class FarmerLoanController extends Controller
             return redirect()->back()->with('error', 'Permission denied.');
         }
     }
-    
+
     public function getProductServiceByCategory(Request $request)
     {
         $product_services = ProductService::where('category_id', $request->loan_category_id)->get();
@@ -187,6 +187,10 @@ class FarmerLoanController extends Controller
         $product_service = ProductService::find($request->loan_type_id);
         $quantity = $product_service->getTotalProductQuantity()
             && $product_service->getTotalProductQuantity() > 0 ? $product_service->getTotalProductQuantity() : 0;
+
+        if ($quantity === 0) {
+            $quantity = $product_service->quantity;
+        }
 
         return response()->json([
             'quantity' => $quantity,
