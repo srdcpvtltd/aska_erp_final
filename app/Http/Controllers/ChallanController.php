@@ -69,9 +69,6 @@ class ChallanController extends Controller
         //Warehouse Stock Report
         if (isset($request->product_id)) {
             Utility::addWarehouseStock($request->product_id, $request->quantity, $request->warehouse_id);
-            $product = WarehouseProduct::where('product_id', $request->product_id)->where('warehouse_id', $request->warehouse_id)->first();
-            $product->challan_no = $challan->id;
-            $product->save();
         }
 
         return redirect()->route('admin.challan.index')->with('success', __('Challan successfully created.'));

@@ -13,11 +13,6 @@ class FarmerLoan extends Model
         'farming_id',
         'registration_number',
         'agreement_number',
-        // 'loan_category_id',
-        // 'loan_type_id',
-        // 'price_kg',
-        // 'quantity',
-        // 'total_amount',
         'date',
         'created_by'
     ];

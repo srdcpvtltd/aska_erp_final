@@ -50,7 +50,7 @@
                                     @endphp
 
                                     <tr class="font-style">
-                                        <td>{{ $loan->g_code }}</td>
+                                        <td>{{ $loan->farming->old_g_code }}</td>
                                         <td>{{ $loan->farming->name }}</td>
                                         <td>{{ $loan->registration_number }}</td>
                                         <td>{{ $loan->date }}</td>

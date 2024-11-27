@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Farming;
 use App\Models\ProductService;
 use App\Models\ProductServiceCategory;
+use App\Models\Utility;
+use App\Models\WarehouseProduct;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
@@ -61,7 +63,8 @@ class FarmerLoanController extends Controller
                 ]);
 
                 if ($validator->fails()) {
-                    return redirect()->back()->withErrors($validator);
+                    $messages = $validator->getMessageBag();
+                    return redirect()->back()->with('danger', $messages->first());
                 }
 
                 $encoded_loan_category_id = json_encode($request->loan_category_id);
@@ -73,7 +76,6 @@ class FarmerLoanController extends Controller
                 $farmerLoan = new FarmerLoan;
                 $farmerLoan->farming_id = $request->farming_id;
                 $farmerLoan->registration_number = $request->registration_number;
-                $farmerLoan->g_code = $request->g_code;
                 $farmerLoan->date = $request->date;
                 $farmerLoan->loan_category_id = $encoded_loan_category_id;
                 $farmerLoan->loan_type_id = $encoded_loan_type_id;
@@ -82,6 +84,24 @@ class FarmerLoanController extends Controller
                 $farmerLoan->total_amount = $encoded_total_amount;
                 $farmerLoan->created_by = $request->created_by;
                 $farmerLoan->save();
+
+                $count = count($request->quantity);
+
+                for($i = 0; $i < $count; $i++){
+                    //inventory management (Quantity)
+                    Utility::total_quantity('minus', $request['quantity'][$i], $request['loan_type_id'][$i]);
+    
+                    //Product Stock Report
+                    $type = 'allotment';
+                    $type_id = 0;
+                    $description = $request['quantity'][$i] . '  ' . __('quantity deducted by allotment');
+                    Utility::addProductStock($request['loan_type_id'][$i], $request['quantity'][$i], $type, $description, $type_id);
+    
+                    //Warehouse Stock Report
+                    // if (isset($request->product_id)) {
+                    //     Utility::addWarehouseStock($request['quantity'][$i], $request['loan_type_id'][$i], $request->warehouse_id);
+                    // }
+                }
 
                 return redirect()->to(route('admin.farmer.loan.index'))->with('success', 'Loan Added Successfully.');
             } catch (Exception $e) {
