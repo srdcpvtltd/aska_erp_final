@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class warehouse extends Model
+class Warehouse extends Model
 {
     use HasFactory;
 

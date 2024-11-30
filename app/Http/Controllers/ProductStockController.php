@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductService;
 use App\Models\ProductStock;
+use App\Models\StockReport;
 use App\Models\Utility;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductStockController extends Controller
 {
@@ -69,7 +72,9 @@ class ProductStockController extends Controller
         $productService = ProductService::find($id);
         if (\Auth::user()->can('edit-product_stock')) {
             if ($productService->created_by == \Auth::user()->creatorId()) {
-                return view('admin.productstock.edit', compact('productService'));
+                $warehouse = Warehouse::where('created_by', Auth::user()->id)->get();
+
+                return view('admin.productstock.edit', compact('productService','warehouse'));
             } else {
                 return response()->json(['error' => __('Permission denied.')], 401);
             }
@@ -102,7 +107,20 @@ class ProductStockController extends Controller
                 $type        = 'manually';
                 $type_id     = 0;
                 $description = $request->quantity . '  ' . __('quantity added by manually');
-                Utility::addProductStock($productService->id, $request->quantity, $type, $description, $type_id);
+
+                $stocks             = new StockReport();
+                $stocks->warehouse_id = $request->warehouse_id;
+                $stocks->product_id = $productService->id;
+                $stocks->quantity     = $request->quantity;
+                $stocks->type = $type;
+                $stocks->type_id = $type_id;
+                $stocks->description = $description;
+                $stocks->created_by = \Auth::user()->creatorId();
+                $stocks->save();
+
+                if (isset($productService->id)) {
+                    Utility::addWarehouseStock($productService->id, $request->quantity, $request->warehouse_id);
+                }
 
                 return redirect()->route('admin.productstock.index')->with('success', __('Product quantity updated manually.'));
             } else {

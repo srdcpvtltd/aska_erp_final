@@ -20,7 +20,6 @@
                             <thead>
                                 <tr>
                                     <th>{{ __('Name') }}</th>
-                                    {{-- <th>{{ __('Sku') }}</th> --}}
                                     <th>{{ __('Current Quantity') }}</th>
                                     <th>{{ __('Action') }}</th>
                                 </tr>
@@ -29,7 +28,6 @@
                                 @foreach ($productServices as $productService)
                                     <tr class="font-style">
                                         <td>{{ $productService->name }}</td>
-                                        {{-- <td>{{ $productService->sku }}</td> --}}
                                         <td>{{ $productService->quantity }}</td>
 
                                         <td class="Action">
@@ -61,6 +59,7 @@
                 event.preventDefault(); // Prevent the default link behavior
                 var url = $(this).data('url'); // Get the URL from the data attribute
                 var title = $(this).data('title'); // Get the title from the data attribute
+                console.log(url);
                 
                 // Update modal title
                 $('#exampleModalLabel').text(title);

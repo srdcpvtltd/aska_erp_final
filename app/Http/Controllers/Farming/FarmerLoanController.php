@@ -98,9 +98,24 @@ class FarmerLoanController extends Controller
                     Utility::addProductStock($request['loan_type_id'][$i], $request['quantity'][$i], $type, $description, $type_id);
     
                     //Warehouse Stock Report
-                    // if (isset($request->product_id)) {
-                    //     Utility::addWarehouseStock($request['quantity'][$i], $request['loan_type_id'][$i], $request->warehouse_id);
-                    // }
+                    if (isset($request['loan_type_id'][$i])) {
+                        $quantity = $request['quantity'][$i];
+                        $product_id = $request['loan_type_id'][$i];
+
+                        $product     = WarehouseProduct::where('product_id', $product_id)->first();
+
+                        if ($product) {
+                            $pro_quantity = $product->quantity;
+                            $product_quantity = $pro_quantity - $quantity;
+                        } else {
+                            $product_quantity = $quantity;
+                        }
+                
+                        $data = WarehouseProduct::updateOrCreate(
+                            ['warehouse_id' => $product->warehouse_id, 'product_id' => $product_id, 'created_by' => \Auth::user()->id],
+                            ['warehouse_id' => $product->warehouse_id, 'product_id' => $product_id, 'quantity' => $product_quantity, 'created_by' => \Auth::user()->id]
+                        );
+                    }
                 }
 
                 return redirect()->to(route('admin.farmer.loan.index'))->with('success', 'Loan Added Successfully.');
@@ -205,12 +220,12 @@ class FarmerLoanController extends Controller
     public function getProductServiceDetail(Request $request)
     {
         $product_service = ProductService::find($request->loan_type_id);
-        $quantity = $product_service->getTotalProductQuantity()
-            && $product_service->getTotalProductQuantity() > 0 ? $product_service->getTotalProductQuantity() : 0;
+        // $quantity = $product_service->getTotalProductQuantity()
+        //     && $product_service->getTotalProductQuantity() > 0 ? $product_service->getTotalProductQuantity() : 0;
 
-        if ($quantity === 0) {
+        // if ($quantity === 0) {
             $quantity = $product_service->quantity;
-        }
+        // }
 
         return response()->json([
             'quantity' => $quantity,

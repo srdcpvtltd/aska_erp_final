@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Challan;
 use App\Models\ProductService;
+use App\Models\StockReport;
 use App\Models\Utility;
 use App\Models\Warehouse;
 use App\Models\WarehouseProduct;
@@ -64,7 +65,16 @@ class ChallanController extends Controller
         $type = 'challan';
         $type_id = 0;
         $description = $request->quantity . '  ' . __(' quantity added by challan') . ' ' . $challan->challan_no;
-        Utility::addProductStock($request->product_id, $request->quantity, $type, $description, $type_id);
+        
+        $stocks             = new StockReport();
+        $stocks->warehouse_id = $request->warehouse_id;
+        $stocks->product_id = $request->product_id;
+        $stocks->quantity     = $request->quantity;
+        $stocks->type = $type;
+        $stocks->type_id = $type_id;
+        $stocks->description = $description;
+        $stocks->created_by = \Auth::user()->creatorId();
+        $stocks->save();
 
         //Warehouse Stock Report
         if (isset($request->product_id)) {

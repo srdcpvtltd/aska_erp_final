@@ -3684,9 +3684,6 @@ class Utility extends Model
             $data = $data->get();
         }
 
-
-
-
         $settings = [
             "cust_darklayout" => "off",
             "cust_theme_bg" => "on",
