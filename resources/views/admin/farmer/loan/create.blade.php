@@ -72,14 +72,12 @@
                     },
                     success: function(response) {
                         warehouse = response.warehouse;
-                        console.log(warehouse);
-
                         $('#warehouse_id').empty();
                         $('#warehouse_id').append(
                             '<option value="">Select Warehouse</option>');
                         for (i = 0; i < warehouse.length; i++) {
                             $('#warehouse_id').append('<option value="' + warehouse[i]
-                                .id + '">' + warehouse[i].name + '</option>');
+                                .id + '">' + warehouse[i].name + '('+ response.warehouse_product[i].quantity +')</option>');
                         }
                     }
                 });

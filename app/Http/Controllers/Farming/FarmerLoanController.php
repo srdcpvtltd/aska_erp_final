@@ -251,6 +251,7 @@ class FarmerLoanController extends Controller
         }
 
         return response()->json([
+            'warehouse_product' => $warehouse_product,
             'warehouse' => $warehouses
         ]);
     }
