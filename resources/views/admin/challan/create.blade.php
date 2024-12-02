@@ -2,6 +2,37 @@
 @section('title')
     {{ __('Challan Create') }}
 @endsection
+@section('scripts')
+    <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#quantity').on('keyup', function() {
+                var quantity = $(this).val();
+                var product_id = $('#product_id').val();
+                var warehouse_id = $('#warehouse_id').val();
+
+                $.ajax({
+                    url: "{{ route('admin.challan.getChallanAmount') }}",
+                    method: 'post',
+                    data: {
+                        product_id: product_id,
+                        warehouse_id: warehouse_id,
+                        quantity: quantity,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        $('#amount').val(response.total_price);
+                        $('#quantity').attr('max', response.warehouse_product.quantity);
+                        $('#max_text').html('Total Allowed Stock : ' + response
+                            .warehouse_product.quantity);
+                    }
+                });
+            })
+        });
+    </script>
+@endsection
 @section('main-content')
     @include('admin.section.flash_message')
 
@@ -65,13 +96,14 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('quantity', __('Quantity'), ['class' => 'form-label']) }}
-                                <input type="text" class="form-control" name="quantity">
+                                <input type="number" class="form-control" name="quantity" id="quantity" min="1">
+                                <span style="color:red;" id="max_text"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('amount', __('Amount'), ['class' => 'form-label']) }}
-                                <input type="text" class="form-control" name="amount">
+                                <input type="text" class="form-control" name="amount" id="amount">
                             </div>
                         </div>
                     </div>

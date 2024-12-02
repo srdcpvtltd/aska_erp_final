@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Farming;
 use App\Models\ProductService;
 use App\Models\ProductServiceCategory;
+use App\Models\StockReport;
 use App\Models\Utility;
+use App\Models\Warehouse;
 use App\Models\WarehouseProduct;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
@@ -87,22 +89,18 @@ class FarmerLoanController extends Controller
 
                 $count = count($request->quantity);
 
-                for($i = 0; $i < $count; $i++){
+                for ($i = 0; $i < $count; $i++) {
                     //inventory management (Quantity)
                     Utility::total_quantity('minus', $request['quantity'][$i], $request['loan_type_id'][$i]);
-    
-                    //Product Stock Report
-                    $type = 'allotment';
-                    $type_id = 0;
-                    $description = $request['quantity'][$i] . '  ' . __('quantity deducted by allotment');
-                    Utility::addProductStock($request['loan_type_id'][$i], $request['quantity'][$i], $type, $description, $type_id);
-    
-                    //Warehouse Stock Report
-                    if (isset($request['loan_type_id'][$i])) {
-                        $quantity = $request['quantity'][$i];
-                        $product_id = $request['loan_type_id'][$i];
 
-                        $product     = WarehouseProduct::where('product_id', $product_id)->first();
+                    //Warehouse Stock Report
+                    $product_id = $request['loan_type_id'][$i];
+                    $quantity = $request['quantity'][$i];
+                    $warehouse_id = $request['warehouse_id'][$i];
+
+                    if (isset($request['loan_type_id'][$i])) {
+
+                        $product = WarehouseProduct::where('product_id', $product_id)->where('warehouse_id', $warehouse_id)->first();
 
                         if ($product) {
                             $pro_quantity = $product->quantity;
@@ -110,12 +108,27 @@ class FarmerLoanController extends Controller
                         } else {
                             $product_quantity = $quantity;
                         }
-                
+
                         $data = WarehouseProduct::updateOrCreate(
-                            ['warehouse_id' => $product->warehouse_id, 'product_id' => $product_id, 'created_by' => \Auth::user()->id],
-                            ['warehouse_id' => $product->warehouse_id, 'product_id' => $product_id, 'quantity' => $product_quantity, 'created_by' => \Auth::user()->id]
+                            ['warehouse_id' => $warehouse_id, 'product_id' => $product_id, 'created_by' => \Auth::user()->id],
+                            ['warehouse_id' => $warehouse_id, 'product_id' => $product_id, 'quantity' => $product_quantity, 'created_by' => \Auth::user()->id]
                         );
                     }
+
+                    //Product Stock Report
+                    $type = 'allotment';
+                    $type_id = 0;
+                    $description = $request['quantity'][$i] . '  ' . __('quantity deducted by allotment');
+
+                    $stocks             = new StockReport();
+                    $stocks->warehouse_id = $warehouse_id;
+                    $stocks->product_id = $product_id;
+                    $stocks->quantity     = $quantity;
+                    $stocks->type = $type;
+                    $stocks->type_id = $type_id;
+                    $stocks->description = $description;
+                    $stocks->created_by = \Auth::user()->creatorId();
+                    $stocks->save();
                 }
 
                 return redirect()->to(route('admin.farmer.loan.index'))->with('success', 'Loan Added Successfully.');
@@ -219,17 +232,26 @@ class FarmerLoanController extends Controller
 
     public function getProductServiceDetail(Request $request)
     {
-        $product_service = ProductService::find($request->loan_type_id);
-        // $quantity = $product_service->getTotalProductQuantity()
-        //     && $product_service->getTotalProductQuantity() > 0 ? $product_service->getTotalProductQuantity() : 0;
-
-        // if ($quantity === 0) {
-            $quantity = $product_service->quantity;
-        // }
+        $product_service = ProductService::find($request->product_id);
+        $warehouse_product = WarehouseProduct::where('product_id', $request->product_id)
+            ->where('warehouse_id', $request->warehouse_id)
+            ->first();
 
         return response()->json([
-            'quantity' => $quantity,
+            'warehouse_product' => $warehouse_product,
             'product_service' => $product_service,
+        ]);
+    }
+
+    public function getWarehouseProduct(Request $request)
+    {
+        $warehouse_product = WarehouseProduct::where('product_id', $request->loan_type_id)->where('created_by', Auth::user()->id)->get();
+        foreach ($warehouse_product as $warehouse) {
+            $warehouses[] = Warehouse::where('id', $warehouse->warehouse_id)->where('created_by', Auth::user()->id)->first();
+        }
+
+        return response()->json([
+            'warehouse' => $warehouses
         ]);
     }
 

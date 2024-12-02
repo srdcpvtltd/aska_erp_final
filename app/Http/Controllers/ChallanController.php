@@ -116,4 +116,22 @@ class ChallanController extends Controller
 
         return redirect()->route('admin.challan.index')->with('success', __('Challan successfully deleted.'));
     }
+
+    public function getChallanAmount(Request $request)
+    {
+        $product_service = ProductService::find($request->product_id);
+        $warehouse_product = WarehouseProduct::where('product_id', $request->product_id)
+            ->where('warehouse_id', $request->warehouse_id)
+            ->first();
+        if($warehouse_product->quantity > $request->quantity){
+            $total_price = $product_service->sale_price * $request->quantity;
+        } else{
+            $total_price = 0;
+        }
+        return response()->json([
+            'total_price' => $total_price,
+            'warehouse_product' => $warehouse_product,
+            'product_service' => $product_service,
+        ]);
+    }
 }

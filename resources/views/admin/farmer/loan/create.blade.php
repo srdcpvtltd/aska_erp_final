@@ -62,7 +62,7 @@
             $('#loan_type_id').change(function() {
                 let loan_type_id = $(this).val();
                 $.ajax({
-                    url: "{{ route('admin.farmer.loan.get_product_service_detail') }}",
+                    url: "{{ route('admin.farmer.loan.getWarehouseProduct') }}",
                     method: 'post',
                     data: {
                         loan_type_id: loan_type_id,
@@ -71,9 +71,38 @@
                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     },
                     success: function(response) {
+                        warehouse = response.warehouse;
+                        console.log(warehouse);
+
+                        $('#warehouse_id').empty();
+                        $('#warehouse_id').append(
+                            '<option value="">Select Warehouse</option>');
+                        for (i = 0; i < warehouse.length; i++) {
+                            $('#warehouse_id').append('<option value="' + warehouse[i]
+                                .id + '">' + warehouse[i].name + '</option>');
+                        }
+                    }
+                });
+            });
+            $('#warehouse_id').change(function() {
+                let warehouse_Id = $(this).val();
+                let product_Id = $('#loan_type_id').val();
+
+                $.ajax({
+                    url: "{{ route('admin.farmer.loan.get_product_service_detail') }}",
+                    method: 'post',
+                    data: {
+                        warehouse_id: warehouse_Id,
+                        product_id: product_Id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
                         $('#price_kg').val(response.product_service.sale_price);
-                        $('#quantity').attr('max', response.quantity);
-                        $('#max_text').html('Total Allowed Stock : ' + response.quantity);
+                        $('#quantity').attr('max', response.warehouse_product.quantity);
+                        $('#max_text').html('Total Allowed Stock : ' + response
+                            .warehouse_product.quantity);
                     }
                 });
             });
@@ -82,7 +111,7 @@
                 let price = $('#price_kg').val();
                 $('#total_amount').val(quantity * price);
             });
-            
+
             //add more field jquery
             $('#row_div').on('change', '.loan_category_id', function() {
                 let loan_category_id = $(this).val();
@@ -112,8 +141,9 @@
             $('#row_div').on('change', '.loan_type_id', function() {
                 let loan_type_id = $(this).val();
                 let $this = $(this).closest('.append_div');
+
                 $.ajax({
-                    url: "{{ route('admin.farmer.loan.get_product_service_detail') }}",
+                    url: "{{ route('admin.farmer.loan.getWarehouseProduct') }}",
                     method: 'post',
                     data: {
                         loan_type_id: loan_type_id,
@@ -122,9 +152,36 @@
                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     },
                     success: function(response) {
+                        warehouse = response.warehouse;
+
+                        $this.find('.warehouse_id').empty();
+                        $this.find('.warehouse_id').append(
+                            '<option value="">Select Warehouse</option>');
+                        for (i = 0; i < warehouse.length; i++) {
+                            $this.find('.warehouse_id').append('<option value="' + warehouse[i]
+                                .id + '">' + warehouse[i].name + '</option>');
+                        }
+                    }
+                });
+            });
+            $('#row_div').on('change', '.warehouse_id', function() {
+                let warehouse_id = $(this).val();
+                let $this = $(this).closest('.append_div');
+                let product_Id = $this.find('.loan_type_id').val();
+                $.ajax({
+                    url: "{{ route('admin.farmer.loan.get_product_service_detail') }}",
+                    method: 'post',
+                    data: {
+                        warehouse_id: warehouse_id,
+                        product_id: product_Id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
                         $this.find('.price_kg').val(response.product_service.sale_price);
-                        $this.find('.quantity').attr('max', response.quantity);
-                        $this.find('.max_text').html('Total Allowed Stock : ' + response
+                        $this.find('.quantity').attr('max', response.warehouse_product.quantity);
+                        $this.find('.max_text').html('Total Allowed Stock : ' + response.warehouse_product
                             .quantity);
                     }
                 });
@@ -156,6 +213,15 @@
                     '<select class="form-control select loan_type_id" name="loan_type_id[]"' +
                     'placeholder="Select Loan Type" required>' +
                     '<option value="">{{ __('Select Item') }}</option>' +
+                    '</select>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-6 pd_right_0">' +
+                    '<div class="form-group">' +
+                    '{{ Form::label('warehouse_id', __('Warehouse'), ['class' => 'form-label']) }}' +
+                    '<select class="form-control select warehouse_id" name="warehouse_id[]"' +
+                    'placeholder="Select Loan Type" required>' +
+                    '<option value="">{{ __('Select Warehouse') }}</option>' +
                     '</select>' +
                     '</div>' +
                     '</div>' +
@@ -239,6 +305,14 @@
                                 <select class="form-control select" name="loan_type_id[]" id="loan_type_id"
                                     placeholder="Select Loan Type" required>
                                     <option value="">{{ __('Select Item') }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ Form::label('warehouse_id', __('Warehouse'), ['class' => 'form-label']) }}
+                                <select class="form-control select" name="warehouse_id[]" id="warehouse_id" required>
+                                    <option value="">{{ __('Select Warehouse') }}</option>
                                 </select>
                             </div>
                         </div>
