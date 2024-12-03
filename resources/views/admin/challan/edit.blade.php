@@ -2,6 +2,34 @@
 @section('title')
     {{ __('Challan Edit') }}
 @endsection
+@section('scripts')
+    <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#quantity').on('keyup', function() {
+                var quantity = $(this).val();
+                var product_id = $('#product_id').val();
+                var warehouse_id = $('#warehouse_id').val();
+
+                $.ajax({
+                    url: "{{ route('admin.challan.getChallanAmount') }}",
+                    method: 'post',
+                    data: {
+                        product_id: product_id,
+                        warehouse_id: warehouse_id,
+                        quantity: quantity,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        $('#amount').val(response.total_price);
+                    }
+                });
+            })
+        });
+    </script>
+@endsection
 @section('main-content')
     @include('admin.section.flash_message')
 
@@ -32,15 +60,19 @@
                                 <select class="form-control select" name="warehouse_id" id="warehouse_id" disabled>
                                     <option value="">{{ __('Select Warehouse') }}</option>
                                     @foreach ($warehouses as $warehouse)
-                                        <option value="{{ $warehouse->id }}" {{ $challan->warehouse_id == $warehouse->id ? 'selected':'' }}>{{ $warehouse->name }}</option>
+                                        <option value="{{ $warehouse->id }}"
+                                            {{ $challan->warehouse_id == $warehouse->id ? 'selected' : '' }}>
+                                            {{ $warehouse->name }}</option>
                                     @endforeach
                                 </select>
+                                <input type="hidden" name="warehouse_id" value="{{ $challan->warehouse_id }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('challan_no', __('Challan No.'), ['class' => 'form-label']) }}
-                                <input type="text" class="form-control" name="challan_no" value="{{ $challan->challan_no }}">
+                                <input type="text" class="form-control" name="challan_no"
+                                    value="{{ $challan->challan_no }}">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -49,33 +81,38 @@
                                 <select class="form-control select" name="product_id" id="product_id" disabled>
                                     <option value="">{{ __('Select Product') }}</option>
                                     @foreach ($products as $product)
-                                        <option value="{{ $product->id }}" {{ $challan->product_id == $product->id ? 'selected':'' }}>{{ $product->name }}</option>
+                                        <option value="{{ $product->id }}"
+                                            {{ $challan->product_id == $product->id ? 'selected' : '' }}>
+                                            {{ $product->name }}</option>
                                     @endforeach
                                 </select>
+                                <input type="hidden" name="product_id" value="{{ $challan->product_id }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('receive_date', __('Receive Date'), ['class' => 'form-label']) }}
-                                <input type="date" class="form-control" name="receive_date" value="{{ $challan->receive_date }}">
+                                <input type="date" class="form-control" name="receive_date"
+                                    value="{{ $challan->receive_date }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('vehicle_no', __('Vehicle No.'), ['class' => 'form-label']) }}
-                                <input type="text" class="form-control" name="vehicle_no" value="{{ $challan->vehicle_no }}">
+                                <input type="text" class="form-control" name="vehicle_no"
+                                    value="{{ $challan->vehicle_no }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('quantity', __('Quantity'), ['class' => 'form-label']) }}
-                                <input type="text" class="form-control" name="quantity" value="{{ $challan->quantity }}" readonly>
+                                <input type="text" class="form-control" name="quantity" id="quantity" value="{{ $challan->quantity }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('amount', __('Amount'), ['class' => 'form-label']) }}
-                                <input type="text" class="form-control" name="amount" value="{{ $challan->amount }}">
+                                <input type="text" class="form-control" name="amount" id="amount" value="{{ $challan->amount }}" readonly>
                             </div>
                         </div>
                     </div>

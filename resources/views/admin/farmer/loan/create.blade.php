@@ -104,7 +104,7 @@
                     }
                 });
             });
-            $('#quantity').change(function() {
+            $('#quantity').keyup(function() {
                 let quantity = $(this).val();
                 let price = $('#price_kg').val();
                 $('#total_amount').val(quantity * price);
@@ -157,7 +157,7 @@
                             '<option value="">Select Warehouse</option>');
                         for (i = 0; i < warehouse.length; i++) {
                             $this.find('.warehouse_id').append('<option value="' + warehouse[i]
-                                .id + '">' + warehouse[i].name + '</option>');
+                                .id + '">' + warehouse[i].name + '('+ response.warehouse_product[i].quantity +')</option>');
                         }
                     }
                 });
@@ -184,7 +184,7 @@
                     }
                 });
             });
-            $('#row_div').on('change', '.quantity', function() {
+            $('#row_div').on('keyup', '.quantity', function() {
                 let quantity = $(this).val();
                 let price = $(this).closest('.append_div').find('.price_kg').val();
                 $(this).closest('.append_div').find('.total_amount').val(quantity * price);

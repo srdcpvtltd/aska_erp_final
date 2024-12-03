@@ -118,7 +118,7 @@ class FarmerLoanController extends Controller
                     //Product Stock Report
                     $type = 'allotment';
                     $type_id = 0;
-                    $description = $request['quantity'][$i] . '  ' . __('quantity deducted by allotment');
+                    $description = $request['quantity'][$i] . ' ' . __('quantity deducted by allotment');
 
                     $stocks             = new StockReport();
                     $stocks->warehouse_id = $warehouse_id;
@@ -138,14 +138,6 @@ class FarmerLoanController extends Controller
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(FarmerLoan $farmerLoan)
-    {
-        //
     }
 
     /**
@@ -181,17 +173,79 @@ class FarmerLoanController extends Controller
     {
         if (\Auth::user()->can('edit-allotment')) {
             try {
-                $encoded_loan_category_id = json_encode($request->loan_category_id);
-                $encoded_loan_type_id = json_encode($request->loan_type_id);
-                $encoded_price_kg = json_encode($request->price_kg);
-                $encoded_quantity = json_encode($request->quantity);
-                $encoded_total_amount = json_encode($request->total_amount);
-
                 $farmerLoan = FarmerLoan::find($id);
-                $farmerLoan->farming_id = $request->farming_id;
-                $farmerLoan->registration_number = $request->registration_number;
-                $farmerLoan->g_code = $request->g_code;
-                $farmerLoan->date = $request->date;
+
+                $count = count($request->quantity);
+
+                for ($i = 0; $i < $count; $i++) {
+                    //inventory management (Quantity)
+                    $product_id = $request->loan_type_id[$i];
+                    $quantity = $request->quantity[$i];
+
+                    $product      = ProductService::find($product_id);
+                    if (($product->type == 'product')) {
+                        $pro_quantity = $product->quantity;
+                        $product->quantity = $pro_quantity - $quantity;
+                        $product->save();
+                    }
+
+                    //Warehouse Stock Report
+                    $warehouse_id = $request['warehouse_id'][$i];
+
+                    if (isset($request['loan_type_id'][$i])) {
+
+                        $product = WarehouseProduct::where('product_id', $product_id)->where('warehouse_id', $warehouse_id)->first();
+
+                        if ($product) {
+                            $pro_quantity = $product->quantity;
+                            $product_quantity = $pro_quantity - $quantity;
+                        } else {
+                            $product_quantity = $quantity;
+                        }
+
+                        $data = WarehouseProduct::updateOrCreate(
+                            ['warehouse_id' => $warehouse_id, 'product_id' => $product_id, 'created_by' => \Auth::user()->id],
+                            ['warehouse_id' => $warehouse_id, 'product_id' => $product_id, 'quantity' => $product_quantity, 'created_by' => \Auth::user()->id]
+                        );
+                    }
+
+                    //Product Stock Report
+                    $type = 'allotment';
+                    $type_id = 0;
+                    $description = $request['quantity'][$i] . ' ' . __('quantity deducted by allotment');
+
+                    $stocks             = new StockReport();
+                    $stocks->warehouse_id = $warehouse_id;
+                    $stocks->product_id = $product_id;
+                    $stocks->quantity     = $quantity;
+                    $stocks->type = $type;
+                    $stocks->type_id = $type_id;
+                    $stocks->description = $description;
+                    $stocks->created_by = \Auth::user()->creatorId();
+                    $stocks->save();
+                }
+
+                $loan_category_id_array = json_decode($farmerLoan->loan_category_id);
+                $merged_loan_cat_id = array_merge($loan_category_id_array, $request->loan_category_id);
+
+                $loan_type_id_array = json_decode($farmerLoan->loan_type_id);
+                $merged_loan_type_id = array_merge($loan_type_id_array, $request->loan_type_id);
+
+                $price_kg_array = json_decode($farmerLoan->price_kg);
+                $merged_price_kg = array_merge($price_kg_array, $request->price_kg);
+
+                $quantity_array = json_decode($farmerLoan->quantity);
+                $merged_quantity = array_merge($quantity_array, $request->quantity);
+
+                $total_amount_array = json_decode($farmerLoan->total_amount);
+                $merged_total_amount = array_merge($total_amount_array, $request->total_amount);
+
+                $encoded_loan_category_id = json_encode($merged_loan_cat_id);
+                $encoded_loan_type_id = json_encode($merged_loan_type_id);
+                $encoded_price_kg = json_encode($merged_price_kg);
+                $encoded_quantity = json_encode($merged_quantity);
+                $encoded_total_amount = json_encode($merged_total_amount);
+
                 $farmerLoan->loan_category_id = $encoded_loan_category_id;
                 $farmerLoan->loan_type_id = $encoded_loan_type_id;
                 $farmerLoan->price_kg = $encoded_price_kg;

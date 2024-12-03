@@ -124,13 +124,26 @@ class PurchaseController extends Controller
                 $purchaseProduct->save();
 
                 //inventory management (Quantity)
-                Utility::total_quantity('plus', $purchaseProduct->quantity, $purchaseProduct->product_id);
+                Utility::total_quantity('plus', $request['quantity'][$i], $request['item'][$i]);
 
                 //Product Stock Report
                 $type = 'purchase';
                 $type_id = $purchase->id;
-                $description = $request['quantity'][$i] . '  ' . __(' quantity add in purchase') . ' ' . \Auth::user()->purchaseNumberFormat($purchase->purchase_id);
-                Utility::addProductStock($request['item'][$i], $request['quantity'][$i], $type, $description, $type_id);
+                $description = $request['quantity'][$i] . ' ' . __('quantity add in purchase') . ' ' . \Auth::user()->purchaseNumberFormat($purchase->purchase_id);
+                
+                $warehouse_id = $request->warehouse_id;
+                $product_id = $request['item'][$i];
+                $quantity = $request['quantity'][$i];
+
+                $stocks             = new StockReport();
+                $stocks->warehouse_id = $warehouse_id;
+                $stocks->product_id = $product_id;
+                $stocks->quantity     = $quantity;
+                $stocks->type = $type;
+                $stocks->type_id = $type_id;
+                $stocks->description = $description;
+                $stocks->created_by = \Auth::user()->creatorId();
+                $stocks->save();
 
                 //Warehouse Stock Report
                 if (isset($request['item'][$i])) {

@@ -24,9 +24,6 @@
                     },
                     success: function(response) {
                         $('#amount').val(response.total_price);
-                        $('#quantity').attr('max', response.warehouse_product.quantity);
-                        $('#max_text').html('Total Allowed Stock : ' + response
-                            .warehouse_product.quantity);
                     }
                 });
             })
@@ -96,8 +93,8 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('quantity', __('Quantity'), ['class' => 'form-label']) }}
-                                <input type="number" class="form-control" name="quantity" id="quantity" min="1">
-                                <span style="color:red;" id="max_text"></span>
+                                <input type="number" class="form-control" name="quantity" id="quantity">
+                                {{-- <span style="color:red;" id="max_text"></span> --}}
                             </div>
                         </div>
                         <div class="col-md-6">

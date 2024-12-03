@@ -64,8 +64,8 @@ class ChallanController extends Controller
         //Product Stock Report
         $type = 'challan';
         $type_id = 0;
-        $description = $request->quantity . '  ' . __(' quantity added by challan') . ' ' . $challan->challan_no;
-        
+        $description = $request->quantity . ' ' . __('quantity added by challan') . ' ' . $challan->challan_no;
+
         $stocks             = new StockReport();
         $stocks->warehouse_id = $request->warehouse_id;
         $stocks->product_id = $request->product_id;
@@ -101,6 +101,57 @@ class ChallanController extends Controller
         $challan->vehicle_no = $request->vehicle_no;
         $challan->amount = $request->amount;
         $challan->created_by = $request->created_by;
+
+
+        //inventory management (Quantity)
+        $product_id = $request->product_id;
+        $quantity = $request->quantity;
+
+        $product      = ProductService::find($product_id);
+        if (($product->type == 'product')) {
+            $pro_quantity = $product->quantity;
+            $product->quantity = ($pro_quantity - $challan->quantity) + $quantity;
+            $product->save();
+        }
+
+        //Product Stock Report
+        $type = 'challan';
+        $type_id = 0;
+        $descriptions = $challan->quantity . ' ' . __('quantity added by challan') . ' ' . $challan->challan_no;
+
+        $stocks = StockReport::where('description', $descriptions)->first();
+
+        $description = $request->quantity . ' ' . __('quantity added by challan') . ' ' . $challan->challan_no;
+
+        $stocks->warehouse_id = $request->warehouse_id;
+        $stocks->product_id = $request->product_id;
+        $stocks->quantity   = $request->quantity;
+        $stocks->type = $type;
+        $stocks->type_id = $type_id;
+        $stocks->description = $description;
+        $stocks->created_by = \Auth::user()->creatorId();
+        $stocks->save();
+
+        //Warehouse Stock Report
+        if (isset($request->product_id)) {
+            $product_id = $request->product_id;
+            $warehouse_id = $request->warehouse_id;
+            $quantity = $request->quantity;
+
+            $product     = WarehouseProduct::where('product_id', $product_id)->where('warehouse_id', $warehouse_id)->first();
+            if ($product) {
+                $pro_quantity = $product->quantity;
+                $product_quantity = ($pro_quantity - $challan->quantity) + $quantity;
+            } else {
+                $product_quantity = $quantity;
+            }
+
+            $data = WarehouseProduct::updateOrCreate(
+                ['warehouse_id' => $warehouse_id, 'product_id' => $product_id, 'created_by' => \Auth::user()->id],
+                ['warehouse_id' => $warehouse_id, 'product_id' => $product_id, 'quantity' => $product_quantity, 'created_by' => \Auth::user()->id]
+            );
+        }
+        $challan->quantity = $request->quantity;
         $challan->save();
 
         return redirect()->route('admin.challan.index')->with('success', __('Challan successfully updated.'));
@@ -120,18 +171,10 @@ class ChallanController extends Controller
     public function getChallanAmount(Request $request)
     {
         $product_service = ProductService::find($request->product_id);
-        $warehouse_product = WarehouseProduct::where('product_id', $request->product_id)
-            ->where('warehouse_id', $request->warehouse_id)
-            ->first();
-        if($warehouse_product->quantity > $request->quantity){
-            $total_price = $product_service->sale_price * $request->quantity;
-        } else{
-            $total_price = 0;
-        }
+        $total_price = $product_service->purchase_price * $request->quantity;
+
         return response()->json([
             'total_price' => $total_price,
-            'warehouse_product' => $warehouse_product,
-            'product_service' => $product_service,
         ]);
     }
 }
