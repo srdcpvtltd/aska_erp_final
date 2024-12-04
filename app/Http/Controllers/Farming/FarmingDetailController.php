@@ -294,16 +294,24 @@ class FarmingDetailController extends Controller
         if (\Auth::user()->can('edit-plot')) {
             $farming_detail = FarmingDetail::find($request->id);
             try {
-                $validator = Validator::make($request->all(), [
-                    'croploss' => 'required',
-                    'total_planting_area' => 'required',
-                    'tentative_harvest_quantity' => 'required',
-                ]);
+                if ($request->tentative_harvest_quantity != null) {
+                    $validator = Validator::make($request->all(), [
+                        'croploss' => 'required',
+                        'total_planting_area' => 'required',
+                        'tentative_harvest_quantity' => 'required',
+                        'mode_of_transport' => 'required',
+                    ]);
+                } else {
+                    $validator = Validator::make($request->all(), [
+                        'croploss' => 'required',
+                        'total_planting_area' => 'required',
+                    ]);
+                }
 
                 if ($validator->fails()) {
                     return redirect()->back()->withErrors($validator);
                 }
-                
+
                 $farming_detail->update($request->all());
                 return redirect()->back()->with('success', 'Plot Details Updated Successfully.');
             } catch (Exception $e) {
@@ -317,14 +325,25 @@ class FarmingDetailController extends Controller
     public function search_filter(Request $request)
     {
         $farming_details = FarmingDetail::where('created_by', Auth::user()->id)
-        ->where('zone_id', $request->zone_id)
-        ->when($request->center_id !== null, function ($query) use ($request) {
-            $query->where('center_id', $request->center_id);
-        })
-        ->orderBy('id', 'DESC')
-        ->get();
+            ->where('zone_id', $request->zone_id)
+            ->when($request->center_id !== null, function ($query) use ($request) {
+                $query->where('center_id', $request->center_id);
+            })
+            ->orderBy('id', 'DESC')
+            ->get();
 
         $zones = Zone::all();
         return view('admin.farmer.farming_detail.index', compact('farming_details', 'zones'));
+    }
+
+    public function getPlotDetails(Request $request)
+    {
+        $plot_details = FarmingDetail::find($request->id);
+
+        return response()->json([
+            'farmer_name' => $plot_details->farming->name,
+            'plot_no' => $plot_details->plot_number,
+            'area' => number_format($plot_details->area_in_acar, 2)
+        ]);
     }
 }

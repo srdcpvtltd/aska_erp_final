@@ -349,9 +349,6 @@
                                         {{ Form::label('total_amount', __('Total Amount'), ['class' => 'form-label']) }}
                                         {{ Form::number('total_amount[]', $total_amount[$i], ['class' => 'form-control total_amount', 'required' => 'required', 'readonly' => true, 'placeholder' => 'Total Amount', 'disabled']) }}
                                     </div>
-                                    <div class="form-group col-md-6">
-                                        <button class="btn btn-danger mt-4 delete">Delete</button>
-                                    </div>
                                 </div>
                             @endif
                         @endfor

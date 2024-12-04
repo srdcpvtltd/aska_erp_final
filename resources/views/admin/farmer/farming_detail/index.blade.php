@@ -14,9 +14,58 @@
     @include('layouts.datatables_js')
     {{ $dataTable->scripts() }}
     <script>
-        function reportmodal() {
+        function reportmodal(element) {
+            $('#loss_reason').hide();
+            $('#loss_area').hide();
+
+            var plot_detail_id = $(element).data('id');
+            $('#plot_detail_id').val(plot_detail_id);
+
+            $.ajax({
+                url: "{{ route('admin.farmer.farming_detail.getPlotDetails') }}",
+                method: 'post',
+                data: {
+                    id: plot_detail_id,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    $('#farmer_name').text(response.farmer_name);
+                    $('#plot_no').text(response.plot_no);
+                    $('#area').text(response.area);
+                    $('#total_planting_area').val(response.area);
+                    $('#total_planting_areas').val(response.area);
+                }
+            });
             $("#reportModal").modal('show');
         }
+
+        $('input[name="croploss"]').on('click', function() {
+            var value = $(this).val();
+            if (value === 'Yes') {
+                $('#loss_reason').show();
+                $('#loss_area').show();
+            } else {
+                $('#loss_reason').hide();
+                $('#loss_area').hide();
+            }
+        });
+
+        $('#loos_area').on('keyup', function(){
+            var loose_area = $(this).val();
+            var planting_area = $('#total_planting_areas').val();
+            if(loose_area > 0){
+                var loss_area = planting_area - loose_area;
+                $('#total_planting_area').val(loss_area);
+            } else {
+                $('#total_planting_area').val(planting_area);
+            }
+        });
+
+        $('.close_btn').on('click', function() {
+            $('#reportModal').modal('hide');
+        });
 
         const table = $('#farming_details-table');
 
@@ -143,7 +192,7 @@
                             </div>
                             <div class="form-group col-md-6" id="loss_reason">
                                 {{ Form::label('loss_reason', __('Loss Reason'), ['class' => 'form-label']) }}
-                                <select class="form-control select" name="loss_reason" id="loss_reason"
+                                <select class="form-control select" name="loss_reason" id="loos_reason"
                                     placeholder="Select">
                                     <option value="">{{ __('Select Reason') }}</option>
                                     <option value="Flood">Flood</option>
@@ -153,16 +202,32 @@
                             </div>
                             <div class="form-group col-md-6" id="loss_area">
                                 {{ Form::label('loss_area', __('Loss Area (Acr.)'), ['class' => 'form-label']) }} <br>
-                                <input name="loss_area" type="text" class="form-control">
+                                <input name="loss_area" type="text" id="loos_area" class="form-control">
                             </div>
                             <div class="form-group col-md-6">
                                 {{ Form::label('total_planting_area', __('Total Area for final planting'), ['class' => 'form-label']) }}
                                 <br>
-                                <input name="total_planting_area" type="text" class="form-control" readonly>
+                                <input name="total_planting_area" type="text" class="form-control" id="total_planting_area" readonly>
+                                <input type="hidden" class="form-control" id="total_planting_areas" readonly>
                             </div>
                             <div class="form-group col-md-6">
                                 {{ Form::label('tentative_harvest_quantity', __('Tentative Plant Quantity (In Ton)'), ['class' => 'form-label']) }}
-                                {{ Form::text('tentative_harvest_quantity', '', ['class' => 'form-control', 'required' => 'required']) }}
+                                {{ Form::text('tentative_harvest_quantity', '', ['class' => 'form-control']) }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                {{ Form::label('mode_of_transport', __('Mode Of Transport'), ['class' => 'form-label']) }}
+                                <select class="form-control select" name="mode_of_transport" id="mode_of_transport"
+                                    placeholder="Select">
+                                    <option value="">{{ __('Select') }}</option>
+                                    <option value="Cart">Cart</option>
+                                    <option value="Truck">Truck</option>
+                                    <option value="Tractor">Tractor</option>
+                                    <option value="Own Transport">Own Transport (OT)</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                {{ Form::label('reserve_seed', __('Reserve Seed'), ['class' => 'form-label']) }}
+                                {{ Form::text('reserve_seed', '', ['class' => 'form-control']) }}
                             </div>
                         </div>
                     </div>

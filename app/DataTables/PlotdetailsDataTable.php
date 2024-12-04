@@ -143,6 +143,10 @@ class PlotdetailsDataTable extends DataTable
     public function getColumns(): array
     {
         return [
+            Column::computed('action')
+                ->exportable(false)
+                ->printable(false)
+                ->addClass('text-center'),
             Column::make('id')
                 ->title('Sl No.')
                 ->render('meta.row + meta.settings._iDisplayStart + 1;')
@@ -162,10 +166,7 @@ class PlotdetailsDataTable extends DataTable
             Column::make('irregation')->title('Irrigation Name'),
             Column::make('irregation_code')->title('Irrigation Code'),
             Column::make('created_at')->title('Created At'),
-            Column::computed('action')
-                ->exportable(false)
-                ->printable(false)
-                ->addClass('text-center'),
+
         ];
     }
 

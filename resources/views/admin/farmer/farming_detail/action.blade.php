@@ -14,7 +14,7 @@
             @endcan
             @if ($farming_detail->croploss == null)
                 <a class="dropdown-item" href="#" data-bs-toggle="tooltip" title="{{ __('Report') }}"
-                    class="reportmodal" data-id="{{ $farming_detail->id }}" onclick="reportmodal()">
+                    class="reportmodal" data-id="{{ $farming_detail->id }}" onclick="reportmodal(this)">
                     Report
                 </a>
             @endif

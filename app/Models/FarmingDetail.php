@@ -32,7 +32,9 @@ class FarmingDetail extends Model
         'center_id',
         'is_cutting_order',
         'irregation_mode',
-        'irregation'
+        'irregation',
+        'reserve_seed',
+        'mode_of_transport'
     ];
     
     public function farming()
