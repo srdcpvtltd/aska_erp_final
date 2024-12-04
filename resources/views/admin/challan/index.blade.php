@@ -23,11 +23,13 @@
             <li class="breadcrumb-item">{{ __('Challan') }}</li>
         </ol>
         <div class="float-end">
+            @can('create-challan')
             <a href="{{ route('admin.challan.create') }}" data-size="lg" data-url="{{ route('admin.challan.create') }}"
                 data-ajax-popup="true" data-bs-toggle="tooltip" title="{{ __('Create') }}"
                 data-title="{{ __('Create Challan') }}" class="btn btn-primary">
                 Add
             </a>
+            @endcan
         </div>
     </nav>
     <div class="row">
@@ -62,7 +64,7 @@
                                         <td>{{ $challan->amount }}</td>
                                         <td class="Action">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                                @can('edit-Challan')
+                                                @can('edit-challan')
                                                     <li class="me-2">
                                                         <a href="{{ route('admin.challan.edit', $challan->id) }}"
                                                             data-bs-toggle="tooltip" title="{{ __('Edit') }}"
@@ -71,7 +73,7 @@
                                                         </a>
                                                     </li>
                                                 @endcan
-                                                @can('delete-Challan')
+                                                @can('delete-challan')
                                                     <li>
                                                         <a class="deleteBtn" href="#"
                                                             data-href="{{ route('admin.challan.destroy', $challan->id) }}"

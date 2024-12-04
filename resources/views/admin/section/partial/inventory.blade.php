@@ -42,11 +42,11 @@
                 <a class="nav-link {{ Request::route()->getName() == 'admin.pos.print.setting' ? ' active' : '' }}" href="{{ route('admin.pos.print.setting') }}">{{ __('Print Settings') }}</a>
             </li>
             @endcan
-            {{-- @can('manage-challan') --}}
+            @can('manage-challan')
             <li class="nav-item">
                 <a class="nav-link {{ Request::route()->getName() == 'admin.challan.index' || Request::route()->getName() == 'admin.challan.create' ? ' active' : '' }}" href="{{ route('admin.challan.index') }}">{{ __('Challan') }}</a>
             </li>
-            {{-- @endcan --}}
+            @endcan
         </ul>
     </div>
 </li>

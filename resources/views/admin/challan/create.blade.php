@@ -100,7 +100,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('amount', __('Amount'), ['class' => 'form-label']) }}
-                                <input type="text" class="form-control" name="amount" id="amount">
+                                <input type="text" class="form-control" name="amount" id="amount" readonly>
                             </div>
                         </div>
                     </div>

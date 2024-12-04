@@ -19,7 +19,6 @@ class WarehouseController extends Controller
     {
         if (\Auth::user()->can('manage-warehouse')) {
             $warehouses = Warehouse::where('created_by', '=', \Auth::user()->creatorId())->get();
-
             return view('admin.warehouse.index', compact('warehouses'));
         } else {
             return redirect()->back()->with('danger', __('Permission denied.'));
