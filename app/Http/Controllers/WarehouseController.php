@@ -18,7 +18,7 @@ class WarehouseController extends Controller
     public function index()
     {
         if (\Auth::user()->can('manage-warehouse')) {
-            $warehouses = Warehouse::where('created_by', '=', \Auth::user()->creatorId())->get();
+            $warehouses = Warehouse::get();
             return view('admin.warehouse.index', compact('warehouses'));
         } else {
             return redirect()->back()->with('danger', __('Permission denied.'));
@@ -86,7 +86,7 @@ class WarehouseController extends Controller
             $id = WarehouseProduct::where('warehouse_id', $warehouse->id)->first();
 
             if (WarehouseProduct::where('warehouse_id', $warehouse->id)->exists()) {
-                $warehouse = WarehouseProduct::where('warehouse_id', $warehouse->id)->where('created_by', '=', \Auth::user()->creatorId())->get();
+                $warehouse = WarehouseProduct::where('warehouse_id', $warehouse->id)->get();
 
                 return view('admin.warehouse.show', compact('warehouse'));
             } else {
@@ -108,13 +108,9 @@ class WarehouseController extends Controller
     public function edit(warehouse $warehouse)
     {
         if (\Auth::user()->can('edit-warehouse')) {
-            if ($warehouse->created_by == \Auth::user()->creatorId()) {
-                return view('admin.warehouse.edit', compact('warehouse'));
-            } else {
-                return response()->json(['error' => __('Permission denied.')], 401);
-            }
+            return view('admin.warehouse.edit', compact('warehouse'));
         } else {
-            return response()->json(['error' => __('Permission denied.')], 401);
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
     /**
@@ -127,29 +123,25 @@ class WarehouseController extends Controller
     public function update(Request $request, warehouse $warehouse)
     {
         if (\Auth::user()->can('edit-warehouse')) {
-            if ($warehouse->created_by == \Auth::user()->creatorId()) {
-                $validator = \Validator::make(
-                    $request->all(),
-                    [
-                        'name' => 'required',
-                    ]
-                );
-                if ($validator->fails()) {
-                    $messages = $validator->getMessageBag();
+            $validator = \Validator::make(
+                $request->all(),
+                [
+                    'name' => 'required',
+                ]
+            );
+            if ($validator->fails()) {
+                $messages = $validator->getMessageBag();
 
-                    return redirect()->back()->with('error', $messages->first());
-                }
-
-                $warehouse->name       = $request->name;
-                $warehouse->address    = $request->address;
-                $warehouse->city       = $request->city;
-                $warehouse->city_zip   = $request->city_zip;
-                $warehouse->save();
-
-                return redirect()->route('admin.warehouse.index')->with('success', __('Warehouse successfully updated.'));
-            } else {
-                return redirect()->back()->with('danger', __('Permission denied.'));
+                return redirect()->back()->with('error', $messages->first());
             }
+
+            $warehouse->name       = $request->name;
+            $warehouse->address    = $request->address;
+            $warehouse->city       = $request->city;
+            $warehouse->city_zip   = $request->city_zip;
+            $warehouse->save();
+
+            return redirect()->route('admin.warehouse.index')->with('success', __('Warehouse successfully updated.'));
         } else {
             return redirect()->back()->with('danger', __('Permission denied.'));
         }
@@ -165,13 +157,9 @@ class WarehouseController extends Controller
     {
         if (\Auth::user()->can('delete-warehouse')) {
             $warehouse = Warehouse::findorfail($id);
-            if ($warehouse->created_by == \Auth::user()->creatorId()) {
-                $warehouse->delete();
+            $warehouse->delete();
 
-                return redirect()->route('admin.warehouse.index')->with('success', __('Warehouse successfully deleted.'));
-            } else {
-                return redirect()->back()->with('danger', __('Permission denied.'));
-            }
+            return redirect()->route('admin.warehouse.index')->with('success', __('Warehouse successfully deleted.'));
         } else {
             return redirect()->back()->with('danger', __('Permission denied.'));
         }

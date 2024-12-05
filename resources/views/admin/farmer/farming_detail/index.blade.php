@@ -40,6 +40,43 @@
             });
             $("#reportModal").modal('show');
         }
+        
+        function editreportmodal(element) {
+            $('#loss_reason').hide();
+            $('#loss_area').hide();
+
+            var plot_detail_id = $(element).data('id');
+            $('#plot_detail_id').val(plot_detail_id);
+
+            $.ajax({
+                url: "{{ route('admin.farmer.farming_detail.getEditPlotDetails') }}",
+                method: 'post',
+                data: {
+                    id: plot_detail_id,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    $('#farmer_name').text(response.farmer_name);
+                    $('#plot_no').text(response.plot_no);
+                    $('#area').text(response.area);
+                    if(response.croploss === "Yes"){
+                        $('#loss_reason').show();
+                        $('#loos_reason').val(response.loss_reason);
+                        $('#loss_area').show();
+                        $('#loos_area').val(response.loss_area);
+                    }
+                    $('#tentative_harvest_quantity').val(response.tentative_harvest_quantity);
+                    $('#total_planting_area').val(response.total_planting_area);
+                    $('#total_planting_areas').val(response.area);
+                    $('#mode_of_transport').val(response.mode_of_transport);
+                    $('#reserve_seed').val(response.reserve_seed);
+                    $('input[name="croploss"]').val([response.croploss]);
+                }
+            });
+            $("#reportModal").modal('show');
+        }
 
         $('input[name="croploss"]').on('click', function() {
             var value = $(this).val();

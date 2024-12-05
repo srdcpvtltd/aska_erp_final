@@ -34,7 +34,6 @@
             {{ Form::label('city_zip', __('Zip Code'), ['class' => 'form-label']) }}
             {{ Form::text('city_zip', null, ['class' => 'form-control']) }}
         </div>
-
     </div>
     <div class="modal-footer">
         <input type="button" value="{{ __('Cancel') }}" class="btn  btn-light" data-bs-dismiss="modal">

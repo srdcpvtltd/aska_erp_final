@@ -531,6 +531,7 @@ Route::group([
                 Route::get('farming_detail/{id}/destroy', [FarmingDetailController::class, 'destroy'])->name('farming_detail.destroy');
                 Route::post('farming_detail/search_filter', [FarmingDetailController::class, 'search_filter'])->name('farming_detail.search_filter');
                 Route::post('farming_detail/get_plot_details', [FarmingDetailController::class, 'getPlotDetails'])->name('farming_detail.getPlotDetails');
+                Route::post('farming_detail/get_edit_plot_details', [FarmingDetailController::class, 'getEditPlotDetails'])->name('farming_detail.getEditPlotDetails');
 
                 //Bank Details
                 Route::resource('bank_details', BankDetailsController::class);

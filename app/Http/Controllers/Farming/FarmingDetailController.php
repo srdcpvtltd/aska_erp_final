@@ -346,4 +346,22 @@ class FarmingDetailController extends Controller
             'area' => number_format($plot_details->area_in_acar, 2)
         ]);
     }
+
+    public function getEditPlotDetails(Request $request)
+    {
+        $plot_details = FarmingDetail::find($request->id);
+
+        return response()->json([
+            'farmer_name' => $plot_details->farming->name,
+            'plot_no' => $plot_details->plot_number,
+            'area' => number_format($plot_details->area_in_acar, 2),
+            'tentative_harvest_quantity' => $plot_details->tentative_harvest_quantity,
+            'croploss' => $plot_details->croploss,
+            'loss_reason' => $plot_details->loss_reason,
+            'loss_area' => $plot_details->loss_area,
+            'total_planting_area' => $plot_details->total_planting_area,
+            'mode_of_transport' => $plot_details->mode_of_transport,
+            'reserve_seed' => $plot_details->reserve_seed,
+        ]);
+    }
 }

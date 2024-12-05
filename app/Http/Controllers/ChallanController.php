@@ -17,7 +17,7 @@ class ChallanController extends Controller
     public function index()
     {
         if (\Auth::user()->can('manage-challan')) {
-            $challans = Challan::where('created_by', '=', \Auth::user()->creatorId())->get();
+            $challans = Challan::get();
             return view('admin.challan.index', compact('challans'));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
@@ -27,8 +27,8 @@ class ChallanController extends Controller
     public function create()
     {
         if (\Auth::user()->can('create-challan')) {
-            $warehouses = Warehouse::where('created_by', '=', \Auth::user()->creatorId())->get();
-            $products = ProductService::where('created_by', '=', \Auth::user()->creatorId())->get();
+            $warehouses = Warehouse::get();
+            $products = ProductService::get();
             return view('admin.challan.create', compact('warehouses', 'products'));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
@@ -100,8 +100,8 @@ class ChallanController extends Controller
     {
         if (\Auth::user()->can('edit-challan')) {
             $challan = Challan::findorfail($id);
-            $warehouses = Warehouse::where('created_by', '=', \Auth::user()->creatorId())->get();
-            $products = ProductService::where('created_by', '=', \Auth::user()->creatorId())->get();
+            $warehouses = Warehouse::get();
+            $products = ProductService::get();
 
             return view('admin.challan.edit', compact('challan', 'warehouses', 'products'));
         } else {
