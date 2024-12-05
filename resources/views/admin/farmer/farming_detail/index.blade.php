@@ -36,6 +36,10 @@
                     $('#area').text(response.area);
                     $('#total_planting_area').val(response.area);
                     $('#total_planting_areas').val(response.area);
+                    $('#tentative_harvest_quantity').val('');
+                    $('#mode_of_transport').val('');
+                    $('#reserve_seed').val('');
+                    $('input[name="croploss"]').val(['']);
                 }
             });
             $("#reportModal").modal('show');

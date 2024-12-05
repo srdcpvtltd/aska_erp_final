@@ -17,11 +17,12 @@
                     class="reportmodal" data-id="{{ $farming_detail->id }}" onclick="reportmodal(this)">
                     Report
                 </a>
+            @else
+                <a class="dropdown-item" href="#" data-bs-toggle="tooltip" title="{{ __('Report') }}"
+                    class="reportmodal" data-id="{{ $farming_detail->id }}" onclick="editreportmodal(this)">
+                    Edit Report
+                </a>
             @endif
-            <a class="dropdown-item" href="#" data-bs-toggle="tooltip" title="{{ __('Report') }}"
-                class="reportmodal" data-id="{{ $farming_detail->id }}" onclick="editreportmodal(this)">
-                Edit Report
-            </a>
             @can('delete-plot')
                 <a class="deleteBtn dropdown-item" href="#"
                     data-href="{{ route('admin.farmer.farming_detail.destroy', $farming_detail->id) }}"
