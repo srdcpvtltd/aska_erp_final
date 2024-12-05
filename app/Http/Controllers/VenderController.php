@@ -26,7 +26,7 @@ class VenderController extends Controller
     {
         $data['billChartData'] = \Auth::user()->billChartData();
 
-        return view('vender.dashboard', $data);
+        return view('admin.vender.dashboard', $data);
     }
 
     public function index()
@@ -35,7 +35,7 @@ class VenderController extends Controller
         {
             $venders = Vender::where('created_by', \Auth::user()->creatorId())->get();
 
-            return view('vender.index', compact('venders'));
+            return view('admin.vender.index', compact('venders'));
         }
         else
         {
@@ -50,7 +50,7 @@ class VenderController extends Controller
         {
             $customFields = CustomField::where('created_by', '=', \Auth::user()->creatorId())->where('module', '=', 'vendor')->get();
 
-            return view('vender.create', compact('customFields'));
+            return view('admin.vender.create', compact('customFields'));
         }
         else
         {
@@ -72,7 +72,7 @@ class VenderController extends Controller
             if($validator->fails())
             {
                 $messages = $validator->getMessageBag();
-                return redirect()->route('vender.index')->with('error', $messages->first());
+                return redirect()->route('admin.vender.index')->with('error', $messages->first());
             }
             $objVendor    = \Auth::user();
             $creator      = User::find($objVendor->creatorId());
@@ -123,7 +123,7 @@ class VenderController extends Controller
                 Utility::send_twilio_msg($request->contact,'new_vendor', $vendorNotificationArr);
             }
 
-            return redirect()->route('vender.index')->with('success', __('Vendor successfully created.'));
+            return redirect()->route('admin.vender.index')->with('success', __('Vendor successfully created.'));
         }
         else
         {
@@ -142,7 +142,7 @@ class VenderController extends Controller
         $id     = \Crypt::decrypt($ids);
         $vendor = Vender::find($id);
 
-        return view('vender.show', compact('vendor'));
+        return view('admin.vender.show', compact('vendor'));
     }
 
 
@@ -155,7 +155,7 @@ class VenderController extends Controller
 
             $customFields = CustomField::where('created_by', '=', \Auth::user()->creatorId())->where('module', '=', 'vendor')->get();
 
-            return view('vender.edit', compact('vender', 'customFields'));
+            return view('admin.vender.edit', compact('vender', 'customFields'));
         }
         else
         {
@@ -181,7 +181,7 @@ class VenderController extends Controller
             {
                 $messages = $validator->getMessageBag();
 
-                return redirect()->route('vender.index')->with('error', $messages->first());
+                return redirect()->route('admin.vender.index')->with('error', $messages->first());
             }
 
             $vender->name             = $request->name;
@@ -205,7 +205,7 @@ class VenderController extends Controller
             $vender->save();
             CustomField::saveData($vender, $request->customField);
 
-            return redirect()->route('vender.index')->with('success', __('Vendor successfully updated.'));
+            return redirect()->route('admin.vender.index')->with('success', __('Vendor successfully updated.'));
         }
         else
         {
@@ -222,7 +222,7 @@ class VenderController extends Controller
             {
                 $vender->delete();
 
-                return redirect()->route('vender.index')->with('success', __('Vendor successfully deleted.'));
+                return redirect()->route('admin.vender.index')->with('success', __('Vendor successfully deleted.'));
             }
             else
             {
@@ -252,7 +252,7 @@ class VenderController extends Controller
 
         $request->session()->invalidate();
 
-        return redirect()->route('vender.login');
+        return redirect()->route('admin.vender.login');
     }
 
     public function payment(Request $request)
@@ -280,7 +280,7 @@ class VenderController extends Controller
             $payments = $query->get();
 
 
-            return view('vender.payment', compact('payments', 'category'));
+            return view('admin.vender.payment', compact('payments', 'category'));
         }
         else
         {
@@ -316,7 +316,7 @@ class VenderController extends Controller
             $transactions = $query->get();
 
 
-            return view('vender.transaction', compact('transactions', 'category'));
+            return view('admin.vender.transaction', compact('transactions', 'category'));
         }
         else
         {
@@ -330,7 +330,7 @@ class VenderController extends Controller
         $userDetail->customField = CustomField::getData($userDetail, 'vendor');
         $customFields            = CustomField::where('created_by', '=', \Auth::user()->creatorId())->where('module', '=', 'vendor')->get();
 
-        return view('vender.profile', compact('userDetail', 'customFields'));
+        return view('admin.vender.profile', compact('userDetail', 'customFields'));
     }
 
     public function editprofile(Request $request)
@@ -454,7 +454,7 @@ class VenderController extends Controller
 
     public function importFile()
     {
-        return view('vender.import');
+        return view('admin.vender.import');
     }
 
     public function import(Request $request)

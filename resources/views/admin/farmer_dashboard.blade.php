@@ -117,7 +117,7 @@ $tentative_planting = App\Models\FarmingDetail::sum('tentative_harvest_quantity'
                         <div class="col-xxl-6 col-xl-6 col-lg-4 col-md-4 mb-4">
                             <div class="card">
                                 <div class="card-body text-md-start text-center">
-                                    <h6 class="card-title mb-2">Tentative Planting(Acr.)</h6>
+                                    <h6 class="card-title mb-2">Tentative Planting(Ton.)</h6>
                                     <div class="row align-items-center d-md-flex">
                                         <div class="col-lg-6 col-md-6">
                                             <h3>{{ $tentative_planting }}</h3>
@@ -149,7 +149,7 @@ $tentative_planting = App\Models\FarmingDetail::sum('tentative_harvest_quantity'
                         <div class="col-xxl-6 col-xl-6 col-lg-4 col-md-4 mb-4">
                             <div class="card">
                                 <div class="card-body text-md-start text-center">
-                                    <h6 class="card-title mb-2">Cancelled Projects</h6>
+                                    <h6 class="card-title mb-2">Actual Planting(Ton.)</h6>
                                     <div class="row align-items-center d-md-flex">
                                         <div class="col-lg-6 col-md-6">
                                             <h3>0</h3>

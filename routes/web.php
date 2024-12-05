@@ -721,6 +721,8 @@ Route::group([
         //vender
         Route::get('vender/{id}/show', [VenderController::class, 'show'])->name('vender.show');
         Route::resource('vender', VenderController::class);
+        Route::get('import/vender/file', [VenderController::class, 'importFile'])->name('vender.file.import');
+        Route::get('export/vender', [VenderController::class, 'export'])->name('vender.export');
         //expense
         Route::get('expense/index', [ExpenseController::class, 'index'])->name('expense.index');
         Route::any('expense/customer', [ExpenseController::class, 'customer'])->name('expense.customer');

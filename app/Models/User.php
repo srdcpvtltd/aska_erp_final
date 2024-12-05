@@ -298,6 +298,14 @@ class User extends Authenticatable
         return $settings["customer_prefix"] . sprintf("%05d", $number);
     }
 
+    
+    public function venderNumberFormat($number)
+    {
+        $settings = Utility::settings();
+
+        return $settings["vender_prefix"] . sprintf("%05d", $number);
+    }
+
     public function proposalNumberFormat($number)
     {
         $settings = Utility::settings();

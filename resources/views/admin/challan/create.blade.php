@@ -94,7 +94,6 @@
                             <div class="form-group">
                                 {{ Form::label('quantity', __('Quantity'), ['class' => 'form-label']) }}
                                 <input type="number" class="form-control" name="quantity" id="quantity">
-                                {{-- <span style="color:red;" id="max_text"></span> --}}
                             </div>
                         </div>
                         <div class="col-md-6">
