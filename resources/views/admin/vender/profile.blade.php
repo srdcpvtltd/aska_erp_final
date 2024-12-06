@@ -1,14 +1,14 @@
-@extends('layouts.admin')
+@extends('layouts.master')
 @php
    // $profile=asset(Storage::url('uploads/avatar/'));
 
 $profile=\App\Models\Utility::get_file('uploads/avatar');
 @endphp
-@section('page-title')
+@section('title')
     {{__('Profile Account')}}
 @endsection
 
-@section('content')
+@section('main-content')
     <div class="row">
         <div class="col-xl-3 col-lg-4 col-md-4 col-sm-12">
             <div class="card profile-card">

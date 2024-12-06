@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-    {{ __('Farmer Registration Detail') }}
+    {{ __('Farmer Registration Details') }}
 @endsection
 
 @section('main-content')

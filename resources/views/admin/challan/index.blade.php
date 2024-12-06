@@ -42,6 +42,7 @@
                                 <tr>
                                     <th>{{ __('Sl No.') }}</th>
                                     <th>{{ __('Warehouse') }}</th>
+                                    <th>{{ __('Vendor') }}</th>
                                     <th>{{ __('Challan No.') }}</th>
                                     <th>{{ __('Product') }}</th>
                                     <th>{{ __('Receive Date') }}</th>
@@ -56,6 +57,7 @@
                                     <tr class="font-style">
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $challan->warehouse->name }}</td>
+                                        <td>{{ $challan->vendor->name }}</td>
                                         <td>{{ $challan->challan_no }}</td>
                                         <td>{{ $challan->product->name }}</td>
                                         <td>{{ $challan->receive_date }}</td>

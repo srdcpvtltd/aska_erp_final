@@ -110,7 +110,7 @@ class FarmerLoanController extends Controller
                         }
 
                         $data = WarehouseProduct::updateOrCreate(
-                            ['warehouse_id' => $warehouse_id, 'product_id' => $product_id, 'created_by' => \Auth::user()->id],
+                            ['warehouse_id' => $warehouse_id, 'product_id' => $product_id],
                             ['warehouse_id' => $warehouse_id, 'product_id' => $product_id, 'quantity' => $product_quantity, 'created_by' => \Auth::user()->id]
                         );
                     }
@@ -204,7 +204,7 @@ class FarmerLoanController extends Controller
                         }
 
                         $data = WarehouseProduct::updateOrCreate(
-                            ['warehouse_id' => $warehouse_id, 'product_id' => $product_id, 'created_by' => \Auth::user()->id],
+                            ['warehouse_id' => $warehouse_id, 'product_id' => $product_id],
                             ['warehouse_id' => $warehouse_id, 'product_id' => $product_id, 'quantity' => $product_quantity, 'created_by' => \Auth::user()->id]
                         );
                     }

@@ -6,6 +6,7 @@ use App\Models\Challan;
 use App\Models\ProductService;
 use App\Models\StockReport;
 use App\Models\Utility;
+use App\Models\Vender;
 use App\Models\Warehouse;
 use App\Models\WarehouseProduct;
 use Illuminate\Http\Request;
@@ -28,8 +29,9 @@ class ChallanController extends Controller
     {
         if (\Auth::user()->can('create-challan')) {
             $warehouses = Warehouse::get();
+            $vendors = Vender::get();
             $products = ProductService::get();
-            return view('admin.challan.create', compact('warehouses', 'products'));
+            return view('admin.challan.create', compact('warehouses', 'products', 'vendors'));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
         }
@@ -58,6 +60,7 @@ class ChallanController extends Controller
 
             $challan = new Challan();
             $challan->warehouse_id = $request->warehouse_id;
+            $challan->vendor_id = $request->vendor_id;
             $challan->challan_no = $request->challan_no;
             $challan->product_id = $request->product_id;
             $challan->receive_date = $request->receive_date;
@@ -102,8 +105,9 @@ class ChallanController extends Controller
             $challan = Challan::findorfail($id);
             $warehouses = Warehouse::get();
             $products = ProductService::get();
+            $vendors = Vender::get();
 
-            return view('admin.challan.edit', compact('challan', 'warehouses', 'products'));
+            return view('admin.challan.edit', compact('challan', 'warehouses', 'products', 'vendors'));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
         }
@@ -114,6 +118,7 @@ class ChallanController extends Controller
         if (\Auth::user()->can('edit-challan')) {
             $challan = Challan::findorfail($id);
             $challan->challan_no = $request->challan_no;
+            $challan->vendor_id = $request->vendor_id;
             $challan->receive_date = $request->receive_date;
             $challan->vehicle_no = $request->vehicle_no;
             $challan->amount = $request->amount;
@@ -164,7 +169,7 @@ class ChallanController extends Controller
                 }
 
                 $data = WarehouseProduct::updateOrCreate(
-                    ['warehouse_id' => $warehouse_id, 'product_id' => $product_id, 'created_by' => \Auth::user()->id],
+                    ['warehouse_id' => $warehouse_id, 'product_id' => $product_id],
                     ['warehouse_id' => $warehouse_id, 'product_id' => $product_id, 'quantity' => $product_quantity, 'created_by' => \Auth::user()->id]
                 );
             }

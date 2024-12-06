@@ -32,21 +32,22 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
         Paginator::useBootstrap();
-//        JsonResource::withoutWrapping();
+        //        JsonResource::withoutWrapping();
         Relation::enforceMorphMap([
             'project' => 'App\Models\Project',
             'task' => 'App\Models\Task',
             'comment' => 'App\Models\TaskComment',
             'reply' => 'App\Models\CommentReply',
+            'permission' => 'Spatie\Permission\Models\Permission',
+            'role' => 'Spatie\Permission\Models\Role',
         ]);
         Relation::morphMap([
             'user' => 'App\Models\User',
             'post' => 'App\Models\Post',
+            'vender' => 'App\Models\Vender',
             // Add other models as needed
         ]);
 
         Task::observe(TaskObserver::class);
-
-
     }
 }

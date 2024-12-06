@@ -13,7 +13,7 @@
         <tbody>
         @foreach ($guarantors as $guarantor)
             <tr class="font-style">
-                <td>{{ $guarantor->farming->g_code}}</td>
+                <td>{{ $guarantor->farming->old_g_code}}</td>
                 <td>{{ $guarantor->naming->name}}</td>
                 <td>{{ $guarantor->father_name}}</td>
                 <td>{{ @$guarantor->district->name }}</td>

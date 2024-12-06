@@ -1,10 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.master')
 @push('script-page')
 @endpush
-@section('page-title')
+@section('title')
     {{__('Transaction')}}
 @endsection
-@section('content')
+@section('main-content')
     <div class="row">
         <div class="col-md-12">
             <div class="card">

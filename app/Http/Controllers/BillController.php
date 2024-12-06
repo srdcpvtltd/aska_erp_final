@@ -61,7 +61,7 @@ class BillController extends Controller
             }
             $bills = $query->with(['category'])->get();
 
-            return view('bill.index', compact('bills', 'vender', 'status'));
+            return view('admin.bill.index', compact('bills', 'vender', 'status'));
         // }
         // else
         // {
@@ -104,7 +104,7 @@ class BillController extends Controller
                 ->pluck('code_name', 'id');
             $chartAccounts->prepend('Select Account', '');
 
-            return view('bill.create', compact('venders', 'bill_number', 'product_services', 'category', 'customFields', 'vendorId','chartAccounts'));
+            return view('admin.bill.create', compact('venders', 'bill_number', 'product_services', 'category', 'customFields', 'vendorId','chartAccounts'));
         }
         else
         {
@@ -273,7 +273,7 @@ class BillController extends Controller
 
                 if($status == true)
                 {
-                    return redirect()->route('bill.index', $bill->id)->with('success', __('Bill successfully created.'));
+                    return redirect()->route('admin.bill.index', $bill->id)->with('success', __('Bill successfully created.'));
                 }
                 else
                 {
@@ -282,7 +282,7 @@ class BillController extends Controller
             }
 
 
-            return redirect()->route('bill.index', $bill->id)->with('success', __('Bill successfully created.'));
+            return redirect()->route('admin.bill.index', $bill->id)->with('success', __('Bill successfully created.'));
         }
         else
         {
@@ -293,7 +293,7 @@ class BillController extends Controller
 
     public function show($ids)
     {
-
+        dd($ids);
         if(\Auth::user()->can('show bill'))
         {
             try {
@@ -340,7 +340,7 @@ class BillController extends Controller
                 $bill->customField = CustomField::getData($bill, 'bill');
                 $customFields      = CustomField::where('created_by', '=', \Auth::user()->creatorId())->where('module', '=', 'bill')->get();
 
-                return view('bill.view', compact('bill', 'vendor', 'items', 'billPayment', 'customFields'));
+                return view('admin.bill.view', compact('bill', 'vendor', 'items', 'billPayment', 'customFields'));
             }
             else
             {
@@ -424,7 +424,7 @@ class BillController extends Controller
 
 
 
-                return view('bill.edit', compact('venders', 'product_services', 'bill', 'bill_number', 'category',
+                return view('admin.bill.edit', compact('venders', 'product_services', 'bill', 'bill_number', 'category',
                     'customFields','chartAccounts','items'));
             }
             else{
@@ -456,7 +456,7 @@ class BillController extends Controller
                 if ($validator->fails()) {
                     $messages = $validator->getMessageBag();
 
-                    return redirect()->route('bill.index')->with('error', $messages->first());
+                    return redirect()->route('admin.bill.index')->with('error', $messages->first());
                 }
                 $bill->vender_id      = $request->vender_id;
                 $bill->bill_date      = $request->bill_date;
@@ -551,7 +551,7 @@ class BillController extends Controller
                     $billAccount->save();
                 }
 
-                return redirect()->route('bill.index')->with('success', __('Bill successfully updated.'));
+                return redirect()->route('admin.bill.index')->with('success', __('Bill successfully updated.'));
             } else {
                             return redirect()->back()->with('danger', __('Permission denied.'));
 
@@ -591,7 +591,7 @@ class BillController extends Controller
 
                 DebitNote::where('bill', '=', $bill->id)->delete();
 
-                return redirect()->route('bill.index')->with('success', __('Bill successfully deleted.'));
+                return redirect()->route('admin.bill.index')->with('success', __('Bill successfully deleted.'));
             }
             else
             {
@@ -670,7 +670,7 @@ class BillController extends Controller
             $bill->bill = \Auth::user()->billNumberFormat($bill->bill_id);
 
             $billId    = Crypt::encrypt($bill->id);
-            $bill->url = route('bill.pdf', $billId);
+            $bill->url = route('admin.bill.pdf', $billId);
             Utility::updateUserBalance('vendor', $vender->id, $bill->getTotal(), 'debit');
 
 
@@ -711,7 +711,7 @@ class BillController extends Controller
             $bill->name = !empty($vender) ? $vender->name : '';
             $bill->bill = \Auth::user()->billNumberFormat($bill->bill_id);
             $billId    = Crypt::encrypt($bill->id);
-            $bill->url = route('bill.pdf', $billId);
+            $bill->url = route('admin.bill.pdf', $billId);
             $billResendArr = [
                 'vender_name'   => $vender->name,
                 'vender_email'  => $vender->email,
@@ -745,7 +745,7 @@ class BillController extends Controller
             $categories = ProductServiceCategory::where('created_by', '=', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $accounts   = BankAccount::select('*', \DB::raw("CONCAT(bank_name,' ',holder_name) AS name"))->where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
 
-            return view('bill.payment', compact('venders', 'categories', 'accounts', 'bill'));
+            return view('admin.bill.payment', compact('venders', 'categories', 'accounts', 'bill'));
         }
         else
         {
@@ -937,7 +937,7 @@ class BillController extends Controller
             $bills = $query->get();
 
 
-            return view('bill.index', compact('bills', 'status'));
+            return view('admin.bill.index', compact('bills', 'status'));
         }
         else
         {
@@ -958,7 +958,7 @@ class BillController extends Controller
                 $vendor = $bill->vender;
                 $iteams = $bill->items;
 
-                return view('bill.view', compact('bill', 'vendor', 'iteams'));
+                return view('admin.bill.view', compact('bill', 'vendor', 'iteams'));
             }
             else
             {
@@ -977,7 +977,7 @@ class BillController extends Controller
     {
         $vender = Vender::where('id', '=', $request->id)->first();
 
-        return view('admin.bill.vender_detail', compact('vender'));
+        return view('admin.admin.bill.vender_detail', compact('vender'));
     }
 
 
@@ -1008,7 +1008,7 @@ class BillController extends Controller
         $bill->bill = \Auth::user()->billNumberFormat($bill->bill_id);
 
         $billId    = Crypt::encrypt($bill->id);
-        $bill->url = route('bill.pdf', $billId);
+        $bill->url = route('admin.bill.pdf', $billId);
 
         try
         {
@@ -1180,7 +1180,7 @@ class BillController extends Controller
             $img          = asset($logo . '/' . (isset($company_logo) && !empty($company_logo) ? $company_logo : 'logo-dark.png'));
         }
 
-        return view('bill.templates.' . $template, compact('bill', 'preview', 'color', 'img', 'settings', 'vendor', 'font_color', 'customFields'));
+        return view('admin.bill.templates.' . $template, compact('bill', 'preview', 'color', 'img', 'settings', 'vendor', 'font_color', 'customFields'));
     }
 
     public function bill($bill_id)
@@ -1295,7 +1295,7 @@ class BillController extends Controller
             $color      = '#' . $settings['bill_color'];
             $font_color = Utility::getFontColor($color);
 
-            return view('bill.templates.' . $settings['bill_template'], compact('bill', 'color', 'settings', 'vendor', 'img', 'font_color', 'customFields'));
+            return view('admin.bill.templates.' . $settings['bill_template'], compact('bill', 'color', 'settings', 'vendor', 'img', 'font_color', 'customFields'));
         }
         else
         {
@@ -1376,7 +1376,7 @@ class BillController extends Controller
 
 
 
-         return view('bill.customer_bill', compact('bill', 'vendor', 'iteams', 'customFields','billPayment','user'));
+         return view('admin.bill.customer_bill', compact('bill', 'vendor', 'iteams', 'customFields','billPayment','user'));
     }
 
     public function export()

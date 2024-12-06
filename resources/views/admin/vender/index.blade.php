@@ -2,6 +2,9 @@
 @php
     $profile = asset(Storage::url('uploads/avatar/'));
 @endphp
+@section('title')
+{{ __('Manage Vendors') }}
+@endsection
 @section('scripts')
     <script>
         $(document).on('click', '#billing_data', function() {
@@ -14,9 +17,6 @@
             $("[name='shipping_address']").val($("[name='billing_address']").val());
         })
     </script>
-@endsection
-@section('title')
-    {{ __('Manage Vendors') }}
 @endsection
 @section('main-content')
     @include('admin.section.flash_message')
@@ -45,7 +45,7 @@
             <div class="card">
                 <div class="card-body table-border-style">
                     <div class="table-responsive">
-                        <table class="table datatable">
+                        <table class="table data_table">
                             <thead>
                                 <tr>
                                     <th>#</th>

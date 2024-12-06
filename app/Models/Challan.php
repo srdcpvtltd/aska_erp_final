@@ -12,6 +12,10 @@ class Challan extends Model
     public function warehouse(){
         return $this->belongsTo(Warehouse::class,'warehouse_id');
     }
+
+    public function vendor(){
+        return $this->belongsTo(Vender::class,'vendor_id');
+    }
     
     public function product(){
         return $this->belongsTo(ProductService::class,'product_id');

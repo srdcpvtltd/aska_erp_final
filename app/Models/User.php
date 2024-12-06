@@ -324,4 +324,16 @@ class User extends Authenticatable
     {
         return Customer::where('created_by', '=', $this->creatorId())->count();
     }
+
+    public function billNumberFormat($number)
+    {
+        $settings = Utility::settings();
+
+        return $settings["bill_prefix"] . sprintf("%05d", $number);
+    }
+
+    public function countVenders()
+    {
+        return Vender::where('created_by', '=', $this->creatorId())->count();
+    }
 }

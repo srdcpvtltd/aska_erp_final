@@ -1,5 +1,5 @@
-@extends('layouts.admin')
-@section('page-title')
+@extends('layouts.master')
+@section('title')
     {{__('Dashboard')}}
 @endsection
 {{--{{dd($billChartData['data'])}}--}}
@@ -82,7 +82,7 @@
         chart.render();
     </script>
 @endpush
-@section('content')
+@section('main-content')
     <div class="row">
         <div class="col-md-12">
             <div class="card">

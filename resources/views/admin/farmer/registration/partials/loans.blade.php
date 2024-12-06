@@ -19,30 +19,39 @@
                     $quantity = json_decode($loan->quantity);
                     $total_amount = json_decode($loan->total_amount);
                     $count = count($loan_category_id);
+                    $total = 0;
                 @endphp
                 <tr class="font-style">
                     <td>{{ $loan->farming->name }}</td>
-                    <td>{{ $loan->farming->g_code }}</td>
-                    <td>{{ date('d-m-Y',strtotime($loan->updated_at)) }}</td>
+                    <td>{{ $loan->farming->old_g_code }}</td>
+                    <td>{{ date('d-m-Y', strtotime($loan->updated_at)) }}</td>
                     <td>
                         @php
-                            $invoice = explode('.',$loan->invoice);
+                            $invoice = explode('.', $loan->invoice);
                         @endphp
                         {{ $invoice[0] }}</td>
                     <td>
                         @for ($i = 0; $i < $count; $i++)
                             @php
-                                $productcategory = App\Models\ProductServiceCategory::where('id',$loan_category_id[$i])->first();
+                                $productcategory = App\Models\ProductServiceCategory::where(
+                                    'id',
+                                    $loan_category_id[$i],
+                                )->first();
                             @endphp
                             {{ $productcategory->name }}
-                            @if($i < $count - 1)/@endif
+                            @if ($i < $count - 1)
+                                ,
+                            @endif
                         @endfor
                     </td>
                     <td>
                         @for ($i = 0; $i < $count; $i++)
-                            {{ $total_amount[$i] }}
-                            @if($i < $count - 1)/@endif
+                            @php
+                                $total += $total_amount[$i];
+                            @endphp
                         @endfor
+                        {{ $total }}/-
+                        {{-- @if ($i < $count - 1)/@endif --}}
                     </td>
                 </tr>
             @endforeach

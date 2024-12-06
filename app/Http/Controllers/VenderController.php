@@ -85,7 +85,7 @@ class VenderController extends Controller
             $vender->name             = $request->name;
             $vender->contact          = $request->contact;
             $vender->email            = $request->email;
-            $vender->tax_number      =$request->tax_number;
+            $vender->tax_number       = $request->tax_number;
             $vender->created_by       = \Auth::user()->creatorId();
             $vender->billing_name     = $request->billing_name;
             $vender->billing_country  = $request->billing_country;
@@ -106,7 +106,7 @@ class VenderController extends Controller
             CustomField::saveData($vender, $request->customField);
 
             $role_r = Role::where('name', '=', 'vender')->firstOrFail();
-            $vender->assignRole($role_r); //Assigning role to user
+            $vender->assignRole($role_r->name); //Assigning role to user
             $vender->type     = 'Vender';
 
             //For Notification
@@ -214,8 +214,9 @@ class VenderController extends Controller
     }
 
 
-    public function destroy(Vender $vender)
+    public function destroy($id)
     {
+        $vender = Vender::findorfail($id);
         if(\Auth::user()->can('delete vender'))
         {
             if($vender->created_by == \Auth::user()->creatorId())
@@ -550,6 +551,6 @@ class VenderController extends Controller
             \Session::put('errorArray', $errorRecord);
         }
 
-        return redirect()->back()->with($data['status'], $data['msg']);
+        return redirect()->route('admin.vender.index')->with($data['status'], $data['msg']);
     }
 }

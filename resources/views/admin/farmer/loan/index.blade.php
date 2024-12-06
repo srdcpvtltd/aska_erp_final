@@ -47,6 +47,7 @@
                                         $quantity = json_decode($loan->quantity);
                                         $total_amount = json_decode($loan->total_amount);
                                         $count = count($loan_category_id);
+                                        $total = 0;
                                     @endphp
 
                                     <tr class="font-style">
@@ -92,9 +93,11 @@
                                         </td>
                                         <td>
                                             @for ($i = 0; $i < $count; $i++)
-                                                {{ $total_amount[$i] }}
-                                                @if($i < $count - 1),@endif
+                                            @php
+                                                $total += $total_amount[$i];
+                                            @endphp
                                             @endfor
+                                            {{ $total}}/-
                                         </td>
 
                                         <td class="Action">

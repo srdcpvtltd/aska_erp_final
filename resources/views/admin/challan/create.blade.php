@@ -63,6 +63,17 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
+                                {{ Form::label('vendor_id', __('Select Vendor'), ['class' => 'form-label']) }}
+                                <select class="form-control select" name="vendor_id" id="vendor_id">
+                                    <option value="">{{ __('Select Vendor') }}</option>
+                                    @foreach ($vendors as $vendor)
+                                        <option value="{{ $vendor->id }}">{{ $vendor->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 {{ Form::label('challan_no', __('Challan No.'), ['class' => 'form-label']) }}
                                 <input type="text" class="form-control" name="challan_no">
                             </div>
