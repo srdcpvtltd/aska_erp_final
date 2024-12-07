@@ -135,7 +135,7 @@
                     </li> --}}
                 {{-- @endif --}}
                 
-            @if (Gate::check('manage bill') || Gate::check('manage payment') || Gate::check('manage debit note'))
+            @if (Gate::check('manage bill') || Gate::check('manage payment') || Gate::check('manage debit note') || Gate::check('manage-vender'))
                 <li
                     class="nav-item">
                     <a class="nav-link {{ Request::segment(2) == 'bill' || Request::segment(2) == 'vender' || Request::segment(2) == 'expense' || Request::segment(2) == 'payment' || Request::segment(2) == 'debit-note' ? 'active' : '' }}" data-bs-toggle="collapse" href="#purchase" data-href="#" role="button"
@@ -143,7 +143,7 @@
                             data-feather="chevron-down"></i></a>
                     <div class="{{ Request::segment(2) == 'bill' || Request::segment(2) == 'vender' || Request::segment(2) == 'expense' || Request::segment(2) == 'payment' || Request::segment(2) == 'debit-note' ? '' : 'collapse' }}" id="purchase">
                         <ul class="nav sub-menu">
-                            @if (Gate::check('manage vender'))
+                            @if (Gate::check('manage-vender'))
                                 <li class="nav-item">
                                     <a class="nav-link {{ Request::segment(2) == 'vender' ? 'active' : '' }}"
                                         href="{{ route('admin.vender.index') }}">{{ __('Vender') }}</a>

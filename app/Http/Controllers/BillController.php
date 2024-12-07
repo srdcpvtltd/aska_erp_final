@@ -33,35 +33,30 @@ class BillController extends Controller
         // if(\Auth::user()->can('manage bill'))
         // {
 
-            $vender = Vender::where('created_by', '=', \Auth::user()->creatorId())->get()->pluck('name', 'id');
-            $vender->prepend('Select Vendor', '');
+        $vender = Vender::where('created_by', '=', \Auth::user()->creatorId())->get()->pluck('name', 'id');
+        $vender->prepend('Select Vendor', '');
 
-            $status = Bill::$statues;
+        $status = Bill::$statues;
 
-            $query = Bill::where('type', '=', 'Bill')->where('created_by', '=', \Auth::user()->creatorId());
-            if(!empty($request->vender))
-            {
-                $query->where('vender_id', '=', $request->vender);
-            }
+        $query = Bill::where('type', '=', 'Bill')->where('created_by', '=', \Auth::user()->creatorId());
+        if (!empty($request->vender)) {
+            $query->where('vender_id', '=', $request->vender);
+        }
 
-            if(count(explode('to', $request->bill_date)) > 1)
-            {
-                $date_range = explode(' to ', $request->bill_date);
-                $query->whereBetween('bill_date', $date_range);
-            }
-            elseif(!empty($request->bill_date))
-            {
-                $date_range = [$request->date , $request->bill_date];
-                $query->whereBetween('bill_date', $date_range);
-            }
+        if (count(explode('to', $request->bill_date)) > 1) {
+            $date_range = explode(' to ', $request->bill_date);
+            $query->whereBetween('bill_date', $date_range);
+        } elseif (!empty($request->bill_date)) {
+            $date_range = [$request->date, $request->bill_date];
+            $query->whereBetween('bill_date', $date_range);
+        }
 
-            if(!empty($request->status))
-            {
-                $query->where('status', '=', $request->status);
-            }
-            $bills = $query->with(['category'])->get();
+        if (!empty($request->status)) {
+            $query->where('status', '=', $request->status);
+        }
+        $bills = $query->with(['category'])->get();
 
-            return view('admin.bill.index', compact('bills', 'vender', 'status'));
+        return view('admin.bill.index', compact('bills', 'vender', 'status'));
         // }
         // else
         // {
@@ -73,8 +68,7 @@ class BillController extends Controller
     function venderNumber()
     {
         $latest = Vender::where('created_by', '=', \Auth::user()->creatorId())->latest()->first();
-        if(!$latest)
-        {
+        if (!$latest) {
             return 1;
         }
 
@@ -84,8 +78,7 @@ class BillController extends Controller
     public function create($vendorId)
     {
 
-        if(\Auth::user()->can('create bill'))
-        {
+        if (\Auth::user()->can('create bill')) {
             $customFields = CustomField::where('created_by', '=', \Auth::user()->creatorId())->where('module', '=', 'bill')->get();
             $category     = ProductServiceCategory::where('created_by', \Auth::user()->creatorId())
                 ->whereNotIn('type', ['product & service', 'income',])
@@ -104,10 +97,8 @@ class BillController extends Controller
                 ->pluck('code_name', 'id');
             $chartAccounts->prepend('Select Account', '');
 
-            return view('admin.bill.create', compact('venders', 'bill_number', 'product_services', 'category', 'customFields', 'vendorId','chartAccounts'));
-        }
-        else
-        {
+            return view('admin.bill.create', compact('venders', 'bill_number', 'product_services', 'category', 'customFields', 'vendorId', 'chartAccounts'));
+        } else {
             return response()->json(['error' => __('Permission denied.')], 401);
         }
     }
@@ -115,11 +106,11 @@ class BillController extends Controller
     public function store(Request $request)
     {
 
-        if(\Auth::user()->can('create bill'))
-        {
+        if (\Auth::user()->can('create bill')) {
 
             $validator = \Validator::make(
-                $request->all(), [
+                $request->all(),
+                [
                     'vender_id' => 'required',
                     'bill_date' => 'required',
                     'due_date' => 'required'
@@ -130,10 +121,10 @@ class BillController extends Controller
                 return redirect()->back()->with('error', $messages3->first());
             }
 
-            if (!empty($request->items) && empty($request->items[0]['item']) && empty($request->items[0]['chart_account_id']) && empty($request->items[0]['amount']))
-            {
+            if (!empty($request->items) && empty($request->items[0]['item']) && empty($request->items[0]['chart_account_id']) && empty($request->items[0]['amount'])) {
                 $itemValidator = \Validator::make(
-                    $request->all(), [
+                    $request->all(),
+                    [
                         'item' => 'required'
                     ]
                 );
@@ -143,10 +134,10 @@ class BillController extends Controller
                 }
             }
 
-            if (!empty($request->items) && empty($request->items[0]['chart_account_id'])  && !empty($request->items[0]['amount']) )
-            {
+            if (!empty($request->items) && empty($request->items[0]['chart_account_id'])  && !empty($request->items[0]['amount'])) {
                 $accountValidator = \Validator::make(
-                    $request->all(), [
+                    $request->all(),
+                    [
                         'chart_account_id' => 'required'
                     ]
                 );
@@ -154,7 +145,6 @@ class BillController extends Controller
                     $messages2 = $accountValidator->getMessageBag();
                     return redirect()->back()->with('error', $messages2->first());
                 }
-
             }
 
             $bill            = new Bill();
@@ -165,7 +155,7 @@ class BillController extends Controller
             $bill->type         =  'Bill';
             $bill->user_type         =  'vendor';
             $bill->due_date       = $request->due_date;
-            $bill->category_id    = !empty($request->category_id) ? $request->category_id :0;
+            $bill->category_id    = !empty($request->category_id) ? $request->category_id : 0;
             $bill->order_number   = !empty($request->order_number) ? $request->order_number : 0;
             $bill->created_by     = \Auth::user()->creatorId();
             $bill->save();
@@ -173,12 +163,10 @@ class BillController extends Controller
             CustomField::saveData($bill, $request->customField);
             $products = $request->items;
 
-            $total_amount=0;
+            $total_amount = 0;
 
-            for($i = 0; $i < count($products); $i++)
-            {
-                if(!empty($products[$i]['item']))
-                {
+            for ($i = 0; $i < count($products); $i++) {
+                if (!empty($products[$i]['item'])) {
                     $billProduct              = new BillProduct();
                     $billProduct->bill_id     = $bill->id;
                     $billProduct->product_id  = $products[$i]['item'];
@@ -190,8 +178,8 @@ class BillController extends Controller
                     $billProduct->save();
                 }
 
-                $billTotal=0;
-                if(!empty($products[$i]['chart_account_id'])){
+                $billTotal = 0;
+                if (!empty($products[$i]['chart_account_id'])) {
                     $billAccount                    = new BillAccount();
                     $billAccount->chart_account_id  = $products[$i]['chart_account_id'];
                     $billAccount->price             = $products[$i]['amount'];
@@ -199,32 +187,27 @@ class BillController extends Controller
                     $billAccount->type              = 'Bill';
                     $billAccount->ref_id            = $bill->id;
                     $billAccount->save();
-                    $billTotal= $billAccount->price;
+                    $billTotal = $billAccount->price;
                 }
 
                 //inventory management (Quantity)
-                if(!empty($billProduct))
-                {
-                    Utility::total_quantity('plus',$billProduct->quantity,$billProduct->product_id);
+                if (!empty($billProduct)) {
+                    Utility::total_quantity('plus', $billProduct->quantity, $billProduct->product_id);
                 }
 
                 //Product Stock Report
-                if(!empty($products[$i]['item']))
-                {
-                    $type='bill';
+                if (!empty($products[$i]['item'])) {
+                    $type = 'bill';
                     $type_id = $bill->id;
-                    $description=$products[$i]['quantity'].'  '.__('quantity purchase in bill').' '. \Auth::user()->billNumberFormat($bill->bill_id);
-                    Utility::addProductStock( $products[$i]['item'],$products[$i]['quantity'],$type,$description,$type_id);
-                    $total_amount += ($billProduct->quantity * $billProduct->price)+$billTotal ;
-
+                    $description = $products[$i]['quantity'] . '  ' . __('quantity purchase in bill') . ' ' . \Auth::user()->billNumberFormat($bill->bill_id);
+                    Utility::addProductStock($products[$i]['item'], $products[$i]['quantity'], $type, $description, $type_id);
+                    $total_amount += ($billProduct->quantity * $billProduct->price) + $billTotal;
                 }
-
             }
 
-            if(!empty($request->chart_account_id))
-            {
+            if (!empty($request->chart_account_id)) {
 
-                $billaccount= ProductServiceCategory::find($request->category_id);
+                $billaccount = ProductServiceCategory::find($request->category_id);
                 $chart_account = ChartOfAccount::find($billaccount->chart_account_id);
                 $billAccount                    = new BillAccount();
                 $billAccount->chart_account_id  = $chart_account['id'];
@@ -247,55 +230,43 @@ class BillController extends Controller
                 'vendor_name' => $vendor->name,
             ];
             //Slack Notification
-            if(isset($setting['bill_notification']) && $setting['bill_notification'] ==1)
-            {
+            if (isset($setting['bill_notification']) && $setting['bill_notification'] == 1) {
                 Utility::send_slack_msg('new_bill', $billNotificationArr);
             }
             //Telegram Notification
-            if(isset($setting['telegram_bill_notification']) && $setting['telegram_bill_notification'] ==1)
-            {
+            if (isset($setting['telegram_bill_notification']) && $setting['telegram_bill_notification'] == 1) {
                 Utility::send_telegram_msg('new_bill', $billNotificationArr);
             }
             //Twilio Notification
-            if(isset($setting['twilio_bill_notification']) && $setting['twilio_bill_notification'] ==1)
-            {
-                Utility::send_twilio_msg($vendor->contact,'new_bill', $billNotificationArr);
+            if (isset($setting['twilio_bill_notification']) && $setting['twilio_bill_notification'] == 1) {
+                Utility::send_twilio_msg($vendor->contact, 'new_bill', $billNotificationArr);
             }
 
 
             //webhook
-            $module ='New Bill';
+            $module = 'New Bill';
             $webhook =  Utility::webhookSetting($module);
-            if($webhook)
-            {
+            if ($webhook) {
                 $parameter = json_encode($bill);
-                $status = Utility::WebhookCall($webhook['url'],$parameter,$webhook['method']);
+                $status = Utility::WebhookCall($webhook['url'], $parameter, $webhook['method']);
 
-                if($status == true)
-                {
+                if ($status == true) {
                     return redirect()->route('admin.bill.index', $bill->id)->with('success', __('Bill successfully created.'));
-                }
-                else
-                {
+                } else {
                     return redirect()->back()->with('error', __('Webhook call failed.'));
                 }
             }
 
 
             return redirect()->route('admin.bill.index', $bill->id)->with('success', __('Bill successfully created.'));
-        }
-        else
-        {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+        } else {
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
     public function show($ids)
     {
-        dd($ids);
-        if(\Auth::user()->can('show bill'))
-        {
+        if (\Auth::user()->can('show bill')) {
             try {
                 $id       = Crypt::decrypt($ids);
             } catch (\Throwable $th) {
@@ -303,37 +274,31 @@ class BillController extends Controller
             }
 
             $id   = Crypt::decrypt($ids);
-            $bill = Bill::where('id',$id)->with('debitNote')->first();
+            $bill = Bill::where('id', $id)->with('debitNote')->first();
 
-            if(!empty($bill) && $bill->created_by == \Auth::user()->creatorId())
-            {
+            if (!empty($bill) && $bill->created_by == \Auth::user()->creatorId()) {
                 $billPayment = BillPayment::where('bill_id', $bill->id)->first();
                 $vendor      = $bill->vender;
 
                 $item      = $bill->items;
                 $accounts  = $bill->accounts;
                 $items     = [];
-                if(!empty($item) && count($item) > 0)
-                {
-                    foreach ($item as $k=>$val)
-                    {
-                        if(!empty($accounts[$k]))
-                        {
-                            $val['chart_account_id']=$accounts[$k]['chart_account_id'];
-                            $val['account_id']=$accounts[$k]['id'];
-                            $val['amount']=$accounts[$k]['price'];
+                if (!empty($item) && count($item) > 0) {
+                    foreach ($item as $k => $val) {
+                        if (!empty($accounts[$k])) {
+                            $val['chart_account_id'] = $accounts[$k]['chart_account_id'];
+                            $val['account_id'] = $accounts[$k]['id'];
+                            $val['amount'] = $accounts[$k]['price'];
                         }
-                        $items[]=$val;
+                        $items[] = $val;
                     }
-                }
-                else{
+                } else {
 
-                    foreach ($accounts as $k=>$val){
-                        $val1['chart_account_id']=$accounts[$k]['chart_account_id'];
-                        $val1['account_id']=$accounts[$k]['id'];
-                        $val1['amount']=$accounts[$k]['price'];
-                        $items[]=$val1;
-
+                    foreach ($accounts as $k => $val) {
+                        $val1['chart_account_id'] = $accounts[$k]['chart_account_id'];
+                        $val1['account_id'] = $accounts[$k]['id'];
+                        $val1['amount'] = $accounts[$k]['price'];
+                        $items[] = $val1;
                     }
                 }
 
@@ -341,25 +306,18 @@ class BillController extends Controller
                 $customFields      = CustomField::where('created_by', '=', \Auth::user()->creatorId())->where('module', '=', 'bill')->get();
 
                 return view('admin.bill.view', compact('bill', 'vendor', 'items', 'billPayment', 'customFields'));
+            } else {
+                return redirect()->back()->with('danger', __('Permission denied.'));
             }
-            else
-            {
-                            return redirect()->back()->with('danger', __('Permission denied.'));
-
-            }
-        }
-        else
-        {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+        } else {
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
     public function edit($ids)
     {
 
-        if(\Auth::user()->can('edit bill'))
-        {
+        if (\Auth::user()->can('edit bill')) {
             try {
                 $id       = Crypt::decrypt($ids);
             } catch (\Throwable $th) {
@@ -369,8 +327,7 @@ class BillController extends Controller
             $id       = Crypt::decrypt($ids);
             $bill     = Bill::find($id);
 
-            if(!empty($bill))
-            {
+            if (!empty($bill)) {
                 $category     = ProductServiceCategory::where('created_by', \Auth::user()->creatorId())
                     ->whereNotIn('type', ['product & service', 'income',])
                     ->get()->pluck('name', 'id');
@@ -392,31 +349,26 @@ class BillController extends Controller
                 $item      = $bill->items;
                 $accounts  = $bill->accounts;
                 $items     = [];
-                if(!empty($item) && count($item) > 0)
-                {
-                    foreach ($item as $k=>$val)
-                    {
-                        if(!empty($accounts[$k]))
-                        {
-                            $val['chart_account_id']=$accounts[$k]['chart_account_id'];
-                            $val['account_id']=$accounts[$k]['id'];
-                            $val['amount']=$accounts[$k]['price'];
+                if (!empty($item) && count($item) > 0) {
+                    foreach ($item as $k => $val) {
+                        if (!empty($accounts[$k])) {
+                            $val['chart_account_id'] = $accounts[$k]['chart_account_id'];
+                            $val['account_id'] = $accounts[$k]['id'];
+                            $val['amount'] = $accounts[$k]['price'];
                         }
-                        $items[]=$val;
+                        $items[] = $val;
+                    }
+                } else {
+                    foreach ($accounts as $k => $val) {
+                        $val1['chart_account_id'] = $accounts[$k]['chart_account_id'];
+                        $val1['account_id'] = $accounts[$k]['id'];
+                        $val1['amount'] = $accounts[$k]['price'];
+                        $items[] = $val1;
                     }
                 }
-                else{
-                    foreach ($accounts as $k=>$val){
-                        $val1['chart_account_id']=$accounts[$k]['chart_account_id'];
-                        $val1['account_id']=$accounts[$k]['id'];
-                        $val1['amount']=$accounts[$k]['price'];
-                        $items[]=$val1;
-
-                    }
-                }
 
 
-//                dd($items);
+                //                dd($items);
 
 
 
@@ -424,17 +376,20 @@ class BillController extends Controller
 
 
 
-                return view('admin.bill.edit', compact('venders', 'product_services', 'bill', 'bill_number', 'category',
-                    'customFields','chartAccounts','items'));
-            }
-            else{
+                return view('admin.bill.edit', compact(
+                    'venders',
+                    'product_services',
+                    'bill',
+                    'bill_number',
+                    'category',
+                    'customFields',
+                    'chartAccounts',
+                    'items'
+                ));
+            } else {
                 return redirect()->back()->with('error', __('Bill Not Found.'));
             }
-
-
-        }
-        else
-        {
+        } else {
             return response()->json(['error' => __('Permission denied.')], 401);
         }
     }
@@ -467,27 +422,23 @@ class BillController extends Controller
                 $bill->save();
                 CustomField::saveData($bill, $request->customField);
                 $products = $request->items;
-                $total_amount=0;
+                $total_amount = 0;
 
-                for ($i = 0; $i < count($products); $i++)
-                {
+                for ($i = 0; $i < count($products); $i++) {
                     $billProduct = BillProduct::find($products[$i]['id']);
-                    if ($billProduct == null)
-                    {
+                    if ($billProduct == null) {
                         $billProduct             = new BillProduct();
                         $billProduct->bill_id    = $bill->id;
 
-                        if(isset($products[$i]['items']) ) {
+                        if (isset($products[$i]['items'])) {
                             Utility::total_quantity('plus', $products[$i]['quantity'], $products[$i]['items']);
                         }
 
-                        $updatePrice= ($products[$i]['price']*$products[$i]['quantity'])+($products[$i]['itemTaxPrice'])-($products[$i]['discount']);
+                        $updatePrice = ($products[$i]['price'] * $products[$i]['quantity']) + ($products[$i]['itemTaxPrice']) - ($products[$i]['discount']);
                         Utility::updateUserBalance('vendor', $request->vender_id, $updatePrice, 'debit');
+                    } else {
 
-                    }
-                    else{
-
-                        Utility::total_quantity('minus',$billProduct->quantity,$billProduct->product_id);
+                        Utility::total_quantity('minus', $billProduct->quantity, $billProduct->product_id);
                     }
 
                     if (isset($products[$i]['items'])) {
@@ -501,15 +452,14 @@ class BillController extends Controller
                     }
 
 
-                    $billTotal=0;
-                    if(!empty($products[$i]['chart_account_id'])){
+                    $billTotal = 0;
+                    if (!empty($products[$i]['chart_account_id'])) {
                         $billAccount = BillAccount::find($products[$i]['id']);
 
                         if ($billAccount == null) {
                             $billAccount                    = new BillAccount();
                             $billAccount->chart_account_id = $products[$i]['chart_account_id'];
-                        }
-                        else{
+                        } else {
                             $billAccount->chart_account_id = $products[$i]['chart_account_id'];
                         }
                         $billAccount->price             = $products[$i]['amount'];
@@ -517,30 +467,28 @@ class BillController extends Controller
                         $billAccount->type              = 'Bill';
                         $billAccount->ref_id            = $bill->id;
                         $billAccount->save();
-                        $billTotal= $billAccount->price;
+                        $billTotal = $billAccount->price;
                     }
 
-                    if ($products[$i]['id']>0) {
-                        Utility::total_quantity('plus',$products[$i]['quantity'],$billProduct->product_id);
+                    if ($products[$i]['id'] > 0) {
+                        Utility::total_quantity('plus', $products[$i]['quantity'], $billProduct->product_id);
                     }
 
                     //Product Stock Report
-                    $type='bill';
+                    $type = 'bill';
                     $type_id = $bill->id;
-                    StockReport::where('type','=','bill')->where('type_id','=',$bill->id)->delete();
-                    $description=$products[$i]['quantity'].'  '.__(' quantity purchase in bill').' '. \Auth::user()->billNumberFormat($bill->bill_id);
+                    StockReport::where('type', '=', 'bill')->where('type_id', '=', $bill->id)->delete();
+                    $description = $products[$i]['quantity'] . '  ' . __(' quantity purchase in bill') . ' ' . \Auth::user()->billNumberFormat($bill->bill_id);
 
-                    if(isset($products[$i]['items']) ){
-                        Utility::addProductStock( $products[$i]['items'],$products[$i]['quantity'],$type,$description,$type_id);
+                    if (isset($products[$i]['items'])) {
+                        Utility::addProductStock($products[$i]['items'], $products[$i]['quantity'], $type, $description, $type_id);
                     }
 
-                    $total_amount += ($billProduct->quantity * $billProduct->price)+$billTotal ;
-
+                    $total_amount += ($billProduct->quantity * $billProduct->price) + $billTotal;
                 }
 
-                if(!empty($request->chart_account_id))
-                {
-                    $billaccount= ProductServiceCategory::find($request->category_id);
+                if (!empty($request->chart_account_id)) {
+                    $billaccount = ProductServiceCategory::find($request->category_id);
                     $chart_account = ChartOfAccount::find($billaccount->chart_account_id);
                     $billAccount                    = new BillAccount();
                     $billAccount->chart_account_id  = $chart_account['id'];
@@ -553,27 +501,22 @@ class BillController extends Controller
 
                 return redirect()->route('admin.bill.index')->with('success', __('Bill successfully updated.'));
             } else {
-                            return redirect()->back()->with('danger', __('Permission denied.'));
-
+                return redirect()->back()->with('danger', __('Permission denied.'));
             }
         } else {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
     public function destroy(Bill $bill)
     {
-        if(\Auth::user()->can('delete bill'))
-        {
-            if($bill->created_by == \Auth::user()->creatorId())
-            {
+        if (\Auth::user()->can('delete bill')) {
+            if ($bill->created_by == \Auth::user()->creatorId()) {
                 $billpayments = $bill->payments;
 
-                foreach($billpayments as $key => $value)
-                {
+                foreach ($billpayments as $key => $value) {
                     Utility::bankAccountBalance($value->account_id, $value->amount, 'credit');
-                    $transaction= Transaction::where('payment_id',$value->id)->first();
+                    $transaction = Transaction::where('payment_id', $value->id)->first();
                     $transaction->delete();
 
                     $billpayment = BillPayment::find($value->id)->first();
@@ -581,8 +524,7 @@ class BillController extends Controller
                 }
                 $bill->delete();
 
-                if($bill->vender_id != 0 && $bill->status!=0)
-                {
+                if ($bill->vender_id != 0 && $bill->status != 0) {
                     Utility::updateUserBalance('vendor', $bill->vender_id, $bill->getDue(), 'credit');
                 }
                 BillProduct::where('bill_id', '=', $bill->id)->delete();
@@ -592,26 +534,18 @@ class BillController extends Controller
                 DebitNote::where('bill', '=', $bill->id)->delete();
 
                 return redirect()->route('admin.bill.index')->with('success', __('Bill successfully deleted.'));
+            } else {
+                return redirect()->back()->with('danger', __('Permission denied.'));
             }
-            else
-            {
-                            return redirect()->back()->with('danger', __('Permission denied.'));
-
-            }
+        } else {
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
-        else
-        {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
-        }
-
     }
 
     function billNumber()
     {
         $latest = Bill::where('created_by', '=', \Auth::user()->creatorId())->latest()->first();
-        if(!$latest)
-        {
+        if (!$latest) {
             return 1;
         }
 
@@ -635,30 +569,24 @@ class BillController extends Controller
     public function productDestroy(Request $request)
     {
 
-        if(\Auth::user()->can('delete bill product'))
-        {
-            $billProduct=BillProduct::find($request->id);
-            $bill=Bill::find($billProduct->bill_id);
+        if (\Auth::user()->can('delete bill product')) {
+            $billProduct = BillProduct::find($request->id);
+            $bill = Bill::find($billProduct->bill_id);
 
             Utility::updateUserBalance('vendor', $bill->vender_id, $request->amount, 'credit');
 
             BillProduct::where('id', '=', $request->id)->delete();
 
             return redirect()->back()->with('success', __('Bill product successfully deleted.'));
-
-        }
-        else
-        {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+        } else {
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
 
     public function sent($id)
     {
-        if(\Auth::user()->can('send bill'))
-        {
+        if (\Auth::user()->can('send bill')) {
             $bill            = Bill::where('id', $id)->first();
             $bill->send_date = date('Y-m-d');
             $bill->status    = 1;
@@ -676,36 +604,31 @@ class BillController extends Controller
 
             $vendorArr = [
                 'vender_bill_name' => $bill->name,
-                'vender_bill_number' =>$bill->bill,
+                'vender_bill_number' => $bill->bill,
                 'vender_bill_url' => $bill->url,
 
             ];
-//            dd($vendorArr);
+            //            dd($vendorArr);
             $resp = Utility::sendEmailTemplate('vender_bill_sent', [$vender->id => $vender->email], $vendorArr);
 
 
             return redirect()->back()->with('success', __('Bill successfully sent.') . (($resp['is_success'] == false && !empty($resp['error'])) ? '<br> <span class="text-danger">' . $resp['error'] . '</span>' : ''));
+        } else {
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
-        else
-        {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
-        }
-
     }
 
 
     public function resent($id)
     {
 
-//        if(\Auth::user()->can('send bill'))
-//        {
+        //        if(\Auth::user()->can('send bill'))
+        //        {
 
         // Send Email
         $setings = Utility::settings();
 
-        if($setings['bill_resent'] == 1)
-        {
+        if ($setings['bill_resent'] == 1) {
             $bill = Bill::where('id', $id)->first();
             $vender = Vender::where('id', $bill->vender_id)->first();
             $bill->name = !empty($vender) ? $vender->name : '';
@@ -717,28 +640,25 @@ class BillController extends Controller
                 'vender_email'  => $vender->email,
                 'bill_name'  => $bill->name,
                 'bill_number'   => $bill->bill,
-                'bill_url' =>$bill->url,
+                'bill_url' => $bill->url,
             ];
 
             $resp = Utility::sendEmailTemplate('bill_resent', [$vender->id => $vender->email], $billResendArr);
-
-
         }
 
         return redirect()->back()->with('success', __('Bill successfully sent.') . (($resp['is_success'] == false && !empty($resp['error'])) ? '<br> <span class="text-danger">' . $resp['error'] . '</span>' : ''));
-//        }
-//        else
-//        {
-//                        return redirect()->back()->with('danger', __('Permission denied.'));
+        //        }
+        //        else
+        //        {
+        //                        return redirect()->back()->with('danger', __('Permission denied.'));
 
-//        }
+        //        }
 
     }
 
     public function payment($bill_id)
     {
-        if(\Auth::user()->can('create payment bill'))
-        {
+        if (\Auth::user()->can('create payment bill')) {
             $bill    = Bill::where('id', $bill_id)->first();
             $venders = Vender::where('created_by', '=', \Auth::user()->creatorId())->get()->pluck('name', 'id');
 
@@ -746,29 +666,24 @@ class BillController extends Controller
             $accounts   = BankAccount::select('*', \DB::raw("CONCAT(bank_name,' ',holder_name) AS name"))->where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
 
             return view('admin.bill.payment', compact('venders', 'categories', 'accounts', 'bill'));
-        }
-        else
-        {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
-
+        } else {
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
     public function createPayment(Request $request, $bill_id)
     {
-        if(\Auth::user()->can('create payment bill'))
-        {
+        if (\Auth::user()->can('create payment bill')) {
             $validator = \Validator::make(
-                $request->all(), [
+                $request->all(),
+                [
                     'date' => 'required',
                     'amount' => 'required',
                     'account_id' => 'required',
 
                 ]
             );
-            if($validator->fails())
-            {
+            if ($validator->fails()) {
                 $messages = $validator->getMessageBag();
 
                 return redirect()->back()->with('error', $messages->first());
@@ -782,8 +697,7 @@ class BillController extends Controller
             $billPayment->payment_method = 0;
             $billPayment->reference      = $request->reference;
             $billPayment->description    = $request->description;
-            if(!empty($request->add_receipt))
-            {
+            if (!empty($request->add_receipt)) {
                 $fileName = time() . "_" . $request->add_receipt->getClientOriginalName();
                 $request->add_receipt->storeAs('uploads/payment', $fileName);
                 $billPayment->add_receipt = $fileName;
@@ -795,19 +709,15 @@ class BillController extends Controller
             $due   = $bill->getDue();
             $total = $bill->getTotal();
 
-            if($bill->status == 0)
-            {
+            if ($bill->status == 0) {
                 $bill->send_date = date('Y-m-d');
                 $bill->save();
             }
 
-            if($due <= 0)
-            {
+            if ($due <= 0) {
                 $bill->status = 4;
                 $bill->save();
-            }
-            else
-            {
+            } else {
                 $bill->status = 3;
                 $bill->save();
             }
@@ -829,7 +739,7 @@ class BillController extends Controller
             $payment->amount = \Auth::user()->priceFormat($request->amount);
             $payment->bill   = 'bill ' . \Auth::user()->billNumberFormat($billPayment->bill_id);
 
-//            Utility::userBalance('vendor', $bill->vender_id, $request->amount, 'debit');
+            //            Utility::userBalance('vendor', $bill->vender_id, $request->amount, 'debit');
             Utility::updateUserBalance('vendor', $bill->vender_id, $request->amount, 'credit');
 
 
@@ -838,41 +748,35 @@ class BillController extends Controller
 
             // Send Email
             $setings = Utility::settings();
-            if($setings['new_bill_payment'] == 1)
-            {
+            if ($setings['new_bill_payment'] == 1) {
 
                 $vender = Vender::where('id', $bill->vender_id)->first();
                 $billPaymentArr = [
                     'vender_name'   => $vender->name,
                     'vender_email'  => $vender->email,
-                    'payment_name'  =>$payment->name,
-                    'payment_amount'=>$payment->amount,
-                    'payment_bill'  =>$payment->bill,
-                    'payment_date'  =>$payment->date,
-                    'payment_method'=>$payment->method,
-                    'company_name'=>$payment->method,
+                    'payment_name'  => $payment->name,
+                    'payment_amount' => $payment->amount,
+                    'payment_bill'  => $payment->bill,
+                    'payment_date'  => $payment->date,
+                    'payment_method' => $payment->method,
+                    'company_name' => $payment->method,
 
                 ];
 
 
                 $resp = Utility::sendEmailTemplate('new_bill_payment', [$vender->id => $vender->email], $billPaymentArr);
 
-                return redirect()->back()->with('success', __('Payment successfully added.') .((isset($result) && $result!=1) ? '<br> <span class="text-danger">' . $result . '</span>' : '').(($resp['is_success'] == false && !empty($resp['error'])) ? '<br> <span class="text-danger">' . $resp['error'] . '</span>' : '') );
-
+                return redirect()->back()->with('success', __('Payment successfully added.') . ((isset($result) && $result != 1) ? '<br> <span class="text-danger">' . $result . '</span>' : '') . (($resp['is_success'] == false && !empty($resp['error'])) ? '<br> <span class="text-danger">' . $resp['error'] . '</span>' : ''));
             }
 
-            return redirect()->back()->with('success', __('Payment successfully added.'). ((isset($result) && $result!=1) ? '<br> <span class="text-danger">' . $result . '</span>' : ''));
-
-
+            return redirect()->back()->with('success', __('Payment successfully added.') . ((isset($result) && $result != 1) ? '<br> <span class="text-danger">' . $result . '</span>' : ''));
         }
-
     }
 
     public function paymentDestroy(Request $request, $bill_id, $payment_id)
     {
 
-        if(\Auth::user()->can('delete payment bill'))
-        {
+        if (\Auth::user()->can('delete payment bill')) {
             $payment = BillPayment::find($payment_id);
             BillPayment::where('id', '=', $payment_id)->delete();
 
@@ -881,17 +785,13 @@ class BillController extends Controller
             $due   = $bill->getDue();
             $total = $bill->getTotal();
 
-            if($due > 0 && $total != $due)
-            {
+            if ($due > 0 && $total != $due) {
                 $bill->status = 3;
-
-            }
-            else
-            {
+            } else {
                 $bill->status = 2;
             }
 
-//            Utility::userBalance('vendor', $bill->vender_id, $payment->amount, 'credit');
+            //            Utility::userBalance('vendor', $bill->vender_id, $payment->amount, 'credit');
             Utility::updateUserBalance('vendor', $bill->vender_id, $payment->amount, 'debit');
 
             Utility::bankAccountBalance($payment->account_id, $payment->amount, 'credit');
@@ -903,73 +803,55 @@ class BillController extends Controller
             Transaction::destroyTransaction($payment_id, $type, $user);
 
             return redirect()->back()->with('success', __('Payment successfully deleted.'));
-        }
-        else
-        {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+        } else {
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
     public function venderBill(Request $request)
     {
-        if(\Auth::user()->can('manage vender bill'))
-        {
+        if (\Auth::user()->can('manage vender bill')) {
 
             $status = Bill::$statues;
 
             $query = Bill::where('vender_id', '=', \Auth::user()->vender_id)->where('status', '!=', '0')->where('created_by', \Auth::user()->creatorId());
 
-            if(!empty($request->vender))
-            {
+            if (!empty($request->vender)) {
                 $query->where('id', '=', $request->vender);
             }
-            if(!empty($request->bill_date))
-            {
+            if (!empty($request->bill_date)) {
                 $date_range = explode(' - ', $request->bill_date);
                 $query->whereBetween('bill_date', $date_range);
             }
 
-            if(!empty($request->status))
-            {
+            if (!empty($request->status)) {
                 $query->where('status', '=', $request->status);
             }
             $bills = $query->get();
 
 
             return view('admin.bill.index', compact('bills', 'status'));
-        }
-        else
-        {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+        } else {
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
     public function venderBillShow($id)
     {
-        if(\Auth::user()->can('show bill'))
-        {
+        if (\Auth::user()->can('show bill')) {
             $bill_id = Crypt::decrypt($id);
             $bill    = Bill::where('id', $bill_id)->first();
 
-            if($bill->created_by == \Auth::user()->creatorId())
-            {
+            if ($bill->created_by == \Auth::user()->creatorId()) {
                 $vendor = $bill->vender;
                 $iteams = $bill->items;
 
                 return view('admin.bill.view', compact('bill', 'vendor', 'iteams'));
+            } else {
+                return redirect()->back()->with('danger', __('Permission denied.'));
             }
-            else
-            {
-                            return redirect()->back()->with('danger', __('Permission denied.'));
-
-            }
-        }
-        else
-        {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+        } else {
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
@@ -989,12 +871,12 @@ class BillController extends Controller
     public function venderBillSendMail(Request $request, $bill_id)
     {
         $validator = \Validator::make(
-            $request->all(), [
-                               'email' => 'required|email',
-                           ]
+            $request->all(),
+            [
+                'email' => 'required|email',
+            ]
         );
-        if($validator->fails())
-        {
+        if ($validator->fails()) {
             $messages = $validator->getMessageBag();
 
             return redirect()->back()->with('error', $messages->first());
@@ -1010,29 +892,22 @@ class BillController extends Controller
         $billId    = Crypt::encrypt($bill->id);
         $bill->url = route('admin.bill.pdf', $billId);
 
-        try
-        {
-//            Mail::to($email)->send(new VenderBillSend($bill));
-        }
-        catch(\Exception $e)
-        {
+        try {
+            //            Mail::to($email)->send(new VenderBillSend($bill));
+        } catch (\Exception $e) {
             $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
         }
 
         return redirect()->back()->with('success', __('Bill successfully sent.') . ((isset($smtp_error)) ? '<br> <span class="text-danger">' . $smtp_error . '</span>' : ''));
-
     }
 
     public function shippingDisplay(Request $request, $id)
     {
         $bill = Bill::find($id);
 
-        if($request->is_display == 'true')
-        {
+        if ($request->is_display == 'true') {
             $bill->shipping_display = 1;
-        }
-        else
-        {
+        } else {
             $bill->shipping_display = 0;
         }
         $bill->save();
@@ -1042,8 +917,7 @@ class BillController extends Controller
 
     public function duplicate($bill_id)
     {
-        if(\Auth::user()->can('duplicate bill'))
-        {
+        if (\Auth::user()->can('duplicate bill')) {
             $bill = Bill::where('id', $bill_id)->first();
 
             $duplicateBill                   = new Bill();
@@ -1059,11 +933,9 @@ class BillController extends Controller
             $duplicateBill->created_by       = $bill['created_by'];
             $duplicateBill->save();
 
-            if($duplicateBill)
-            {
+            if ($duplicateBill) {
                 $billProduct = BillProduct::where('bill_id', $bill_id)->get();
-                foreach($billProduct as $product)
-                {
+                foreach ($billProduct as $product) {
                     $duplicateProduct             = new BillProduct();
                     $duplicateProduct->bill_id    = $duplicateBill->id;
                     $duplicateProduct->product_id = $product->product_id;
@@ -1077,12 +949,8 @@ class BillController extends Controller
 
 
             return redirect()->back()->with('success', __('Bill duplicate successfully.'));
-
-        }
-        else
-        {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
+        } else {
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
     }
 
@@ -1112,8 +980,7 @@ class BillController extends Controller
         $totalTaxPrice = 0;
         $taxesData     = [];
         $items         = [];
-        for($i = 1; $i <= 3; $i++)
-        {
+        for ($i = 1; $i <= 3; $i++) {
             $item           = new \stdClass();
             $item->name     = 'Item ' . $i;
             $item->quantity = 1;
@@ -1128,8 +995,7 @@ class BillController extends Controller
             ];
 
             $itemTaxes = [];
-            foreach($taxes as $k => $tax)
-            {
+            foreach ($taxes as $k => $tax) {
                 $taxPrice         = 10;
                 $totalTaxPrice    += $taxPrice;
                 $itemTax['name']  = 'Tax ' . $k;
@@ -1137,12 +1003,9 @@ class BillController extends Controller
                 $itemTax['price'] = '$10';
                 $itemTax['tax_price'] = 10;
                 $itemTaxes[]      = $itemTax;
-                if(array_key_exists('Tax ' . $k, $taxesData))
-                {
+                if (array_key_exists('Tax ' . $k, $taxesData)) {
                     $taxesData['Tax ' . $k] = $taxesData['Tax 1'] + $taxPrice;
-                }
-                else
-                {
+                } else {
                     $taxesData['Tax ' . $k] = $taxPrice;
                 }
             }
@@ -1172,11 +1035,9 @@ class BillController extends Controller
         $logo         = asset(Storage::url('uploads/logo/'));
         $company_logo = Utility::getValByName('company_logo_dark');
         $bill_logo = Utility::getValByName('bill_logo');
-        if(isset($bill_logo) && !empty($bill_logo))
-        {
+        if (isset($bill_logo) && !empty($bill_logo)) {
             $img = Utility::get_file('bill_logo/') . $bill_logo;
-        }
-        else{
+        } else {
             $img          = asset($logo . '/' . (isset($company_logo) && !empty($company_logo) ? $company_logo : 'logo-dark.png'));
         }
 
@@ -1198,8 +1059,7 @@ class BillController extends Controller
         $data  = $data->where('created_by', '=', $bill->created_by);
         $data1 = $data->get();
 
-        foreach($data1 as $row)
-        {
+        foreach ($data1 as $row) {
             $settings[$row->name] = $row->value;
         }
 
@@ -1212,8 +1072,7 @@ class BillController extends Controller
         $taxesData     = [];
         $items         = [];
 
-        foreach($bill->items as $product)
-        {
+        foreach ($bill->items as $product) {
 
             $item              = new \stdClass();
             $item->name        = !empty($product->product()) ? $product->product()->name : '';
@@ -1230,35 +1089,27 @@ class BillController extends Controller
 
             $taxes     = Utility::tax($product->tax);
             $itemTaxes = [];
-            if(!empty($item->tax))
-            {
-                foreach($taxes as $tax)
-                {
-                    $taxPrice      = Utility::taxRate($tax->rate, $item->price, $item->quantity,$item->discount);
+            if (!empty($item->tax)) {
+                foreach ($taxes as $tax) {
+                    $taxPrice      = Utility::taxRate($tax->rate, $item->price, $item->quantity, $item->discount);
                     $totalTaxPrice += $taxPrice;
 
                     $itemTax['name']  = $tax->name;
                     $itemTax['rate']  = $tax->rate . '%';
                     $itemTax['price'] = Utility::priceFormat($settings, $taxPrice);
-                    $itemTax['tax_price'] =$taxPrice;
+                    $itemTax['tax_price'] = $taxPrice;
                     $itemTaxes[]      = $itemTax;
 
 
-                    if(array_key_exists($tax->name, $taxesData))
-                    {
+                    if (array_key_exists($tax->name, $taxesData)) {
                         $taxesData[$tax->name] = $taxesData[$tax->name] + $taxPrice;
-                    }
-                    else
-                    {
+                    } else {
                         $taxesData[$tax->name] = $taxPrice;
                     }
-
                 }
 
                 $item->itemTax = $itemTaxes;
-            }
-            else
-            {
+            } else {
                 $item->itemTax = [];
             }
             $items[] = $item;
@@ -1272,8 +1123,7 @@ class BillController extends Controller
         $bill->taxesData     = $taxesData;
         $bill->customField   = CustomField::getData($bill, 'bill');
         $customFields        = [];
-        if(!empty(\Auth::user()))
-        {
+        if (!empty(\Auth::user())) {
             $customFields = CustomField::where('created_by', '=', \Auth::user()->creatorId())->where('module', '=', 'bill')->get();
         }
 
@@ -1281,28 +1131,21 @@ class BillController extends Controller
         $company_logo = Utility::getValByName('company_logo_dark');
         $settings_data = \App\Models\Utility::settingsById($bill->created_by);
         $bill_logo = $settings_data['bill_logo'];
-        if(isset($bill_logo) && !empty($bill_logo))
-        {
+        if (isset($bill_logo) && !empty($bill_logo)) {
             $img = Utility::get_file('bill_logo/') . $bill_logo;
-        }
-        else{
+        } else {
             $img          = asset($logo . '/' . (isset($company_logo) && !empty($company_logo) ? $company_logo : 'logo-dark.png'));
         }
 
 
-        if($bill)
-        {
+        if ($bill) {
             $color      = '#' . $settings['bill_color'];
             $font_color = Utility::getFontColor($color);
 
             return view('admin.bill.templates.' . $settings['bill_template'], compact('bill', 'color', 'settings', 'vendor', 'img', 'font_color', 'customFields'));
+        } else {
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
-        else
-        {
-                        return redirect()->back()->with('danger', __('Permission denied.'));
-
-        }
-
     }
 
     public function saveBillTemplateSettings(Request $request)
@@ -1310,36 +1153,33 @@ class BillController extends Controller
         $post = $request->all();
         unset($post['_token']);
 
-        if(isset($post['bill_template']) && (!isset($post['bill_color']) || empty($post['bill_color'])))
-        {
+        if (isset($post['bill_template']) && (!isset($post['bill_color']) || empty($post['bill_color']))) {
             $post['bill_color'] = "ffffff";
         }
 
 
-        if($request->bill_logo)
-        {
+        if ($request->bill_logo) {
             $dir = 'bill_logo/';
             $bill_logo = \Auth::user()->id . '_bill_logo.png';
-            $validation =[
-                'mimes:'.'png',
-                'max:'.'20480',
+            $validation = [
+                'mimes:' . 'png',
+                'max:' . '20480',
             ];
-            $path = Utility::upload_file($request,'bill_logo',$bill_logo,$dir,$validation);
-            if($path['flag']==0)
-            {
+            $path = Utility::upload_file($request, 'bill_logo', $bill_logo, $dir, $validation);
+            if ($path['flag'] == 0) {
                 return redirect()->back()->with('error', __($path['msg']));
             }
             $post['bill_logo'] = $bill_logo;
         }
 
-        foreach($post as $key => $data)
-        {
+        foreach ($post as $key => $data) {
             \DB::insert(
-                'insert into settings (`value`, `name`,`created_by`) values (?, ?, ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`) ', [
-                                                                                                                                             $data,
-                                                                                                                                             $key,
-                                                                                                                                             \Auth::user()->creatorId(),
-                                                                                                                                         ]
+                'insert into settings (`value`, `name`,`created_by`) values (?, ?, ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`) ',
+                [
+                    $data,
+                    $key,
+                    \Auth::user()->creatorId(),
+                ]
             );
         }
 
@@ -1362,7 +1202,7 @@ class BillController extends Controller
         }
 
         $id             = Crypt::decrypt($billId);
-        $bill           =Bill::find($id);
+        $bill           = Bill::find($id);
 
         $user_id        = $bill->created_by;
         $user           = User::find($user_id);
@@ -1372,20 +1212,19 @@ class BillController extends Controller
         $iteams   = $bill->items;
 
         $bill->customField = CustomField::getData($bill, 'bill');
-         $customFields         = CustomField::where('module', '=', 'bill')->get();
+        $customFields         = CustomField::where('module', '=', 'bill')->get();
 
 
 
-         return view('admin.bill.customer_bill', compact('bill', 'vendor', 'iteams', 'customFields','billPayment','user'));
+        return view('admin.bill.customer_bill', compact('bill', 'vendor', 'iteams', 'customFields', 'billPayment', 'user'));
     }
 
     public function export()
     {
         $name = 'bill_' . date('Y-m-d i:h:s');
-        $data = Excel::download(new BillExport(), $name . '.xlsx'); ob_end_clean();
+        $data = Excel::download(new BillExport(), $name . '.xlsx');
+        ob_end_clean();
 
         return $data;
     }
-
 }
-
