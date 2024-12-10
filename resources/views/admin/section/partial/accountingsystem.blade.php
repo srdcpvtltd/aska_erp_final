@@ -151,7 +151,7 @@
                             @endif
                             {{-- <li
                                 class="nav-item">
-                                <a class="nav-link {{ Request::route()->getName() == 'bill.index' || Request::route()->getName() == 'bill.create' || Request::route()->getName() == 'bill.edit' || Request::route()->getName() == 'bill.show' ? ' active' : '' }}" href="{{ route('admin.bill.index') }}">{{ __('Bill') }}</a>
+                                <a class="nav-link {{ Request::route()->getName() == 'admin.bill.index' || Request::route()->getName() == 'admin.bill.create' || Request::route()->getName() == 'admin.bill.edit' || Request::route()->getName() == 'admin.bill.show' ? ' active' : '' }}" href="{{ route('admin.bill.index') }}">{{ __('Bill') }}</a>
                             </li>
                             <li
                                 class="nav-item">

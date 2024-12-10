@@ -2,7 +2,7 @@
 @section('title')
     {{ __('Challan Edit') }}
 @endsection
-@section('scripts')
+{{-- @section('scripts')
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
     <script>
         $(document).ready(function() {
@@ -29,7 +29,7 @@
             })
         });
     </script>
-@endsection
+@endsection --}}
 @section('main-content')
     @include('admin.section.flash_message')
 
@@ -120,12 +120,12 @@
                                 <input type="text" class="form-control" name="quantity" id="quantity" value="{{ $challan->quantity }}">
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('amount', __('Amount'), ['class' => 'form-label']) }}
                                 <input type="text" class="form-control" name="amount" id="amount" value="{{ $challan->amount }}" readonly>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>

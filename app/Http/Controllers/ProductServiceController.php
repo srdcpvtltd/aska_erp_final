@@ -86,7 +86,7 @@ class ProductServiceController extends Controller
                 //     })
                 // ],
                 'sale_price' => 'required|numeric',
-                'purchase_price' => 'required|numeric',
+                // 'purchase_price' => 'required|numeric',
                 'category_id' => 'required',
                 'unit_id' => 'required',
                 'type' => 'required',
@@ -201,7 +201,7 @@ class ProductServiceController extends Controller
                     // 'sku' => 'required',
                     // Rule::unique('product_services')->ignore($productService->id),
                     'sale_price' => 'required|numeric',
-                    'purchase_price' => 'required|numeric',
+                    // 'purchase_price' => 'required|numeric',
                     'category_id' => 'required',
                     'unit_id' => 'required',
                     'type' => 'required',

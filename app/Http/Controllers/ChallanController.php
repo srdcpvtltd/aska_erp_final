@@ -66,7 +66,7 @@ class ChallanController extends Controller
             $challan->receive_date = $request->receive_date;
             $challan->vehicle_no = $request->vehicle_no;
             $challan->quantity = $request->quantity;
-            $challan->amount = $request->amount;
+            // $challan->amount = $request->amount;
             $challan->created_by = $request->created_by;
             $challan->save();
 
@@ -121,7 +121,7 @@ class ChallanController extends Controller
             $challan->vendor_id = $request->vendor_id;
             $challan->receive_date = $request->receive_date;
             $challan->vehicle_no = $request->vehicle_no;
-            $challan->amount = $request->amount;
+            // $challan->amount = $request->amount;
             $challan->created_by = $request->created_by;
 
 

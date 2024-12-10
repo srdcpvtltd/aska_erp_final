@@ -30,39 +30,35 @@ class BillController extends Controller
 
     public function index(Request $request)
     {
-        // if(\Auth::user()->can('manage bill'))
-        // {
+        if (\Auth::user()->can('manage bill')) {
 
-        $vender = Vender::where('created_by', '=', \Auth::user()->creatorId())->get()->pluck('name', 'id');
-        $vender->prepend('Select Vendor', '');
+            $vender = Vender::where('created_by', '=', \Auth::user()->creatorId())->get()->pluck('name', 'id');
+            $vender->prepend('Select Vendor', '');
 
-        $status = Bill::$statues;
+            $status = Bill::$statues;
 
-        $query = Bill::where('type', '=', 'Bill')->where('created_by', '=', \Auth::user()->creatorId());
-        if (!empty($request->vender)) {
-            $query->where('vender_id', '=', $request->vender);
+            $query = Bill::where('type', '=', 'Bill')->where('created_by', '=', \Auth::user()->creatorId());
+            if (!empty($request->vender)) {
+                $query->where('vender_id', '=', $request->vender);
+            }
+
+            if (count(explode('to', $request->bill_date)) > 1) {
+                $date_range = explode(' to ', $request->bill_date);
+                $query->whereBetween('bill_date', $date_range);
+            } elseif (!empty($request->bill_date)) {
+                $date_range = [$request->date, $request->bill_date];
+                $query->whereBetween('bill_date', $date_range);
+            }
+
+            if (!empty($request->status)) {
+                $query->where('status', '=', $request->status);
+            }
+            $bills = $query->with(['category'])->get();
+
+            return view('admin.bill.index', compact('bills', 'vender', 'status'));
+        } else {
+            return redirect()->back()->with('danger', __('Permission denied.'));
         }
-
-        if (count(explode('to', $request->bill_date)) > 1) {
-            $date_range = explode(' to ', $request->bill_date);
-            $query->whereBetween('bill_date', $date_range);
-        } elseif (!empty($request->bill_date)) {
-            $date_range = [$request->date, $request->bill_date];
-            $query->whereBetween('bill_date', $date_range);
-        }
-
-        if (!empty($request->status)) {
-            $query->where('status', '=', $request->status);
-        }
-        $bills = $query->with(['category'])->get();
-
-        return view('admin.bill.index', compact('bills', 'vender', 'status'));
-        // }
-        // else
-        // {
-        //                 return redirect()->back()->with('danger', __('Permission denied.'));
-
-        // }
     }
 
     function venderNumber()
@@ -149,7 +145,7 @@ class BillController extends Controller
 
             $bill            = new Bill();
             $bill->bill_id   = $this->billNumber();
-            $bill->vender_id = $request->vender_id;;
+            $bill->vender_id = $request->vender_id;
             $bill->bill_date      = $request->bill_date;
             $bill->status         = 0;
             $bill->type         =  'Bill';
@@ -266,6 +262,7 @@ class BillController extends Controller
 
     public function show($ids)
     {
+        dd($ids);
         if (\Auth::user()->can('show bill')) {
             try {
                 $id       = Crypt::decrypt($ids);
@@ -366,15 +363,6 @@ class BillController extends Controller
                         $items[] = $val1;
                     }
                 }
-
-
-                //                dd($items);
-
-
-
-
-
-
 
                 return view('admin.bill.edit', compact(
                     'venders',
@@ -859,7 +847,7 @@ class BillController extends Controller
     {
         $vender = Vender::where('id', '=', $request->id)->first();
 
-        return view('admin.admin.bill.vender_detail', compact('vender'));
+        return view('admin.bill.vender_detail', compact('vender'));
     }
 
 
@@ -893,7 +881,7 @@ class BillController extends Controller
         $bill->url = route('admin.bill.pdf', $billId);
 
         try {
-            //            Mail::to($email)->send(new VenderBillSend($bill));
+            // Mail::to($email)->send(new VenderBillSend($bill));
         } catch (\Exception $e) {
             $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
         }

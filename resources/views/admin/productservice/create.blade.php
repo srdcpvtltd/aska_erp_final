@@ -62,9 +62,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    {{ Form::label('purchase_price', __('Purchase Price'), ['class' => 'form-label']) }}<span
-                                        class="text-danger">*</span>
-                                    {{ Form::number('purchase_price', '', ['class' => 'form-control', 'required' => 'required', 'step' => '0.01']) }}
+                                    {{ Form::label('purchase_price', __('Purchase Price'), ['class' => 'form-label']) }}
+                                    {{ Form::number('purchase_price', '', ['class' => 'form-control', 'step' => '0.01']) }}
                                 </div>
                             </div>
                             <div class="form-group col-md-6">

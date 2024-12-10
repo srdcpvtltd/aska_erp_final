@@ -1,16 +1,10 @@
 @extends('layouts.master')
 @section('title')
-    {{__('Bill Edit')}}
+    {{ __('Bill Edit') }}
 @endsection
-@section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">{{__('Dashboard')}}</a></li>
-    <li class="breadcrumb-item"><a href="{{route('bill.index')}}">{{__('Bill')}}</a></li>
-    <li class="breadcrumb-item">{{__('Bill Edit')}}</li>
-@endsection
-
 @section('scripts')
-    <script src="{{asset('js/jquery-ui.min.js')}}"></script>
-    <script src="{{asset('js/jquery.repeater.min.js')}}"></script>
+    <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.repeater.min.js') }}"></script>
     <script src="{{ asset('js/jquery-searchbox.js') }}"></script>
     <script>
         var selector = "body";
@@ -23,7 +17,7 @@
                 defaultValues: {
                     'status': 1
                 },
-                show: function () {
+                show: function() {
                     $(this).slideDown();
                     var file_uploads = $(this).find('input.multi');
                     if (file_uploads.length) {
@@ -37,11 +31,11 @@
                     // for item SearchBox ( this function is  custom Js )
                     JsSearchBox();
 
-                    if($('.select2').length) {
+                    if ($('.select2').length) {
                         $('.select2').select2();
                     }
                 },
-                hide: function (deleteElement) {
+                hide: function(deleteElement) {
 
                     $(this).slideUp(deleteElement);
                     $(this).remove();
@@ -54,7 +48,7 @@
                     $('.totalAmount').html(subTotal.toFixed(2));
 
                 },
-                ready: function (setIndexes) {
+                ready: function(setIndexes) {
                     $dragAndDrop.on('drop', setIndexes);
                 },
                 isFirstItemUndeletable: true
@@ -72,7 +66,7 @@
 
         }
 
-        $(document).on('change', '#vender', function () {
+        $(document).on('change', '#vender', function() {
             $('#vender_detail').removeClass('d-none');
             $('#vender_detail').addClass('d-block');
             $('#vender-box').removeClass('d-block');
@@ -89,7 +83,7 @@
                     'id': id
                 },
                 cache: false,
-                success: function (data) {
+                success: function(data) {
                     if (data != '') {
                         $('#vender_detail').html(data);
                     } else {
@@ -102,19 +96,19 @@
 
             });
         });
-        $(document).on('click', '#remove', function () {
+        $(document).on('click', '#remove', function() {
             $('#vender-box').removeClass('d-none');
             $('#vender-box').addClass('d-block');
             $('#vender_detail').removeClass('d-block');
             $('#vender_detail').addClass('d-none');
         });
 
-        $(document).on('change', '.item', function () {
+        $(document).on('change', '.item', function() {
 
             changeItem($(this));
         });
 
-        var bill_id = '{{$bill->id}}';
+        var bill_id = '{{ $bill->id }}';
 
         function changeItem(element) {
 
@@ -132,11 +126,11 @@
                     'product_id': iteams_id,
                 },
                 cache: false,
-                success: function (data) {
+                success: function(data) {
                     var item = JSON.parse(data);
 
                     $.ajax({
-                        url: '{{route('bill.items')}}',
+                        url: '{{ route('admin.bill.items') }}',
                         type: 'GET',
                         headers: {
                             'X-CSRF-TOKEN': jQuery('#token').val()
@@ -146,22 +140,28 @@
                             'product_id': iteams_id,
                         },
                         cache: false,
-                        success: function (data) {
+                        success: function(data) {
                             var billItems = JSON.parse(data);
 
                             if (billItems != null) {
                                 var amount = (billItems.price * billItems.quantity);
                                 // console.log(billItems)
-                                $(el.parent().parent().parent().find('.quantity')).val(billItems.quantity);
-                                $(el.parent().parent().parent().find('.price')).val(billItems.price);
-                                $(el.parent().parent().parent().find('.discount')).val(billItems.discount);
-                                $(el.parent().parent().parent().parent().find('.pro_description')).val(billItems.description);
+                                $(el.parent().parent().parent().find('.quantity')).val(billItems
+                                    .quantity);
+                                $(el.parent().parent().parent().find('.price')).val(billItems
+                                    .price);
+                                $(el.parent().parent().parent().find('.discount')).val(billItems
+                                    .discount);
+                                $(el.parent().parent().parent().parent().find('.pro_description'))
+                                    .val(billItems.description);
 
                             } else {
                                 $(el.parent().parent().parent().find('.quantity')).val(1);
-                                $(el.parent().parent().parent().find('.price')).val(item.product.purchase_price);
+                                $(el.parent().parent().parent().find('.price')).val(item.product
+                                    .purchase_price);
                                 $(el.parent().parent().parent().find('.discount')).val(0);
-                                $(el.parent().parent().parent().parent().find('.pro_description')).val(item.product.description);
+                                $(el.parent().parent().parent().parent().find('.pro_description'))
+                                    .val(item.product.description);
                             }
 
 
@@ -171,23 +171,30 @@
                             var totalItemTaxRate = 0;
                             for (var i = 0; i < item.taxes.length; i++) {
 
-                                taxes += '<span class="badge bg-primary p-2 px-3 rounded mt-1 mr-1">' + item.taxes[i].name + ' ' + '(' + item.taxes[i].rate + '%)' + '</span>';
+                                taxes +=
+                                    '<span class="badge bg-primary p-2 px-3 rounded mt-1 mr-1">' +
+                                    item.taxes[i].name + ' ' + '(' + item.taxes[i].rate + '%)' +
+                                    '</span>';
                                 tax.push(item.taxes[i].id);
                                 totalItemTaxRate += parseFloat(item.taxes[i].rate);
 
                             }
 
-                            var discount=$(el.parent().parent().parent().find('.discount')).val();
+                            var discount = $(el.parent().parent().parent().find('.discount')).val();
 
                             if (billItems != null) {
-                                var itemTaxPrice = parseFloat((totalItemTaxRate / 100)) * parseFloat((billItems.price * billItems.quantity)- discount);
+                                var itemTaxPrice = parseFloat((totalItemTaxRate / 100)) *
+                                    parseFloat((billItems.price * billItems.quantity) - discount);
                             } else {
-                                var itemTaxPrice = parseFloat((totalItemTaxRate / 100)) * parseFloat((item.product.purchase_price * 1)- discount);
+                                var itemTaxPrice = parseFloat((totalItemTaxRate / 100)) *
+                                    parseFloat((item.product.purchase_price * 1) - discount);
                             }
 
 
-                            $(el.parent().parent().parent().find('.itemTaxPrice')).val(itemTaxPrice.toFixed(2));
-                            $(el.parent().parent().parent().find('.itemTaxRate')).val(totalItemTaxRate.toFixed(2));
+                            $(el.parent().parent().parent().find('.itemTaxPrice')).val(itemTaxPrice
+                                .toFixed(2));
+                            $(el.parent().parent().parent().find('.itemTaxRate')).val(
+                                totalItemTaxRate.toFixed(2));
                             $(el.parent().parent().parent().find('.taxes')).html(taxes);
                             $(el.parent().parent().parent().find('.tax')).val(tax);
                             $(el.parent().parent().parent().find('.unit')).html(item.unit);
@@ -203,11 +210,9 @@
 
                             var accountinputs = $(".accountamount");
                             var accountSubTotal = 0;
-                            for (var i = 0; i < accountinputs.length; i++)
-                            {
+                            for (var i = 0; i < accountinputs.length; i++) {
                                 var currentInputValue = parseFloat(accountinputs[i].innerHTML);
-                                if (!isNaN(currentInputValue))
-                                {
+                                if (!isNaN(currentInputValue)) {
                                     accountSubTotal += currentInputValue;
                                 }
                             }
@@ -229,7 +234,8 @@
                                     accountAmount = 0;
                                 }
 
-                                var itemTotal = (parseFloat(priceInput[j].value) * parseFloat(inputs_quantity[j].value) + accountAmount);
+                                var itemTotal = (parseFloat(priceInput[j].value) * parseFloat(
+                                    inputs_quantity[j].value) + accountAmount);
 
                                 totalItemPrice += itemTotal;
                             }
@@ -241,9 +247,12 @@
                             for (var j = 0; j < itemTaxPriceInput.length; j++) {
                                 totalItemTaxPrice += parseFloat(itemTaxPriceInput[j].value);
                                 if (billItems != null) {
-                                    $(el.parent().parent().parent().find('.amount')).html(parseFloat(amount)+parseFloat(itemTaxPrice)-parseFloat(discount));
+                                    $(el.parent().parent().parent().find('.amount')).html(
+                                        parseFloat(amount) + parseFloat(itemTaxPrice) -
+                                        parseFloat(discount));
                                 } else {
-                                    $(el.parent().parent().parent().find('.amount')).html(parseFloat(item.totalAmount)+parseFloat(itemTaxPrice));
+                                    $(el.parent().parent().parent().find('.amount')).html(
+                                        parseFloat(item.totalAmount) + parseFloat(itemTaxPrice));
                                 }
 
                             }
@@ -253,7 +262,8 @@
                             var itemDiscountPriceInput = $('.discount');
 
                             for (var k = 0; k < itemDiscountPriceInput.length; k++) {
-                                totalItemDiscountPrice += parseFloat(itemDiscountPriceInput[k].value);
+                                totalItemDiscountPrice += parseFloat(itemDiscountPriceInput[k]
+                                    .value);
                             }
 
 
@@ -261,7 +271,9 @@
 
                             $('.subTotal').html(totalItemPrice.toFixed(2));
                             $('.totalTax').html(totalItemTaxPrice.toFixed(2));
-                            $('.totalAmount').html((parseFloat(totalItemPrice) - parseFloat(totalItemDiscountPrice) + parseFloat(totalItemTaxPrice)).toFixed(2));
+                            $('.totalAmount').html((parseFloat(totalItemPrice) - parseFloat(
+                                    totalItemDiscountPrice) + parseFloat(totalItemTaxPrice))
+                                .toFixed(2));
                             $('.totalDiscount').html(totalItemDiscountPrice.toFixed(2));
 
 
@@ -274,7 +286,7 @@
         }
 
 
-        $(document).on('keyup', '.quantity', function () {
+        $(document).on('keyup', '.quantity', function() {
             var quntityTotalTaxPrice = 0;
 
             var el = $(this).parent().parent().parent().parent();
@@ -282,9 +294,8 @@
             var quantity = $(this).val();
             var price = $(el.find('.price')).val();
             var discount = $(el.find('.discount')).val();
-            if(discount.length <= 0)
-            {
-                discount = 0 ;
+            if (discount.length <= 0) {
+                discount = 0;
             }
 
             var totalItemPrice = (quantity * price) - discount;
@@ -296,7 +307,7 @@
             var itemTaxPrice = parseFloat((totalItemTaxRate / 100) * (totalItemPrice));
             $(el.find('.itemTaxPrice')).val(itemTaxPrice.toFixed(2));
 
-            $(el.find('.amount')).html(parseFloat(itemTaxPrice)+parseFloat(amount));
+            $(el.find('.amount')).html(parseFloat(itemTaxPrice) + parseFloat(amount));
 
             var totalItemTaxPrice = 0;
             var itemTaxPriceInput = $('.itemTaxPrice');
@@ -318,11 +329,9 @@
 
             for (var j = 0; j < accountInput.length; j++) {
                 // if(typeof accountInput[j].value != 'undefined')
-                if(accountInput[j].value!='')
-                {
+                if (accountInput[j].value != '') {
                     var accountInputPrice = accountInput[j].value;
-                }
-                else {
+                } else {
                     var accountInputPrice = 0;
                 }
 
@@ -344,21 +353,20 @@
 
             $('.subTotal').html(sumAmount.toFixed(2));
             $('.totalTax').html(totalItemTaxPrice.toFixed(2));
-            $('.totalAmount').html((parseFloat(subTotal)+totalAccount).toFixed(2));
+            $('.totalAmount').html((parseFloat(subTotal) + totalAccount).toFixed(2));
 
         })
 
-        $(document).on('keyup change', '.price', function () {
+        $(document).on('keyup change', '.price', function() {
             var el = $(this).parent().parent().parent().parent();
             var price = $(this).val();
             var quantity = $(el.find('.quantity')).val();
             var discount = $(el.find('.discount')).val();
-            if(discount.length <= 0)
-            {
-                discount = 0 ;
+            if (discount.length <= 0) {
+                discount = 0;
             }
 
-            var totalItemPrice = (quantity * price)-discount;
+            var totalItemPrice = (quantity * price) - discount;
 
             var amount = (totalItemPrice);
 
@@ -366,7 +374,7 @@
             var itemTaxPrice = parseFloat((totalItemTaxRate / 100) * (totalItemPrice));
             $(el.find('.itemTaxPrice')).val(itemTaxPrice.toFixed(2));
 
-            $(el.find('.amount')).html(parseFloat(itemTaxPrice)+parseFloat(amount));
+            $(el.find('.amount')).html(parseFloat(itemTaxPrice) + parseFloat(amount));
 
             var totalItemTaxPrice = 0;
             var itemTaxPriceInput = $('.itemTaxPrice');
@@ -386,11 +394,9 @@
             var totalAccount = 0;
             var accountInput = $('.accountAmount');
             for (var j = 0; j < accountInput.length; j++) {
-                if(accountInput[j].value!='')
-                {
+                if (accountInput[j].value != '') {
                     var accountInputPrice = accountInput[j].value;
-                }
-                else {
+                } else {
                     var accountInputPrice = 0;
                 }
 
@@ -412,12 +418,11 @@
 
         })
 
-        $(document).on('keyup change', '.discount', function () {
+        $(document).on('keyup change', '.discount', function() {
             var el = $(this).parent().parent().parent();
             var discount = $(this).val();
-            if(discount.length <= 0)
-            {
-                discount = 0 ;
+            if (discount.length <= 0) {
+                discount = 0;
             }
             var price = $(el.find('.price')).val();
 
@@ -430,7 +435,7 @@
             var itemTaxPrice = parseFloat((totalItemTaxRate / 100) * (totalItemPrice));
             $(el.find('.itemTaxPrice')).val(itemTaxPrice.toFixed(2));
 
-            $(el.find('.amount')).html(parseFloat(itemTaxPrice)+parseFloat(amount));
+            $(el.find('.amount')).html(parseFloat(itemTaxPrice) + parseFloat(amount));
 
 
             var totalItemTaxPrice = 0;
@@ -464,11 +469,9 @@
             var totalAccount = 0;
             var accountInput = $('.accountAmount');
             for (var j = 0; j < accountInput.length; j++) {
-                if(accountInput[j].value!='')
-                {
+                if (accountInput[j].value != '') {
                     var accountInputPrice = accountInput[j].value;
-                }
-                else {
+                } else {
                     var accountInputPrice = 0;
                 }
 
@@ -487,7 +490,7 @@
 
         })
 
-        $(document).on('keyup change', '.accountAmount', function () {
+        $(document).on('keyup change', '.accountAmount', function() {
 
             var el1 = $(this).parent().parent().parent().parent();
             var el = $(this).parent().parent().parent().parent().parent();
@@ -496,18 +499,17 @@
             var priceDiv = $(el.find('.price'));
             var discountDiv = $(el.find('.discount'));
 
-            var itemSubTotal=0;
-            var itemSubTotalDiscount=0;
+            var itemSubTotal = 0;
+            var itemSubTotalDiscount = 0;
             for (var p = 0; p < priceDiv.length; p++) {
-                var quantity=quantityDiv[p].value;
-                var price=priceDiv[p].value;
-                var discount=discountDiv[p].value;
-                if(discount.length <= 0)
-                {
-                    discount = 0 ;
+                var quantity = quantityDiv[p].value;
+                var price = priceDiv[p].value;
+                var discount = discountDiv[p].value;
+                if (discount.length <= 0) {
+                    discount = 0;
                 }
-                itemSubTotal += (quantity*price);
-                itemSubTotalDiscount += (quantity*price) - (discount);
+                itemSubTotal += (quantity * price);
+                itemSubTotalDiscount += (quantity * price) - (discount);
 
 
             }
@@ -538,7 +540,7 @@
             var totalAccount = 0;
             var accountInput = $('.accountAmount');
             for (var j = 0; j < accountInput.length; j++) {
-                totalAccount += (parseFloat(accountInput[j].value) );
+                totalAccount += (parseFloat(accountInput[j].value));
             }
 
 
@@ -550,21 +552,22 @@
             }
 
 
-            $('.subTotal').text((totalAccount+itemSubTotal).toFixed(2));
-            $('.totalAmount').text((parseFloat((subTotal + itemSubTotalDiscount) + (totalItemTaxPrice))).toFixed(2));
+            $('.subTotal').text((totalAccount + itemSubTotal).toFixed(2));
+            $('.totalAmount').text((parseFloat((subTotal + itemSubTotalDiscount) + (totalItemTaxPrice))).toFixed(
+                2));
 
 
         })
 
 
-        $(document).on('click', '[data-repeater-create]', function () {
-            $('.item :selected').each(function () {
+        $(document).on('click', '[data-repeater-create]', function() {
+            $('.item :selected').each(function() {
                 var id = $(this).val();
                 $(".item option[value=" + id + "]").prop("disabled", true);
             });
         })
 
-        $(document).on('click', '[data-repeater-delete]', function () {
+        $(document).on('click', '[data-repeater-delete]', function() {
             // $('.delete_item').click(function () {
             if (confirm('Are you sure you want to delete this element?')) {
                 var el = $(this).parent().parent();
@@ -572,7 +575,7 @@
                 var amount = $(el.find('.amount')).html();
 
                 $.ajax({
-                    url: '{{route('bill.product.destroy')}}',
+                    url: '{{ route('admin.bill.product.destroy') }}',
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': jQuery('#token').val()
@@ -582,7 +585,7 @@
                         'amount': amount,
                     },
                     cache: false,
-                    success: function (data) {
+                    success: function(data) {
 
                     },
                 });
@@ -591,19 +594,31 @@
         });
 
         $('.accountAmount').trigger('keyup');
-
     </script>
 
     <script>
-        $(document).on('click', '[data-repeater-delete]', function () {
+        $(document).on('click', '[data-repeater-delete]', function() {
             $(".price").change();
             $(".discount").change();
         });
     </script>
 @endsection
 @section('main-content')
+    @include('admin.section.flash_message')
+    <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('admin.bill.index') }}">{{ __('Bill') }}</a></li>
+            <li class="breadcrumb-item">{{ __('Bill Edit') }}</li>
+        </ol>
+        <div class="float-end">
+            <a href="{{ route('admin.bill.index') }}" class="btn btn-primary">
+                Back
+            </a>
+        </div>
+    </nav>
     <div class="row">
-        {{ Form::model($bill, array('route' => array('bill.update', $bill->id), 'method' => 'PUT','class'=>'w-100')) }}
+        {{ Form::model($bill, ['route' => ['admin.bill.update', $bill->id], 'method' => 'PUT', 'class' => 'w-100']) }}
         <div class="col-12">
             <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
             <div class="card">
@@ -611,8 +626,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group" id="vender-box">
-                                {{ Form::label('vender_id', __('Vendor'),['class'=>'form-label']) }}
-                                {{ Form::select('vender_id', $venders,null, array('class' => 'form-control select','id'=>'vender','data-url'=>route('bill.vender'),'required'=>'required')) }}
+                                {{ Form::label('vender_id', __('Vendor'), ['class' => 'form-label']) }}
+                                {{ Form::select('vender_id', $venders, null, ['class' => 'form-control select', 'id' => 'vender', 'data-url' => route('admin.bill.vender'), 'required' => 'required']) }}
                             </div>
                             <div id="vender_detail" class="d-none">
                             </div>
@@ -621,36 +636,36 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        {{ Form::label('bill_date', __('Bill Date'),['class'=>'form-label']) }}
-                                        {{Form::date('bill_date',null,array('class'=>'form-control','required'=>'required'))}}
+                                        {{ Form::label('bill_date', __('Bill Date'), ['class' => 'form-label']) }}
+                                        {{ Form::date('bill_date', null, ['class' => 'form-control', 'required' => 'required']) }}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        {{ Form::label('due_date', __('Due Date'),['class'=>'form-label']) }}
-                                        {{Form::date('due_date',null,array('class'=>'form-control','required'=>'required'))}}
+                                        {{ Form::label('due_date', __('Due Date'), ['class' => 'form-label']) }}
+                                        {{ Form::date('due_date', null, ['class' => 'form-control', 'required' => 'required']) }}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        {{ Form::label('bill_number', __('Bill Number'),['class'=>'form-label']) }}
-                                        <input type="text" class="form-control" value="{{$bill_number}}" readonly>
+                                        {{ Form::label('bill_number', __('Bill Number'), ['class' => 'form-label']) }}
+                                        <input type="text" class="form-control" value="{{ $bill_number }}" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        {{ Form::label('category_id', __('Category'),['class'=>'form-label']) }}
-                                        {{ Form::select('category_id', $category,null, array('class' => 'form-control select')) }}
+                                        {{ Form::label('category_id', __('Category'), ['class' => 'form-label']) }}
+                                        {{ Form::select('category_id', $category, null, ['class' => 'form-control select']) }}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        {{ Form::label('order_number', __('Order Number'),['class'=>'form-label']) }}
-                                        {{ Form::number('order_number', null, array('class' => 'form-control')) }}
+                                        {{ Form::label('order_number', __('Order Number'), ['class' => 'form-label']) }}
+                                        {{ Form::number('order_number', null, ['class' => 'form-control']) }}
                                     </div>
                                 </div>
 
-                                @if(!$customFields->isEmpty())
+                                @if (!$customFields->isEmpty())
                                     <div class="col-md-6">
                                         <div class="tab-pane fade show" id="tab-2" role="tabpanel">
                                             @include('customFields.formBuilder')
@@ -666,14 +681,15 @@
 
 
         <div class="col-12">
-            <h5 class=" d-inline-block mb-4">{{__('Product & Services')}}</h5>
+            <h5 class=" d-inline-block mb-4">{{ __('Product & Services') }}</h5>
             <div class="card repeater" data-value='{!! json_encode($items) !!}'>
                 <div class="item-section py-2">
                     <div class="row justify-content-between align-items-center">
                         <div class="col-md-12 d-flex align-items-center justify-content-between justify-content-md-end">
                             <div class="all-button-box me-2">
-                                <a href="#" data-repeater-create="" class="btn btn-primary" data-bs-toggle="modal" data-target="#add-bank">
-                                    <i class="ti ti-plus"></i> {{__('Add item')}}
+                                <a href="#" data-repeater-create="" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-target="#add-bank">
+                                    <i class="ti ti-plus"></i> {{ __('Add item') }}
                                 </a>
                             </div>
                         </div>
@@ -681,123 +697,130 @@
                 </div>
                 <div class="card-body table-border-style">
                     <div class="table-responsive">
-                        <table class="data_table table mb-0" data-repeater-list="items" id="sortable-table">
+                        <table class="table mb-0">
                             <thead>
-                            <tr>
-                                <th width="20%">{{__('Items')}}</th>
-                                <th>{{__('Quantity')}}</th>
-                                <th>{{__('Price')}} </th>
-                                <th>{{__('Discount')}}</th>
-                                <th>{{__('Tax')}} (%)</th>
-                                <th class="text-end">{{__('Amount')}}
-                                    <br><small class="text-danger font-bold">{{__('after tax & discount')}}</small>
-                                </th>
-                                <th></th>
-                            </tr>
+                                <tr>
+                                    <th width="20%">{{ __('Items') }}</th>
+                                    <th>{{ __('Quantity') }}</th>
+                                    <th>{{ __('Price') }} </th>
+                                    <th>{{ __('Discount') }}</th>
+                                    <th>{{ __('Tax') }} (%)</th>
+                                    <th class="text-end">{{ __('Amount') }}
+                                        <br><small class="text-danger font-bold">{{ __('after tax & discount') }}</small>
+                                    </th>
+                                    <th></th>
+                                </tr>
                             </thead>
                             <tbody class="ui-sortable" data-repeater-item>
-                            <tr>
-                                {{ Form::hidden('id',null, array('class' => 'form-control id')) }}
-                                {{ Form::hidden('account_id',null, array('class' => 'form-control account_id')) }}
-                                <td width="25%" class="form-group pt-0">
-                                    {{ Form::select('items', $product_services,null, array('class' => 'form-control select item','data-url'=>route('bill.product'))) }}
-                                </td>
-                                <td>
-                                    <div class="form-group price-input input-group search-form">
-                                        {{ Form::text('quantity',null, array('class' => 'form-control quantity','placeholder'=>__('Qty'))) }}
-                                        <span class="unit input-group-text bg-transparent"></span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="form-group price-input input-group search-form">
-                                        {{ Form::text('price',null, array('class' => 'form-control price','placeholder'=>__('Price'))) }}
-                                        <span class="input-group-text bg-transparent">{{\Auth::user()->currencySymbol()}}</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="form-group price-input input-group search-form">
-                                        {{ Form::text('discount',null, array('class' => 'form-control discount','placeholder'=>__('Discount'))) }}
-                                        <span class="input-group-text bg-transparent">{{\Auth::user()->currencySymbol()}}</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <div class="taxes"></div>
-                                            {{ Form::hidden('tax','', array('class' => 'form-control tax')) }}
-                                            {{ Form::hidden('itemTaxPrice','', array('class' => 'form-control itemTaxPrice')) }}
-                                            {{ Form::hidden('itemTaxRate','', array('class' => 'form-control itemTaxRate')) }}
+                                <tr>
+                                    {{ Form::hidden('id', null, ['class' => 'form-control id']) }}
+                                    {{ Form::hidden('account_id', null, ['class' => 'form-control account_id']) }}
+                                    <td width="25%" class="form-group pt-0">
+                                        {{ Form::select('items', $product_services, null, ['class' => 'form-control select item', 'data-url' => route('admin.bill.product')]) }}
+                                    </td>
+                                    <td>
+                                        <div class="form-group price-input input-group search-form">
+                                            {{ Form::text('quantity', null, ['class' => 'form-control quantity', 'placeholder' => __('Qty')]) }}
+                                            <span class="unit input-group-text bg-transparent"></span>
                                         </div>
-                                    </div>
-                                </td>
+                                    </td>
+                                    <td>
+                                        <div class="form-group price-input input-group search-form">
+                                            {{ Form::text('price', null, ['class' => 'form-control price', 'placeholder' => __('Price')]) }}
+                                            <span
+                                                class="input-group-text bg-transparent">{{ \Auth::user()->currencySymbol() }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group price-input input-group search-form">
+                                            {{ Form::text('discount', null, ['class' => 'form-control discount', 'placeholder' => __('Discount')]) }}
+                                            <span
+                                                class="input-group-text bg-transparent">{{ \Auth::user()->currencySymbol() }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="taxes"></div>
+                                                {{ Form::hidden('tax', '', ['class' => 'form-control tax']) }}
+                                                {{ Form::hidden('itemTaxPrice', '', ['class' => 'form-control itemTaxPrice']) }}
+                                                {{ Form::hidden('itemTaxRate', '', ['class' => 'form-control itemTaxRate']) }}
+                                            </div>
+                                        </div>
+                                    </td>
 
-                                <td class="text-end amount">
-                                    0.00
-                                </td>
+                                    <td class="text-end amount">
+                                        0.00
+                                    </td>
 
-                                <td>
-                                    @can('delete-bill')
-                                        <a href="#" class="ti ti-trash text-white repeater-action-btn bg-danger ms-2 bs-pass-para" data-repeater-delete></a>
-                                    @endcan
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="form-group">
-                                    {{ Form::select('chart_account_id', $chartAccounts,null, array('class' => 'form-control select js-searchBox')) }}
-                                </td>
-                                <td class="form-group">
-                                    <div class="input-group ">
-                                        {{ Form::text('amount',null, array('class' => 'form-control accountAmount','placeholder'=>__('Amount'))) }}
-                                        <span class="input-group-text bg-transparent">{{\Auth::user()->currencySymbol()}}</span>
-                                    </div>
-                                </td>
+                                    <td>
+                                        @can('delete-bill')
+                                            <a href="#"
+                                                class="ti ti-trash text-white repeater-action-btn bg-danger ms-2 bs-pass-para"
+                                                data-repeater-delete></a>
+                                        @endcan
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="form-group">
+                                        {{ Form::select('chart_account_id', $chartAccounts, null, ['class' => 'form-control select js-searchBox']) }}
+                                    </td>
+                                    <td class="form-group">
+                                        <div class="input-group ">
+                                            {{ Form::text('amount', null, ['class' => 'form-control accountAmount', 'placeholder' => __('Amount')]) }}
+                                            <span
+                                                class="input-group-text bg-transparent">{{ \Auth::user()->currencySymbol() }}</span>
+                                        </div>
+                                    </td>
 
-                                <td colspan="2" class="form-group">
-                                    {{ Form::textarea('description', null, ['class'=>'form-control pro_description','rows'=>'1','placeholder'=>__('Description')]) }}
-                                </td>
-                                <td></td>
-                                <td class="text-end accountamount">
-                                    0.00
-                                </td>
-                            </tr>
+                                    <td colspan="2" class="form-group">
+                                        {{ Form::textarea('description', null, ['class' => 'form-control pro_description', 'rows' => '1', 'placeholder' => __('Description')]) }}
+                                    </td>
+                                    <td></td>
+                                    <td class="text-end accountamount">
+                                        0.00
+                                    </td>
+                                </tr>
                             </tbody>
                             <tfoot>
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td></td>
-                                <td><strong>{{__('Sub Total')}} ({{\Auth::user()->currencySymbol()}})</strong></td>
-                                <td class="text-end subTotal">0.00</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td></td>
-                                <td><strong>{{__('Discount')}} ({{\Auth::user()->currencySymbol()}})</strong></td>
-                                <td class="text-end totalDiscount">0.00</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td></td>
-                                <td><strong>{{__('Tax')}} ({{\Auth::user()->currencySymbol()}})</strong></td>
-                                <td class="text-end totalTax">0.00</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td class="blue-text"><strong>{{__('Total Amount')}} ({{\Auth::user()->currencySymbol()}})</strong></td>
-                                <td class="blue-text text-end totalAmount">0.00</td>
-                                <td></td>
-                            </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td></td>
+                                    <td><strong>{{ __('Sub Total') }} ({{ \Auth::user()->currencySymbol() }})</strong>
+                                    </td>
+                                    <td class="text-end subTotal">0.00</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td></td>
+                                    <td><strong>{{ __('Discount') }} ({{ \Auth::user()->currencySymbol() }})</strong></td>
+                                    <td class="text-end totalDiscount">0.00</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td></td>
+                                    <td><strong>{{ __('Tax') }} ({{ \Auth::user()->currencySymbol() }})</strong></td>
+                                    <td class="text-end totalTax">0.00</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td class="blue-text"><strong>{{ __('Total Amount') }}
+                                            ({{ \Auth::user()->currencySymbol() }})</strong></td>
+                                    <td class="blue-text text-end totalAmount">0.00</td>
+                                    <td></td>
+                                </tr>
                             </tfoot>
                         </table>
                     </div>
@@ -806,10 +829,10 @@
         </div>
 
         <div class="modal-footer">
-            <input type="button" value="{{__('Cancel')}}" onclick="location.href = '{{route("bill.index")}}';" class="btn btn-light me-3">
-            <input type="submit" value="{{__('Update')}}" class="btn btn-primary">
+            <input type="button" value="{{ __('Cancel') }}" onclick="location.href = '{{ route('admin.bill.index') }}';"
+                class="btn btn-light me-3">
+            <input type="submit" value="{{ __('Update') }}" class="btn btn-primary">
         </div>
         {{ Form::close() }}
     </div>
 @endsection
-

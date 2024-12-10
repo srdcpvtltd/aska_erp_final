@@ -633,6 +633,7 @@ Route::group([
         Route::get('bill/items', [BillController::class, 'items'])->name('bill.items');
         Route::resource('bill', BillController::class);
         Route::get('bill/create/{cid}', [BillController::class, 'create'])->name('bill.create');
+        Route::get('bill/{id}/destroy', [BillController::class, 'destroy'])->name('bill.destroy');
 
         //Product Service
         Route::get('productservice/index', [ProductServiceController::class, 'index'])->name('productservice.index');
