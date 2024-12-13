@@ -165,10 +165,10 @@
                 $('#exampleModalLabel').text(title);
 
                 // Load content via AJAX
+                console.log(url);
                 $.ajax({
                     url: url,
                     success: function(data) {
-                        console.log(data);
                         // Inject the HTML content into the modal body
                         $('#commonModal .modal-body').html(data);
 

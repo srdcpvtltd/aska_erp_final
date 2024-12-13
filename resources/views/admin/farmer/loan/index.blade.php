@@ -12,9 +12,9 @@
         </ol>
         <div class="float-end">
             @can('create-allotment')
-            <a href="{{ route('admin.farmer.loan.create') }}" class="btn btn-primary">
-                Add
-            </a>
+                <a href="{{ route('admin.farmer.loan.create') }}" class="btn btn-primary">
+                    Add
+                </a>
             @endcan
         </div>
     </nav>
@@ -28,8 +28,8 @@
                                 <tr>
                                     <th>{{ __('G Code No') }}</th>
                                     <th>{{ __('Farmer Name') }}</th>
-                                    <th>{{ __('Registration No.') }}</th>
-                                    <th>{{ __('Date of Agreement') }}</th>
+                                    <th>{{ __('Invoice No.') }}</th>
+                                    <th>{{ __('Date of Issue') }}</th>
                                     <th>{{ __('Category') }}</th>
                                     <th>{{ __('Type') }}</th>
                                     <th>{{ __('Price') }}</th>
@@ -41,32 +41,20 @@
                             <tbody>
                                 @foreach ($loans as $loan)
                                     @php
-                                        $loan_category_id = json_decode($loan->loan_category_id);
                                         $loan_type_id = json_decode($loan->loan_type_id);
                                         $price_kg = json_decode($loan->price_kg);
                                         $quantity = json_decode($loan->quantity);
                                         $total_amount = json_decode($loan->total_amount);
-                                        $count = count($loan_category_id);
+                                        $count = count($loan_type_id);
                                         $total = 0;
                                     @endphp
 
                                     <tr class="font-style">
                                         <td>{{ $loan->farming->old_g_code }}</td>
                                         <td>{{ $loan->farming->name }}</td>
-                                        <td>{{ $loan->registration_number }}</td>
+                                        <td>{{ $loan->invoice_no }}</td>
                                         <td>{{ $loan->date }}</td>
-                                        <td>
-                                            @for ($i = 0; $i < $count; $i++)
-                                                @php
-                                                    $productcategory = App\Models\ProductServiceCategory::where(
-                                                        'id',
-                                                        $loan_category_id[$i],
-                                                    )->first();
-                                                @endphp
-                                                {{ $productcategory->name }}
-                                                @if($i < $count - 1),@endif
-                                            @endfor
-                                        </td>
+                                        <td>{{ $loan->category->name }}</td>
 
                                         <td>
                                             @for ($i = 0; $i < $count; $i++)
@@ -77,54 +65,53 @@
                                                     )->first();
                                                 @endphp
                                                 {{ $product->name }}
-                                                @if($i < $count - 1),@endif
+                                                @if($i < $count - 1)<br>@endif
                                             @endfor
                                         </td>
                                         <td>
                                             @for ($i = 0; $i < $count; $i++)
-                                                {{ $price_kg[$i] }}@if($i < $count - 1),@endif
+                                                {{ $price_kg[$i] }}
+                                                @if($i < $count - 1)<br>@endif
                                             @endfor
                                         </td>
                                         <td>
                                             @for ($i = 0; $i < $count; $i++)
                                                 {{ $quantity[$i] }}
-                                                @if($i < $count - 1),@endif
+                                                @if($i < $count - 1)<br>@endif
                                             @endfor
                                         </td>
                                         <td>
                                             @for ($i = 0; $i < $count; $i++)
-                                            @php
-                                                $total += $total_amount[$i];
-                                            @endphp
+                                                {{ $total_amount[$i] }}
+                                                @if($i < $count - 1)<br>@endif
                                             @endfor
-                                            {{ $total}}/-
                                         </td>
 
                                         <td class="Action">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                                 @can('edit-allotment')
-                                                @if ($loan->invoice_generate_status == 0)
+                                                    @if ($loan->invoice_generate_status == 0)
+                                                        <li class="me-2">
+                                                            <a href="{{ route('admin.farmer.loan.edit', $loan->id) }}">
+                                                                <i class="link-icon" data-feather="edit"></i>
+                                                            </a>
+                                                        </li>
+                                                    @endif
                                                     <li class="me-2">
-                                                        <a href="{{ route('admin.farmer.loan.edit', $loan->id) }}">
-                                                            <i class="link-icon" data-feather="edit"></i>
+                                                        <a href="{{ route('admin.farmer.loan.invoice_generate', $loan->id) }}"
+                                                            target="_blank">
+                                                            <i class="link-icon" data-feather="file-text"></i>
                                                         </a>
                                                     </li>
-                                                @endif
-                                                <li class="me-2">
-                                                    <a href="{{ route('admin.farmer.loan.invoice_generate', $loan->id) }}"
-                                                        target="_blank">
-                                                        <i class="link-icon" data-feather="file-text"></i>
-                                                    </a>
-                                                </li>
                                                 @endcan
                                                 @can('delete-allotment')
-                                                <li>
-                                                    <a href="" class="deleteBtn"
-                                                        data-href="{{ route('admin.farmer.loan.destroy', $loan->id) }}"
-                                                        data-bs-toggle="tooltip" title="{{ __('Delete') }}">
-                                                        <i class="link-icon" data-feather="delete"></i>
-                                                    </a>
-                                                </li>
+                                                    <li>
+                                                        <a href="" class="deleteBtn"
+                                                            data-href="{{ route('admin.farmer.loan.destroy', $loan->id) }}"
+                                                            data-bs-toggle="tooltip" title="{{ __('Delete') }}">
+                                                            <i class="link-icon" data-feather="delete"></i>
+                                                        </a>
+                                                    </li>
                                                 @endcan
                                             </ul>
                                         </td>

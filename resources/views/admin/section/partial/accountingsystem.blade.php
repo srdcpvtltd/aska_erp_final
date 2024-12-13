@@ -149,7 +149,7 @@
                                         href="{{ route('admin.vender.index') }}">{{ __('Vender') }}</a>
                                 </li>
                             @endif
-                            {{-- <li
+                            <li
                                 class="nav-item">
                                 <a class="nav-link {{ Request::route()->getName() == 'admin.bill.index' || Request::route()->getName() == 'admin.bill.create' || Request::route()->getName() == 'admin.bill.edit' || Request::route()->getName() == 'admin.bill.show' ? ' active' : '' }}" href="{{ route('admin.bill.index') }}">{{ __('Bill') }}</a>
                             </li>
@@ -163,7 +163,7 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link {{ Request::route()->getName() == 'debit.note' ? ' active' : '' }}" href="{{ route('admin.debit.note') }}">{{ __('Debit Note') }}</a>
-                            </li> --}}
+                            </li>
                         </ul>
                     </div>
                 </li>

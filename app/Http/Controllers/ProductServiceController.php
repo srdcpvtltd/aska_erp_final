@@ -373,7 +373,7 @@ class ProductServiceController extends Controller
 
     public function warehouseDetail($id)
     {
-        $products = WarehouseProduct::where('product_id', '=', $id)->where('created_by', '=', \Auth::user()->creatorId())->get();
+        $products = WarehouseProduct::where('product_id', '=', $id)->get();
         return view('admin.productservice.detail', compact('products'));
     }
 

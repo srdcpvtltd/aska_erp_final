@@ -66,9 +66,9 @@
 
                 // Load content via AJAX
                 $.ajax({
+                    console.log(url);
                     url: url,
                     success: function(data) {
-                        console.log(data);
                         // Inject the HTML content into the modal body
                         $('#commonModal .modal-body').html(data);
 

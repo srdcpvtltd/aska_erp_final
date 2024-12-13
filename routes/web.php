@@ -634,6 +634,8 @@ Route::group([
         Route::resource('bill', BillController::class);
         Route::get('bill/create/{cid}', [BillController::class, 'create'])->name('bill.create');
         Route::get('bill/{id}/destroy', [BillController::class, 'destroy'])->name('bill.destroy');
+        Route::get('bill/{id}/show', [BillController::class, 'show'])->name('bill.show');
+        Route::get('/vender/bill/{id}/', [BillController::class, 'invoiceLink'])->name('bill.link.copy');
 
         //Product Service
         Route::get('productservice/index', [ProductServiceController::class, 'index'])->name('productservice.index');

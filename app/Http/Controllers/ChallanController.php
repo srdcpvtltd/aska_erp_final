@@ -12,6 +12,7 @@ use App\Models\WarehouseProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ChallanController extends Controller
 {
@@ -47,7 +48,7 @@ class ChallanController extends Controller
                 'receive_date' => 'required',
                 'vehicle_no' => 'required',
                 'quantity' => 'required',
-                'amount' => 'required',
+                // 'amount' => 'required',
             ];
 
             $validator = Validator::make($request->all(), $rules);

@@ -23,12 +23,15 @@
             <li class="breadcrumb-item">{{ __('Challan') }}</li>
         </ol>
         <div class="float-end">
-            @can('create-challan')
-            <a href="{{ route('admin.challan.create') }}" data-size="lg" data-url="{{ route('admin.challan.create') }}"
-                data-ajax-popup="true" data-bs-toggle="tooltip" title="{{ __('Create') }}"
-                data-title="{{ __('Create Challan') }}" class="btn btn-primary">
-                Add
+            <a class="btn btn-success text-white">
+                Export
             </a>
+            @can('create-challan')
+                <a href="{{ route('admin.challan.create') }}" data-size="lg" data-url="{{ route('admin.challan.create') }}"
+                    data-ajax-popup="true" data-bs-toggle="tooltip" title="{{ __('Create') }}"
+                    data-title="{{ __('Create Challan') }}" class="btn btn-primary">
+                    Add
+                </a>
             @endcan
         </div>
     </nav>
@@ -53,7 +56,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($challans as $key=>$challan)
+                                @foreach ($challans as $key => $challan)
                                     <tr class="font-style">
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $challan->warehouse->name }}</td>

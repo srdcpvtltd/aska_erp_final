@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-    {{ __('Farmer Allotments') }}
+    {{ __('Create Farmer Loan') }}
 @endsection
 @section('styles')
     <style>
@@ -51,7 +51,7 @@
                         product_services = response.product_services;
                         $('#loan_type_id').empty();
                         $('#loan_type_id').append(
-                            '<option value="">Select Product Service</option>');
+                            '<option value="">Select Item</option>');
                         for (i = 0; i < product_services.length; i++) {
                             $('#loan_type_id').append('<option value="' + product_services[i]
                                 .id + '">' + product_services[i].name + '</option>');
@@ -77,7 +77,8 @@
                             '<option value="">Select Warehouse</option>');
                         for (i = 0; i < warehouse.length; i++) {
                             $('#warehouse_id').append('<option value="' + warehouse[i]
-                                .id + '">' + warehouse[i].name + '('+ response.warehouse_product[i].quantity +')</option>');
+                                .id + '">' + warehouse[i].name + '(' + response
+                                .warehouse_product[i].quantity + ')</option>');
                         }
                     }
                 });
@@ -107,65 +108,19 @@
             $('#quantity').keyup(function() {
                 let quantity = $(this).val();
                 let price = $('#price_kg').val();
-                $('#total_amount').val(quantity * price);
+                var amount = quantity * price;
+                var rounded_amount = Math.round(amount);
+                $('#total_amount').val(amount);
+                $('#bill_amount').val(amount);
+                $('#round_amount').val(rounded_amount);
+                $('#BillAmount').val(amount);
+                $('#RoundAmount').val(rounded_amount);
             });
 
-            //add more field jquery
-            $('#row_div').on('change', '.loan_category_id', function() {
-                let loan_category_id = $(this).val();
-                let $this = $(this).closest('.append_div');
-                $.ajax({
-                    url: "{{ route('admin.farmer.loan.get_product_service_by_category') }}",
-                    method: 'post',
-                    data: {
-                        loan_category_id: loan_category_id,
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                        product_services = response.product_services;
-                        let $loanTypeSelect = $this.find('.loan_type_id');
-                        $loanTypeSelect.empty();
-                        $loanTypeSelect.append(
-                            '<option value="">Select Product Service</option>');
-                        for (let i = 0; i < product_services.length; i++) {
-                            $loanTypeSelect.append('<option value="' + product_services[i].id +
-                                '">' + product_services[i].name + '</option>');
-                        }
-                    }
-                });
-            });
             $('#row_div').on('change', '.loan_type_id', function() {
-                let loan_type_id = $(this).val();
                 let $this = $(this).closest('.append_div');
-
-                $.ajax({
-                    url: "{{ route('admin.farmer.loan.getWarehouseProduct') }}",
-                    method: 'post',
-                    data: {
-                        loan_type_id: loan_type_id,
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                        warehouse = response.warehouse;
-
-                        $this.find('.warehouse_id').empty();
-                        $this.find('.warehouse_id').append(
-                            '<option value="">Select Warehouse</option>');
-                        for (i = 0; i < warehouse.length; i++) {
-                            $this.find('.warehouse_id').append('<option value="' + warehouse[i]
-                                .id + '">' + warehouse[i].name + '('+ response.warehouse_product[i].quantity +')</option>');
-                        }
-                    }
-                });
-            });
-            $('#row_div').on('change', '.warehouse_id', function() {
-                let warehouse_id = $(this).val();
-                let $this = $(this).closest('.append_div');
-                let product_Id = $this.find('.loan_type_id').val();
+                let warehouse_id = $('#warehouse_id').val();
+                let product_Id = $(this).val();
                 $.ajax({
                     url: "{{ route('admin.farmer.loan.get_product_service_detail') }}",
                     method: 'post',
@@ -178,34 +133,54 @@
                     },
                     success: function(response) {
                         $this.find('.price_kg').val(response.product_service.sale_price);
-                        $this.find('.quantity').attr('max', response.warehouse_product.quantity);
-                        $this.find('.max_text').html('Total Allowed Stock : ' + response.warehouse_product
+                        $this.find('.quantity').attr('max', response.warehouse_product
+                            .quantity);
+                        $this.find('.max_text').html('Total Allowed Stock : ' + response
+                            .warehouse_product
                             .quantity);
                     }
                 });
             });
+
             $('#row_div').on('keyup', '.quantity', function() {
                 let quantity = $(this).val();
-                let price = $(this).closest('.append_div').find('.price_kg').val();
-                $(this).closest('.append_div').find('.total_amount').val(quantity * price);
+                let bill_amount = parseFloat($('#BillAmount').val()) || 0;
+                let round_amount = parseFloat($('#RoundAmount').val()) || 0;
+                if (quantity > 0) {
+                    let price = $(this).closest('.append_div').find('.price_kg').val();
+                    let amount = quantity * price;
+                    let sum_bill = bill_amount + amount;
+                    let sum_round = Math.round(round_amount + amount);
+                    $(this).closest('.append_div').find('.total_amount').val(amount);
+                    $('#bill_amount').val(sum_bill);
+                    $('#round_amount').val(sum_round);
+                } else {
+                    $(this).closest('.append_div').find('.total_amount').val(0);
+                    $('#bill_amount').val(bill_amount);
+                    $('#round_amount').val(round_amount);
+                }
             });
             $('#row_div').on('click', '.delete', function() {
+                var total_amount = $(this).closest('.append_div').find('.total_amount').val();
+                var billAmount = parseFloat($('#bill_amount').val());
+                var roundAmount = parseFloat($('#round_amount').val());
+
+                $('#bill_amount').val(billAmount - total_amount);
+                $('#round_amount').val(roundAmount - total_amount);
+                $('#BillAmount').val(billAmount - total_amount);
+                $('#RoundAmount').val(roundAmount - total_amount);
+
                 $(this).closest('.append_div').remove();
             });
             $('#add_more').on('click', function() {
-                $('#row_div').append('<div class="row pd_right_0 append_div"><div class="col-md-6">' +
-                    '<div class="form-group">' +
-                    '{{ Form::label('loan_category_id', __('Allotment Category'), ['class' => 'form-label']) }}' +
-                    '<select class="form-control select loan_category_id" name="loan_category_id[]" required' +
-                    'placeholder="Select Country">' +
-                    '<option value="">{{ __('Select Category') }}</option>' +
-                    '@foreach ($categories as $category)' +
-                    '<option value="{{ $category->id }}">{{ $category->name }}</option>' +
-                    '@endforeach' +
-                    '</select>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="col-md-6 pd_right_0">' +
+                var sum_bill = $('#bill_amount').val();
+                var sum_round = $('#round_amount').val();
+                $('#BillAmount').val(sum_bill);
+                $('#RoundAmount').val(sum_round);
+                $('#row_div .append_div:last .quantity').attr('readonly', true);
+
+                $('#row_div').append('<div class="row pd_right_0 append_div">' +
+                    '<div class="col-md-3 pd_right_0">' +
                     '<div class="form-group">' +
                     '{{ Form::label('loan_type_id', __('Item'), ['class' => 'form-label']) }}' +
                     '<select class="form-control select loan_type_id" name="loan_type_id[]"' +
@@ -214,31 +189,47 @@
                     '</select>' +
                     '</div>' +
                     '</div>' +
-                    '<div class="col-md-6 pd_right_0">' +
-                    '<div class="form-group">' +
-                    '{{ Form::label('warehouse_id', __('Warehouse'), ['class' => 'form-label']) }}' +
-                    '<select class="form-control select warehouse_id" name="warehouse_id[]"' +
-                    'placeholder="Select Loan Type" required>' +
-                    '<option value="">{{ __('Select Warehouse') }}</option>' +
-                    '</select>' +
+                    '<div class="form-group col-md-3">' +
+                    '{{ Form::label('unit_price', __('Unit Price'), ['class' => 'form-label']) }}' +
+                    '{{ Form::text('price_kg[]', '', ['class' => 'form-control price_kg', 'required' => 'required', 'readonly' => true, 'placeholder' => 'Unit Price']) }}' +
                     '</div>' +
-                    '</div>' +
-                    '<div class="form-group col-md-6">' +
-                    '{{ Form::label('price_kg', __('Price Kg'), ['class' => 'form-label']) }}' +
-                    '{{ Form::text('price_kg[]', '', ['class' => 'form-control price_kg', 'required' => 'required', 'readonly' => true, 'placeholder' => 'Price Kg']) }}' +
-                    '</div>' +
-                    '<div class="form-group col-md-6 pd_right_0">' +
+                    '<div class="form-group col-md-3 pd_right_0">' +
                     '{{ Form::label('quantity', __('Quantity'), ['class' => 'form-label']) }}' +
                     '{{ Form::number('quantity[]', '', ['class' => 'form-control quantity', 'min' => '1', 'required' => 'required']) }}' +
                     '<span style="color:red;" class="max_text"></span>' +
                     '</div>' +
-                    '<div class="form-group col-md-6">' +
+                    '<div class="form-group col-md-3">' +
                     '{{ Form::label('total_amount', __('Total Amount'), ['class' => 'form-label']) }}' +
                     '{{ Form::number('total_amount[]', 0.0, ['class' => 'form-control total_amount', 'required' => 'required', 'readonly' => true, 'placeholder' => 'Total Amount']) }}' +
                     '</div>' +
                     '<div class="form-group col-md-6">' +
                     '<button class="btn btn-danger mt-4 delete">Delete</button>' +
-                    '</div></div>');
+                    '</div><hr style="width: 98%;"></div>');
+
+                let loan_category_id = $('#loan_category_id').val();
+                $.ajax({
+                    url: "{{ route('admin.farmer.loan.get_product_service_by_category') }}",
+                    method: 'post',
+                    data: {
+                        loan_category_id: loan_category_id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        product_services = response.product_services;
+
+                        $('#row_div .append_div:last .loan_type_id').empty();
+                        $('#row_div .append_div:last .loan_type_id').append(
+                            '<option value="">Select Item</option>');
+
+                        for (let i = 0; i < product_services.length; i++) {
+                            $('#row_div .append_div:last .loan_type_id').append(
+                                '<option value="' + product_services[i].id + '">' +
+                                product_services[i].name + '</option>');
+                        }
+                    }
+                });
             })
         });
     </script>
@@ -278,6 +269,10 @@
                             </div>
                         </div>
                         <div class="form-group col-md-6">
+                            {{ Form::label('invoice_no', __('Invoice No.'), ['class' => 'form-label']) }}
+                            {{ Form::text('invoice_no', '', ['id' => 'invoice_no', 'class' => 'form-control', 'required' => 'required', 'maxlength="5"']) }}
+                        </div>
+                        <div class="form-group col-md-6">
                             {{ Form::label('registration_number', __('Registration No.'), ['class' => 'form-label']) }}
                             {{ Form::text('registration_number', '', ['id' => 'registration_number', 'class' => 'form-control', 'required' => 'required', 'readonly']) }}
                         </div>
@@ -288,7 +283,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('loan_category_id', __('Allotment Category'), ['class' => 'form-label']) }}
-                                <select class="form-control select" name="loan_category_id[]" id="loan_category_id" required
+                                <select class="form-control select" name="loan_category_id" id="loan_category_id" required
                                     placeholder="Select Country">
                                     <option value="">{{ __('Select Category') }}</option>
                                     @foreach ($categories as $category)
@@ -309,27 +304,41 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('warehouse_id', __('Warehouse'), ['class' => 'form-label']) }}
-                                <select class="form-control select" name="warehouse_id[]" id="warehouse_id" required>
+                                <select class="form-control select" name="warehouse_id" id="warehouse_id" required>
                                     <option value="">{{ __('Select Warehouse') }}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
-                            {{ Form::label('price_kg', __('Price Kg'), ['class' => 'form-label']) }}
-                            {{ Form::text('price_kg[]', '', ['class' => 'form-control', 'id' => 'price_kg', 'required' => 'required', 'readonly' => true, 'placeholder' => 'Price Kg']) }}
+                            {{ Form::label('unit_price', __('Unit Price'), ['class' => 'form-label']) }}
+                            {{ Form::text('price_kg[]', '', ['class' => 'form-control', 'id' => 'price_kg', 'required' => 'required', 'readonly' => true, 'placeholder' => 'Unit Price']) }}
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-3">
                             {{ Form::label('quantity', __('Quantity'), ['class' => 'form-label']) }}
                             {{ Form::number('quantity[]', '', ['class' => 'form-control', 'min' => '1', 'required' => 'required', 'id' => 'quantity']) }}
                             <span style="color:red;" id="max_text"></span>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-3">
                             {{ Form::label('total_amount', __('Total Amount'), ['class' => 'form-label']) }}
                             {{ Form::number('total_amount[]', 0.0, ['class' => 'form-control', 'required' => 'required', 'readonly' => true, 'placeholder' => 'Total Amount', 'id' => 'total_amount']) }}
                         </div>
-                        <div class="form-group col-md-6">
-                            <button type="button" class="btn btn-primary mt-4" id="add_more">Add More</button>
+                        <hr style="width: 98%;">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            {{ Form::label('bill_amount', __('Bill Amount'), ['class' => 'form-label']) }}
+                            {{ Form::number('bill_amount', 0.0, ['class' => 'form-control', 'required' => 'required', 'readonly' => true, 'placeholder' => 'Bill Amount', 'id' => 'bill_amount']) }}
+                            <input type="hidden" id="BillAmount">
                         </div>
+                        <div class="form-group col-md-3">
+                            {{ Form::label('round_amount', __('Round Amount'), ['class' => 'form-label']) }}
+                            {{ Form::number('round_amount', 0.0, ['class' => 'form-control', 'required' => 'required', 'readonly' => true, 'placeholder' => 'Round Amount', 'id' => 'round_amount']) }}
+                            <input type="hidden" id="RoundAmount">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group float-right">
+                        <button type="button" class="btn btn-primary mt-4" id="add_more">Add More</button>
                     </div>
                 </div>
             </div>

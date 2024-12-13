@@ -262,7 +262,6 @@ class BillController extends Controller
 
     public function show($ids)
     {
-        dd($ids);
         if (\Auth::user()->can('show bill')) {
             try {
                 $id       = Crypt::decrypt($ids);
