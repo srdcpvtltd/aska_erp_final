@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-    {{ __('Create Farmer Loan') }}
+    {{ __('Create Farmer Allotment') }}
 @endsection
 @section('styles')
     <style>
@@ -178,6 +178,7 @@
                 $('#BillAmount').val(sum_bill);
                 $('#RoundAmount').val(sum_round);
                 $('#row_div .append_div:last .quantity').attr('readonly', true);
+                $('#quantity').attr('readonly', true);
 
                 $('#row_div').append('<div class="row pd_right_0 append_div">' +
                     '<div class="col-md-3 pd_right_0">' +

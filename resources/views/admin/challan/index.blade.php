@@ -2,7 +2,60 @@
 @section('title')
     {{ __('Challan') }}
 @endsection
+@section('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
+    <script>
+        document.getElementById('exportButton').addEventListener('click', function() {
+            // Get the DataTable instance
+            var table = $('#challan-table').DataTable();
 
+            // Define the index of the "Action" column to exclude from the export
+            var actionColumnIndex = table.column(':contains(Action)')
+                .index(); // Automatically detect the "Action" column index based on header text
+
+            // Create a new workbook
+            var wb = XLSX.utils.book_new();
+
+            // Create an array to store rows of data
+            var ws_data = [];
+
+            // Get headers from the table, excluding the "Action" column
+            var headers = [];
+            $('#challan-table thead tr th').each(function(index) {
+                if (index !== actionColumnIndex) {
+                    headers.push($(this).text()); // Add header if it's not the "Action" column
+                }
+            });
+            ws_data.push(headers); // Add headers to ws_data
+
+            // Add rows of data from the DataTable, excluding the "Action" column
+            table.rows({
+                search: 'applied'
+            }).every(function(rowIdx, tableLoop, rowLoop) {
+                var rowData = this.data();
+                var filteredRow = [];
+
+                // Loop through each cell in the row, adding only non-"Action" columns
+                Object.keys(rowData).forEach(function(key, index) {
+                    if (index !== actionColumnIndex) {
+                        filteredRow.push(rowData[key]);
+                    }
+                });
+
+                ws_data.push(filteredRow); // Add filtered row to ws_data
+            });
+
+            // Convert the data array to a worksheet
+            var ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+            // Append the worksheet to the workbook
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+            // Export the workbook to an Excel file
+            XLSX.writeFile(wb, 'challan.xlsx');
+        });
+    </script>
+@endsection
 @section('main-content')
     <style>
         .action-btn {
@@ -23,9 +76,7 @@
             <li class="breadcrumb-item">{{ __('Challan') }}</li>
         </ol>
         <div class="float-end">
-            <a class="btn btn-success text-white">
-                Export
-            </a>
+            <button id="exportButton" class="btn btn-success">Export</button>
             @can('create-challan')
                 <a href="{{ route('admin.challan.create') }}" data-size="lg" data-url="{{ route('admin.challan.create') }}"
                     data-ajax-popup="true" data-bs-toggle="tooltip" title="{{ __('Create') }}"
@@ -40,7 +91,7 @@
             <div class="card">
                 <div class="card-body table-border-style">
                     <div class="table-responsive">
-                        <table class="data_table table datatable">
+                        <table class="data_table table datatable" id="challan-table">
                             <thead>
                                 <tr>
                                     <th>{{ __('Sl No.') }}</th>

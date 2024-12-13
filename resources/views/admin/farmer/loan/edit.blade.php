@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-    {{ __('Edit Farming Loan') }}
+    {{ __('Edit Farming Allotment') }}
 @endsection
 
 @section('scripts')
