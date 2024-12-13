@@ -89,9 +89,11 @@
                                         </td>
                                         <td>
                                             @for ($i = 0; $i < $count; $i++)
-                                                {{ ceil($total_amount[$i]) }}
-                                                @if($i < $count - 1)<br>@endif
+                                            @php
+                                                $total += $total_amount[$i];
+                                            @endphp
                                             @endfor
+                                            {{ round($total) }}
                                         </td>
 
                                         <td class="Action">

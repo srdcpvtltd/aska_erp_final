@@ -38,11 +38,14 @@
         <p style="text-align: center;"><b><span style="float: left;">Form No. 22</span> <span>ASKA CO-OP. SUGAR
                     INDUSTRIES LTD., ASKA.</span></b></p><br>
         <div class="heading">
-            <p>Zone No. <span>{{ $farming->zone_id }}</span> Center No. <span>{{ $farming->center_id }}</span> Receipt
-                No. <span>3574</span> G. Code No. <span>{{ $data['agreement_number'] }}</span>
-                Plot Area <span>{{ $farming->offered_area }}</span> Date <span>{{ $data['date'] }}</span> Farmer Name
+            @php
+                $plot_area = App\Models\FarmingDetail::where('farming_id', $farming->id)->first('area_in_acar');
+            @endphp
+            <p>Zone No. <span>{{ $farming->zone->name }}</span> Center No. <span>{{ $farming->center->name }}</span> Receipt
+                No. <span></span> G. Code No. <span>{{ $data['agreement_number'] }}</span>
+                Plot Area <span>{{ $plot_area->area_in_acar }}</span> Date <span>{{ $data['date'] }}</span> Farmer Name
                 <span>{{ $farming->name }}</span> Father's Name <span>{{ $farming->father_name }}</span> Village
-                <span>{{ $farming->village->name }}</span> Farmer's Nominee <span></span>.
+                <span>{{ $farming->village->name }}</span>.
             </p><br>
             <table class="data_table table table-bordered">
                 <thead>
@@ -50,8 +53,8 @@
                         <th>Sl No.</th>
                         <th>Items</th>
                         <th>Quantity</th>
-                        <th>Price/KG</th>
-                        <th>Total Amount</th>
+                        <th>Unit Price</th>
+                        <th>Amount</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -79,7 +82,7 @@
                     <tr>
                         <td colspan="3"></td>
                         <td><b>Grand Total Amount</b></td>
-                        <td><b>{{ $grandtotal }}/-</b></td>
+                        <td><b>{{ round($grandtotal) }}/-</b></td>
                     </tr>
                 </tbody>
             </table>
