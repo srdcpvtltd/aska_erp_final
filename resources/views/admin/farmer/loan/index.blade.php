@@ -35,6 +35,7 @@
                                     <th>{{ __('Price') }}</th>
                                     <th>{{ __('Quantity') }}</th>
                                     <th>{{ __('Amount') }}</th>
+                                    <th>{{ __('Round Amount') }}</th>
                                     <th>{{ __('Action') }}</th>
                                 </tr>
                             </thead>
@@ -83,6 +84,12 @@
                                         <td>
                                             @for ($i = 0; $i < $count; $i++)
                                                 {{ $total_amount[$i] }}
+                                                @if($i < $count - 1)<br>@endif
+                                            @endfor
+                                        </td>
+                                        <td>
+                                            @for ($i = 0; $i < $count; $i++)
+                                                {{ round($total_amount[$i], 2) }}
                                                 @if($i < $count - 1)<br>@endif
                                             @endfor
                                         </td>

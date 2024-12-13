@@ -56,12 +56,11 @@
                 </thead>
                 <tbody>
                     @php
-                        $loan_category_id = json_decode($data->loan_category_id);
                         $loan_type_id = json_decode($data->loan_type_id);
                         $price_kg = json_decode($data->price_kg);
                         $quantity = json_decode($data->quantity);
                         $total_amount = json_decode($data->total_amount);
-                        $count = count($loan_category_id);
+                        $count = count($loan_type_id);
                         $grandtotal = 0;
                     @endphp
                     @for($i = 0; $i < $count; $i++)
