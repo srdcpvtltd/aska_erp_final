@@ -42,7 +42,7 @@
                 $plot_area = App\Models\FarmingDetail::where('farming_id', $farming->id)->first('area_in_acar');
             @endphp
             <p>Zone No. <span>{{ $farming->zone->name }}</span> Center No. <span>{{ $farming->center->name }}</span> Receipt
-                No. <span></span> G. Code No. <span>{{ $data['agreement_number'] }}</span>
+                No. <span></span> G. Code No. <span>{{ $farming->old_g_code }}</span>
                 Plot Area <span>{{ $plot_area->area_in_acar }}</span> Date <span>{{ $data['date'] }}</span> Farmer Name
                 <span>{{ $farming->name }}</span> Father's Name <span>{{ $farming->father_name }}</span> Village
                 <span>{{ $farming->village->name }}</span>.
