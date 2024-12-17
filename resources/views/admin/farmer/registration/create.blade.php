@@ -192,6 +192,10 @@
                     return false;
                 }
             });
+
+            document.getElementById('registration_year').addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+            });
         });
     </script>
 @endsection
@@ -344,6 +348,10 @@
                                 <option value="SCP">SCP</option>
                                 <option value="TASP">TASP</option>
                             </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            {{ Form::label('registration_year', __('Registration Year'), ['class' => 'form-label']) }}
+                            {{ Form::text('registration_year', '', ['class' => 'form-control', 'minlength' => '4', 'maxlength' => '4']) }}
                         </div>
                         <div class="form-group col-md-6">
                             {{ Form::label('land_type', __('Land Type'), ['class' => 'form-label']) }}

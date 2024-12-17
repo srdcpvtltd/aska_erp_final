@@ -51,7 +51,8 @@ class Farming extends Model
         'cooperative_address',
         'farmer_id_2',
         'farmer_category',
-        'old_g_code'
+        'old_g_code',
+        'registration_year'
     ];
 
     public function country()

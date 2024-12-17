@@ -87,7 +87,6 @@ class FarmingController extends Controller
                     'created_by' => 'required',
                     'zone_id' => 'required',
                     'center_id' => 'required',
-                    // 'farmer_id_2' => 'required',
                     'farmer_category' => 'required',
                     'irregation_mode' => 'required',
                     'irregation' => 'required',

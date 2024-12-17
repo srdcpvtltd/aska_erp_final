@@ -57,6 +57,7 @@
                 event.preventDefault(); 
                 var url = $(this).data('url'); 
                 var title = $(this).data('title'); 
+                console.log(url);
                 
                 $('#exampleModalLabel').text(title);
                 $.ajax({

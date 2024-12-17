@@ -354,6 +354,10 @@
                             </select>
                         </div>
                         <div class="form-group col-md-6">
+                            {{ Form::label('registration_year', __('Registration Year'), ['class' => 'form-label']) }}
+                            {{ Form::text('registration_year', null, ['class' => 'form-control', 'minlength' => '4', 'maxlength' => '4']) }}
+                        </div>
+                        <div class="form-group col-md-6">
                             {{ Form::label('land_type', __('Land Type'), ['class' => 'form-label']) }}
                             <br>
                             <label><input type="radio" name="land_type" value="Leased Land"
