@@ -206,8 +206,6 @@
                                 subTotal = parseFloat(subTotal) + parseFloat($(inputs[i]).html());
                             }
 
-
-
                             var accountinputs = $(".accountamount");
                             var accountSubTotal = 0;
                             for (var i = 0; i < accountinputs.length; i++) {
@@ -240,8 +238,6 @@
                                 totalItemPrice += itemTotal;
                             }
 
-
-
                             var totalItemTaxPrice = 0;
                             var itemTaxPriceInput = $('.itemTaxPrice');
                             for (var j = 0; j < itemTaxPriceInput.length; j++) {
@@ -257,7 +253,6 @@
 
                             }
 
-
                             var totalItemDiscountPrice = 0;
                             var itemDiscountPriceInput = $('.discount');
 
@@ -266,25 +261,17 @@
                                     .value);
                             }
 
-
-                            // alert(accountSubTotal)
-
                             $('.subTotal').html(totalItemPrice.toFixed(2));
                             $('.totalTax').html(totalItemTaxPrice.toFixed(2));
                             $('.totalAmount').html((parseFloat(totalItemPrice) - parseFloat(
                                     totalItemDiscountPrice) + parseFloat(totalItemTaxPrice))
                                 .toFixed(2));
                             $('.totalDiscount').html(totalItemDiscountPrice.toFixed(2));
-
-
                         }
                     });
-
-
                 },
             });
         }
-
 
         $(document).on('keyup', '.quantity', function() {
             var quntityTotalTaxPrice = 0;
@@ -559,7 +546,6 @@
 
         })
 
-
         $(document).on('click', '[data-repeater-create]', function() {
             $('.item :selected').each(function() {
                 var id = $(this).val();
@@ -586,10 +572,8 @@
                     },
                     cache: false,
                     success: function(data) {
-
                     },
                 });
-
             }
         });
 
@@ -715,7 +699,7 @@
                                 <tr>
                                     {{ Form::hidden('id', null, ['class' => 'form-control id']) }}
                                     {{ Form::hidden('account_id', null, ['class' => 'form-control account_id']) }}
-                                    <td width="25%" class="form-group pt-0">
+                                    <td width="25%" class="form-group">
                                         {{ Form::select('items', $product_services, null, ['class' => 'form-control select item', 'data-url' => route('admin.bill.product')]) }}
                                     </td>
                                     <td>

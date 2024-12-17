@@ -29,7 +29,6 @@
                                     <tr class="font-style">
                                         <td>{{ $productService->name }}</td>
                                         <td>{{ $productService->quantity }}</td>
-
                                         <td class="Action">
                                             <div>
                                                 <a data-size="md" href="#"
@@ -54,25 +53,16 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            // When the link is clicked
             $(document).on('click', '.popup', function(event) {
-                event.preventDefault(); // Prevent the default link behavior
-                var url = $(this).data('url'); // Get the URL from the data attribute
-                var title = $(this).data('title'); // Get the title from the data attribute
-                console.log(url);
+                event.preventDefault(); 
+                var url = $(this).data('url'); 
+                var title = $(this).data('title'); 
                 
-                // Update modal title
                 $('#exampleModalLabel').text(title);
-
-                // Load content via AJAX
                 $.ajax({
-                    console.log(url);
                     url: url,
                     success: function(data) {
-                        // Inject the HTML content into the modal body
                         $('#commonModal .modal-body').html(data);
-
-                        // Open the modal
                         $('#commonModal').modal('show');
                     },
                     error: function() {

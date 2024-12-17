@@ -26,14 +26,7 @@ class FarmingDetailController extends Controller
     public function index(PlotdetailsDataTable $table)
     {
         if (\Auth::user()->can('manage-plot')) {
-            // $farming_details = FarmingDetail::query()->select('farming_details.*')
-            //     ->join('users', 'users.id', 'farming_details.created_by')
-            //     ->where('farming_details.created_by', Auth::user()->id)
-            //     ->orWhere('users.supervisor_id', Auth::user()->id)
-            //     ->orderBy('farming_details.id', 'ASC')
-            //     ->get();
             $zones = Zone::all();
-            // return view('admin.farmer.farming_detail.index', compact('farming_details', 'zones'));
             return $table->render('admin.farmer.farming_detail.index', compact('zones'));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
