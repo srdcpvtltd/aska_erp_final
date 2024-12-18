@@ -8,7 +8,7 @@
         <i class="link-arrow" data-feather="chevron-down"></i>
     </a>
 
-    <div class="{{ Request::segment(2) == 'warehouse' || Request::segment(2) == 'purchase' || Request::segment(2) == 'warehouse-transfer' || Request::route()->getName() == 'admin.pos.barcode' || Request::route()->getName() == 'admin.pos.print.setting' || Request::route()->getName() == 'admin.pos.show' || Request::route()->getName() == 'admin.challan.index' || Request::route()->getName() == 'admin.challan.create' || Request::route()->getName() == 'admin.challan.edit' ? '' : 'collapse' }}"
+    <div class="{{ Request::segment(2) == 'warehouse' || Request::segment(2) == 'purchase' || Request::segment(2) == 'warehouse-transfer' || Request::route()->getName() == 'admin.pos.barcode' || Request::route()->getName() == 'admin.pos.print.setting' || Request::route()->getName() == 'admin.pos.show' || Request::segment(2) == 'challan' || Request::segment(2) == 'seedstock' ? '' : 'collapse' }}"
         id="inventory">
         <ul
             class="nav sub-menu">
@@ -45,6 +45,11 @@
             @can('manage-challan')
             <li class="nav-item">
                 <a class="nav-link {{ Request::route()->getName() == 'admin.challan.index' || Request::route()->getName() == 'admin.challan.create' || Request::route()->getName() == 'admin.challan.edit' ? ' active' : '' }}" href="{{ route('admin.challan.index') }}">{{ __('Challan') }}</a>
+            </li>
+            @endcan
+            @can('manage-seedstock')
+            <li class="nav-item">
+                <a class="nav-link {{ Request::route()->getName() == 'admin.seedstock.index' || Request::route()->getName() == 'admin.seedstock.create' || Request::route()->getName() == 'admin.seedstock.edit' ? ' active' : '' }}" href="{{ route('admin.seedstock.index') }}">{{ __('Seed Stock Entry') }}</a>
             </li>
             @endcan
         </ul>

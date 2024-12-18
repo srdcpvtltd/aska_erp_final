@@ -118,7 +118,7 @@ class FarmingController extends Controller
             $plot = FarmingDetail::where('farming_id', $farming->id)->get();
             $guarantors = Guarantor::where('farming_id', $farming->id)->get();
             $security_deposits = FarmingPayment::where('farming_id', $farming->id)
-                ->whereIn('type', [FarmingPayment::SECURITY_DEPOSIT, FarmingPayment::REIMBURSEMENT])->get();
+                ->whereIn('type', [FarmingPayment::SECURITY_DEPOSIT, FarmingPayment::REIMBURSEMENT, FarmingPayment::Seed_Stock_Entry])->get();
             $bank_guarantees = FarmingPayment::where('farming_id', $farming->id)
                 ->where('type', FarmingPayment::BANK_GUARANTEE)->get();
             $loans = FarmerLoan::where('farming_id', $farming->id)->get();

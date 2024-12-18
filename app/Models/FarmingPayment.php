@@ -12,6 +12,7 @@ class FarmingPayment extends Model
     const SECURITY_DEPOSIT = 'Security Deposit';
     const BANK_GUARANTEE = 'Bank Guarantee';
     const REIMBURSEMENT = 'Reimbursement';
+    const Seed_Stock_Entry = 'Seed Stock Entry';
 
     protected $fillable = [
         'farming_id',
@@ -32,6 +33,4 @@ class FarmingPayment extends Model
     {
         return $this->belongsTo(Farming::class,'farming_id');
     }
-
-    
 }

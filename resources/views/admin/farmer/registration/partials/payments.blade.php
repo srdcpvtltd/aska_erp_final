@@ -15,8 +15,8 @@
             <tr class="font-style">
                 <td>{{ $security_deposit->type}}</td>
                 <td>{{ $security_deposit->farming->name}}</td>
-                <td>{{ $security_deposit->farming->g_code}}</td>
-                <td>{{ $security_deposit->receipt_type}}</td>
+                <td>{{ $security_deposit->farming->old_g_code}}</td>
+                <td>{{ ($security_deposit->receipt_type) ? $security_deposit->receipt_type:'N/A'}}</td>
                 <td>{{ $security_deposit->amount }}</td>
                 <td>{{ $security_deposit->date }}</td>
             </tr>

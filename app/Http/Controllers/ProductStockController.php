@@ -72,7 +72,7 @@ class ProductStockController extends Controller
         $productService = ProductService::find($id);
         if (\Auth::user()->can('edit-product_stock')) {
             if ($productService->created_by == \Auth::user()->creatorId()) {
-                $warehouse = Warehouse::where('created_by', Auth::user()->id)->get();
+                $warehouse = Warehouse::get();
 
                 return view('admin.productstock.edit', compact('productService','warehouse'));
             } else {

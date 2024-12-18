@@ -187,10 +187,27 @@ class ChallanController extends Controller
     {
         if (\Auth::user()->can('delete-challan')) {
             $challan = Challan::findorfail($id);
-            $challan->delete();
 
-            $product = WarehouseProduct::where('challan_no', $id);
-            $product->delete();
+            $product = ProductService::where('id', $challan->product_id)->first();
+            $product->quantity = $product->quantity - $challan->quantity;
+            $product->save();
+
+            $warehouse_product = WarehouseProduct::where('warehouse_id', $challan->warehouse_id)->where('product_id', $challan->product_id)->first();
+            $warehouse_product->quantity = $warehouse_product->quantity - $challan->quantity;
+            $warehouse_product->save();
+
+            $description = $challan->quantity . ' quantity added by challan '. $challan->challan_no;
+
+            $stock_report = StockReport::where('warehouse_id', $challan->warehouse_id)
+                ->where('product_id', $challan->product_id)
+                ->where('quantity', $challan->quantity)
+                ->where('type', "challan")
+                ->where('description', $description)
+                ->first();
+            
+            $stock_report->delete();
+
+            $challan->delete();
 
             return redirect()->route('admin.challan.index')->with('success', __('Challan successfully deleted.'));
         } else {

@@ -48,6 +48,7 @@ use App\Http\Controllers\ProductStockController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RevenueController;
+use App\Http\Controllers\SeedStockController;
 use App\Http\Controllers\TaxController;
 use App\Http\Controllers\VenderController;
 use App\Http\Controllers\Web\AppSettingController;
@@ -784,6 +785,11 @@ Route::group([
         Route::resource('challan', ChallanController::class);
         Route::get('challan/{id}/destroy', [ChallanController::class, 'destroy'])->name('challan.destroy');
         Route::post('getChallanAmount', [ChallanController::class, 'getChallanAmount'])->name('challan.getChallanAmount');
+        
+        //Seed
+        Route::resource('seedstock', SeedStockController::class);
+        Route::get('seedstock/{id}/destroy', [SeedStockController::class, 'destroy'])->name('seedstock.destroy');
+        Route::post('getSeedAmount', [SeedStockController::class, 'getSeedAmount'])->name('seedstock.getSeedAmount');
     });
 });
 
