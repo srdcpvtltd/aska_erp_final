@@ -100,76 +100,76 @@ class SeedStockController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        if (\Auth::user()->can('edit-seedstock')) {
-            $seedstock = SeedStock::findorfail($id);
-            $farmers = Farming::get();
-            $products = ProductService::where('category_id', "11")->get();
+    // public function edit($id)
+    // {
+    //     if (\Auth::user()->can('edit-seedstock')) {
+    //         $seedstock = SeedStock::findorfail($id);
+    //         $farmers = Farming::get();
+    //         $products = ProductService::where('category_id', "11")->get();
 
-            return view('admin.seedstock.edit', compact('seedstock', 'products', 'farmers'));
-        } else {
-            return redirect()->back()->with('error', 'Permission denied.');
-        }
-    }
+    //         return view('admin.seedstock.edit', compact('seedstock', 'products', 'farmers'));
+    //     } else {
+    //         return redirect()->back()->with('error', 'Permission denied.');
+    //     }
+    // }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        if (\Auth::user()->can('edit-seedstock')) {
-            $seedstock = SeedStock::findorfail($id);
-            $seedstock->farmer_id = $request->farmer_id;
-            $seedstock->receive_date = $request->receive_date;
-            $seedstock->amount = $request->amount;
+    // /**
+    //  * Update the specified resource in storage.
+    //  *
+    //  * @param  \Illuminate\Http\Request  $request
+    //  * @param  int  $id
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function update(Request $request, $id)
+    // {
+    //     if (\Auth::user()->can('edit-seedstock')) {
+    //         $seedstock = SeedStock::findorfail($id);
+    //         $seedstock->farmer_id = $request->farmer_id;
+    //         $seedstock->receive_date = $request->receive_date;
+    //         $seedstock->amount = $request->amount;
 
-            //inventory management (Quantity)
-            $product_id = $seedstock->product_id;
-            $quantity = $request->quantity;
+    //         //inventory management (Quantity)
+    //         $product_id = $seedstock->product_id;
+    //         $quantity = $request->quantity;
 
-            $product      = ProductService::find($product_id);
-            if (($product->type == 'product')) {
-                $pro_quantity = $product->quantity;
-                $product->quantity = ($pro_quantity - $seedstock->quantity) + $quantity;
-                $product->save();
-            }
+    //         $product      = ProductService::find($product_id);
+    //         if (($product->type == 'product')) {
+    //             $pro_quantity = $product->quantity;
+    //             $product->quantity = ($pro_quantity - $seedstock->quantity) + $quantity;
+    //             $product->save();
+    //         }
 
-            $seedstock->quantity = $request->quantity;
-            $seedstock->save();
+    //         $seedstock->quantity = $request->quantity;
+    //         $seedstock->save();
 
-            return redirect()->route('admin.seedstock.index')->with('success', __('Seed Stock Successfully Updated.'));
-        } else {
-            return redirect()->back()->with('error', 'Permission denied.');
-        }
-    }
+    //         return redirect()->route('admin.seedstock.index')->with('success', __('Seed Stock Successfully Updated.'));
+    //     } else {
+    //         return redirect()->back()->with('error', 'Permission denied.');
+    //     }
+    // }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        if (\Auth::user()->can('delete-seedstock')) {
-            $seedstock = SeedStock::findorfail($id);
+    // /**
+    //  * Remove the specified resource from storage.
+    //  *
+    //  * @param  int  $id
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function destroy($id)
+    // {
+    //     if (\Auth::user()->can('delete-seedstock')) {
+    //         $seedstock = SeedStock::findorfail($id);
 
-            $product = ProductService::where('id', $seedstock->product_id)->first();
-            $product->quantity = $product->quantity - $seedstock->quantity;
-            $product->save();
+    //         $product = ProductService::where('id', $seedstock->product_id)->first();
+    //         $product->quantity = $product->quantity - $seedstock->quantity;
+    //         $product->save();
 
-            $seedstock->delete();
+    //         $seedstock->delete();
 
-            return redirect()->route('admin.seedstock.index')->with('success', __('Seed Stock Successfully Deleted.'));
-        } else {
-            return redirect()->back()->with('error', 'Permission denied.');
-        }
-    }
+    //         return redirect()->route('admin.seedstock.index')->with('success', __('Seed Stock Successfully Deleted.'));
+    //     } else {
+    //         return redirect()->back()->with('error', 'Permission denied.');
+    //     }
+    // }
 
     public function getSeedAmount(Request $request)
     {
@@ -179,5 +179,12 @@ class SeedStockController extends Controller
         return response()->json([
             'total_price' => $total_price,
         ]);
+    }
+
+    public function getSeedStock(Request $request)
+    {
+        $product_service = ProductService::find($request->product_id);
+        // dd($product_service);
+        return response()->json($product_service);
     }
 }

@@ -790,6 +790,7 @@ Route::group([
         Route::resource('seedstock', SeedStockController::class);
         Route::get('seedstock/{id}/destroy', [SeedStockController::class, 'destroy'])->name('seedstock.destroy');
         Route::post('getSeedAmount', [SeedStockController::class, 'getSeedAmount'])->name('seedstock.getSeedAmount');
+        Route::post('get_seed_stock_detail', [SeedStockController::class, 'getSeedStock'])->name('seedstock.get_seed_stock_detail');
     });
 });
 

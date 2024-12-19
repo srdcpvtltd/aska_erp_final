@@ -57,6 +57,7 @@ class FarmerLoanController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         if (\Auth::user()->can('create-allotment')) {
             try {
                 $validator = Validator::make($request->all(), [
@@ -101,7 +102,7 @@ class FarmerLoanController extends Controller
                     $quantity = $request['quantity'][$i];
                     $warehouse_id = $request['warehouse_id'];
 
-                    if (isset($request['loan_type_id'][$i])) {
+                    if (isset($product_id) && $warehouse_id !== null && $request->loan_category_id !== "11") {
 
                         $product = WarehouseProduct::where('product_id', $product_id)->where('warehouse_id', $warehouse_id)->first();
 
@@ -116,22 +117,22 @@ class FarmerLoanController extends Controller
                             ['warehouse_id' => $warehouse_id, 'product_id' => $product_id],
                             ['warehouse_id' => $warehouse_id, 'product_id' => $product_id, 'quantity' => $product_quantity, 'created_by' => \Auth::user()->id]
                         );
+
+                        //Product Stock Report
+                        $type = 'allotment';
+                        $type_id = 0;
+                        $description = $request['quantity'][$i] . ' ' . __('quantity deducted by allotment');
+
+                        $stocks             = new StockReport();
+                        $stocks->warehouse_id = $warehouse_id;
+                        $stocks->product_id = $product_id;
+                        $stocks->quantity     = $quantity;
+                        $stocks->type = $type;
+                        $stocks->type_id = $type_id;
+                        $stocks->description = $description;
+                        $stocks->created_by = \Auth::user()->creatorId();
+                        $stocks->save();
                     }
-
-                    //Product Stock Report
-                    $type = 'allotment';
-                    $type_id = 0;
-                    $description = $request['quantity'][$i] . ' ' . __('quantity deducted by allotment');
-
-                    $stocks             = new StockReport();
-                    $stocks->warehouse_id = $warehouse_id;
-                    $stocks->product_id = $product_id;
-                    $stocks->quantity     = $quantity;
-                    $stocks->type = $type;
-                    $stocks->type_id = $type_id;
-                    $stocks->description = $description;
-                    $stocks->created_by = \Auth::user()->creatorId();
-                    $stocks->save();
                 }
 
                 return redirect()->to(route('admin.farmer.loan.index'))->with('success', 'Loan Added Successfully.');
@@ -181,7 +182,7 @@ class FarmerLoanController extends Controller
                 $farmerLoan = FarmerLoan::find($id);
 
                 if (isset($request->quantity) && !empty($request->quantity)) {
-                $count = count($request->quantity);
+                    $count = count($request->quantity);
 
                     for ($i = 0; $i < $count; $i++) {
                         //inventory management (Quantity)
@@ -274,6 +275,30 @@ class FarmerLoanController extends Controller
     {
         if (\Auth::user()->can('delete-allotment')) {
             $loan = FarmerLoan::find($id);
+            $count = count($loan->loan_type_id);
+
+            for ($i = 0; $i < $count; $i++) {
+                $product = ProductService::where('id', $loan->loan_type_id)->first();
+                $product->quantity = $product->quantity - $loan->quantity;
+                $product->save();
+
+                if (isset($loan->loan_type_id) && $loan->warehouse_id !== null && $loan->loan_category_id !== "11") {
+                    $warehouse_product = WarehouseProduct::where('warehouse_id', $loan->warehouse_id)->where('product_id', $loan->loan_type_id)->first();
+                    $warehouse_product->quantity = $warehouse_product->quantity - $loan->quantity;
+                    $warehouse_product->save();
+
+                    $description = $loan->quantity . ' quantity deducted by allotment';
+
+                    $stock_report = StockReport::where('warehouse_id', $loan->warehouse_id)
+                        ->where('product_id', $loan->loan_type_id)
+                        ->where('quantity', $loan->quantity)
+                        ->where('type', "allotment")
+                        ->where('description', $description)
+                        ->first();
+
+                    $stock_report->delete();
+                }
+            }
             $loan->delete();
             return redirect()->back()->with('success', 'Farming Loan Deleted Successfully.');
         } else {

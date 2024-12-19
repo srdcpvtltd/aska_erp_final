@@ -38,6 +38,13 @@
             });
             $('#loan_category_id').change(function() {
                 let loan_category_id = $(this).val();
+                let name = $('#loan_category_id option:selected').text();
+                if (name === "Seeds") {
+                    $('#warehouse_id').val('');
+                    $('.warehouse_div').hide();
+                } else {
+                    $('.warehouse_div').show();
+                }
                 $.ajax({
                     url: "{{ route('admin.farmer.loan.get_product_service_by_category') }}",
                     method: 'post',
@@ -61,27 +68,48 @@
             });
             $('#loan_type_id').change(function() {
                 let loan_type_id = $(this).val();
-                $.ajax({
-                    url: "{{ route('admin.farmer.loan.getWarehouseProduct') }}",
-                    method: 'post',
-                    data: {
-                        loan_type_id: loan_type_id,
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                        warehouse = response.warehouse;
-                        $('#warehouse_id').empty();
-                        $('#warehouse_id').append(
-                            '<option value="">Select Warehouse</option>');
-                        for (i = 0; i < warehouse.length; i++) {
-                            $('#warehouse_id').append('<option value="' + warehouse[i]
-                                .id + '">' + warehouse[i].name + '(' + response
-                                .warehouse_product[i].quantity + ')</option>');
+                let name = $('#loan_category_id option:selected').text();
+
+                if (name === "Seeds") {
+                    $.ajax({
+                        url: "{{ route('admin.seedstock.get_seed_stock_detail') }}",
+                        method: 'post',
+                        data: {
+                            product_id: loan_type_id,
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            $('#price_kg').val(response.sale_price);
+                            $('#quantity').attr('max', response.quantity);
+                            $('#max_text').html('Total Allowed Stock : ' + response
+                                .quantity);
                         }
-                    }
-                });
+                    });
+                } else {
+                    $.ajax({
+                        url: "{{ route('admin.farmer.loan.getWarehouseProduct') }}",
+                        method: 'post',
+                        data: {
+                            loan_type_id: loan_type_id,
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            warehouse = response.warehouse;
+                            $('#warehouse_id').empty();
+                            $('#warehouse_id').append(
+                                '<option value="">Select Warehouse</option>');
+                            for (i = 0; i < warehouse.length; i++) {
+                                $('#warehouse_id').append('<option value="' + warehouse[i]
+                                    .id + '">' + warehouse[i].name + '(' + response
+                                    .warehouse_product[i].quantity + ')</option>');
+                            }
+                        }
+                    });
+                }
             });
             $('#warehouse_id').change(function() {
                 let warehouse_Id = $(this).val();
@@ -110,42 +138,83 @@
                 let price = $('#price_kg').val();
                 var amount = quantity * price;
                 var rounded_amount = Math.round(amount);
+                var maxValue = $('input[name="quantity[]"]').attr('max');
+                if(quantity > maxValue){
+                    $('#max_text').html();
+                    $('#max_text').html('Quantity Must Be Smaller Then Available Stock : ' + maxValue);
+                    $('#submit_btn').attr('disabled', true);
+                } else {
+                    $('#submit_btn').removeAttr('disabled');
+                    $('#max_text').html('Total Allowed Stock : ' + maxValue);
+                }
                 $('#total_amount').val(amount);
                 $('#bill_amount').val(amount);
                 $('#round_amount').val(rounded_amount);
                 $('#BillAmount').val(amount);
                 $('#RoundAmount').val(rounded_amount);
             });
-
             $('#row_div').on('change', '.loan_type_id', function() {
                 let $this = $(this).closest('.append_div');
                 let warehouse_id = $('#warehouse_id').val();
                 let product_Id = $(this).val();
-                $.ajax({
-                    url: "{{ route('admin.farmer.loan.get_product_service_detail') }}",
-                    method: 'post',
-                    data: {
-                        warehouse_id: warehouse_id,
-                        product_id: product_Id,
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                        $this.find('.price_kg').val(response.product_service.sale_price);
-                        $this.find('.quantity').attr('max', response.warehouse_product
-                            .quantity);
-                        $this.find('.max_text').html('Total Allowed Stock : ' + response
-                            .warehouse_product
-                            .quantity);
-                    }
-                });
-            });
+                let name = $('#loan_category_id option:selected').text();
 
+                if (name === "Seeds") {
+                    $.ajax({
+                        url: "{{ route('admin.seedstock.get_seed_stock_detail') }}",
+                        method: 'post',
+                        data: {
+                            product_id: product_Id,
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            $this.find('.price_kg').val(response.sale_price);
+                            $this.find('.quantity').attr('max', response.quantity);
+                            $this.find('.max_text').html('Total Allowed Stock : ' + response
+                                .quantity);
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        url: "{{ route('admin.farmer.loan.get_product_service_detail') }}",
+                        method: 'post',
+                        data: {
+                            warehouse_id: warehouse_id,
+                            product_id: product_Id,
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            $this.find('.price_kg').val(response.product_service.sale_price);
+                            $this.find('.quantity').attr('max', response.warehouse_product
+                                .quantity);
+                            $this.find('.max_text').html('Total Allowed Stock : ' + response
+                                .warehouse_product
+                                .quantity);
+                        }
+                    });
+                }
+            });
             $('#row_div').on('keyup', '.quantity', function() {
-                let quantity = $(this).val();
+                var quantity = parseFloat($(this).val());
+                var quantity1 = parseFloat($('#quantity').val());
                 let bill_amount = parseFloat($('#BillAmount').val()) || 0;
                 let round_amount = parseFloat($('#RoundAmount').val()) || 0;
+                var maxValue = $(this).attr('max');
+                var tot_qty = quantity + quantity1;
+                
+                if(tot_qty > maxValue){
+                    $('.max_text').html();
+                    $('.max_text').html('Quantity Must Be Smaller Then Available Stock : ' + maxValue);
+                    $('#submit_btn').attr('disabled', true);
+                } else {
+                    $('#submit_btn').removeAttr('disabled');
+                    $('.max_text').html('Total Allowed Stock : ' + maxValue);
+                }
+
                 if (quantity > 0) {
                     let price = $(this).closest('.append_div').find('.price_kg').val();
                     let amount = quantity * price;
@@ -302,10 +371,10 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 warehouse_div">
                             <div class="form-group">
                                 {{ Form::label('warehouse_id', __('Warehouse'), ['class' => 'form-label']) }}
-                                <select class="form-control select" name="warehouse_id" id="warehouse_id" required>
+                                <select class="form-control select" name="warehouse_id" id="warehouse_id">
                                     <option value="">{{ __('Select Warehouse') }}</option>
                                 </select>
                             </div>
@@ -347,7 +416,7 @@
             <div class="modal-footer">
                 <input type="button" value="{{ __('Cancel') }}"
                     onclick="location.href = '{{ route('admin.farmer.loan.index') }}';" class="btn btn-light">
-                <input type="submit" value="{{ __('Create') }}" class="btn btn-primary">
+                <input type="submit" id="submit_btn" value="{{ __('Create') }}" class="btn btn-primary">
             </div>
             {{ Form::close() }}
         </div>

@@ -14,11 +14,11 @@ class FarmerLoan extends Model
         'registration_number',
         'agreement_number',
         'date',
-        'created_by'
+        'created_by',
+        'loan_category_id'
     ];
 
     protected $casts = [
-        'loan_category_id' => 'array',
         'loan_type_id' => 'array',
         'price_kg' => 'array',
         'quantity' => 'array',
