@@ -1,6 +1,6 @@
 @canany(['manage-farmer_registration', 'manage-farmer_guarantor', 'manage-security_deposite', 'manage-allotment',
     'manage-reimbursement', 'manage-plot', 'manage-issue_cutting_order', 'manage-bank_detail', 'manage-seed_category'])
-    <li class="nav-item  {{ request()->routeIs('admin.farmer*') ? 'active' : '' }}   ">
+    <li class="nav-item  {{ request()->routeIs('admin.farmer*') || Request::segment(2) == 'seedstock' ? 'active' : '' }}   ">
         <a data-href="#" class="nav-link" data-bs-toggle="collapse" href="#farmermanagement" role="button" aria-expanded="false"
             aria-controls="company">
             <i class="link-icon" data-feather="users"></i>
@@ -8,7 +8,7 @@
             <i class="link-arrow" data-feather="chevron-down"></i>
         </a>
 
-        <div class="{{ request()->routeIs('admin.farmer*') ? '' : 'collapse' }}" id="farmermanagement">
+        <div class="{{ request()->routeIs('admin.farmer*') || Request::segment(2) == 'seedstock' ? '' : 'collapse' }}" id="farmermanagement">
             <ul class="nav sub-menu">
                 @can('manage-farmer_registration')
                     <li class="nav-item">

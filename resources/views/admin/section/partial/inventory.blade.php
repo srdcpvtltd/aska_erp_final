@@ -8,7 +8,7 @@
         <i class="link-arrow" data-feather="chevron-down"></i>
     </a>
 
-    <div class="{{ Request::segment(2) == 'warehouse' || Request::segment(2) == 'purchase' || Request::segment(2) == 'warehouse-transfer' || Request::route()->getName() == 'admin.pos.barcode' || Request::route()->getName() == 'admin.pos.print.setting' || Request::route()->getName() == 'admin.pos.show' || Request::segment(2) == 'challan' || Request::segment(2) == 'seedstock' ? '' : 'collapse' }}"
+    <div class="{{ Request::segment(2) == 'warehouse' || Request::segment(2) == 'purchase' || Request::segment(2) == 'warehouse-transfer' || Request::route()->getName() == 'admin.pos.barcode' || Request::route()->getName() == 'admin.pos.print.setting' || Request::route()->getName() == 'admin.pos.show' || Request::segment(2) == 'challan' ? '' : 'collapse' }}"
         id="inventory">
         <ul
             class="nav sub-menu">
