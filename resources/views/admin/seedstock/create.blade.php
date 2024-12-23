@@ -6,34 +6,58 @@
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            $('#g_code_from').keyup(function() {
-                let g_code = $(this).val();
+            $('#registration_year').keyup(function() {
+                let registration_year = $(this).val();
+                console.log(registration_year);
+
                 $.ajax({
-                    url: "{{ route('admin.farmer.get_detail') }}",
+                    url: "{{ route('admin.farmer.get_farmer') }}",
                     method: 'post',
                     data: {
-                        g_code: g_code,
+                        registration_year: registration_year,
                     },
                     headers: {
                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     },
                     success: function(response) {
+                        farmer = response;
                         $('#farming_id_from').empty();
-                        if (response.farmerHtml) {
-                            $('#farming_id_from').append(response.farmerHtml);
-                        } else {
-                            $('#farming_id_from').append('<option value="">Select Farmer</option>');
+                        $('#farming_id_from').append(
+                            '<option value="">Select Farmer</option>');
+                        for (i = 0; i < farmer.length; i++) {
+                            $('#farming_id_from').append('<option value="' + farmer[i]
+                                .id + '">' + farmer[i].name + '</option>');
                         }
-                        if (response.villageHtml) {
-                            $('#village_id_from').append(response.villageHtml);
-                        } else {
-                            $('#village_id_from').append('<option value="">Select Village</option>');
-                        }
-                        $('#father_name_from').val(response.farming.father_name);
+                        // $('#father_name_from').val(response.farming.father_name);
                     }
                 });
             });
-            $('#g_code_to').keyup(function() {
+            $('#farming_id_from').change(function() {
+                let farmer_id = $(this).val();
+                $.ajax({
+                    url: "{{ route('admin.farmer.farming.get_detail') }}",
+                    method: 'post',
+                    data: {
+                        farming_id: farmer_id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        console.log(response);
+
+                        if (response.villageHtml) {
+                            $('#village_id_from').append(response.villageHtml);
+                        } else {
+                            $('#village_id_from').append(
+                                '<option value="">Select Village</option>');
+                        }
+                        $('#father_name_from').val(response.farming.father_name);
+                        $('#g_code_from').val(response.farming.old_g_code);
+                    }
+                });
+            });
+            $('#g_code').keyup(function() {
                 let g_code = $(this).val();
                 $.ajax({
                     url: "{{ route('admin.farmer.get_detail') }}",
@@ -49,17 +73,36 @@
                         if (response.farmerHtml) {
                             $('#farming_id_to').append(response.farmerHtml);
                         } else {
-                            $('#farming_id_to').append('<option value="">Select Farmer</option>');
+                            $('#farming_id_to').append(
+                                '<option value="">Select Farmer</option>');
                         }
                         if (response.villageHtml) {
                             $('#village_id_to').append(response.villageHtml);
                         } else {
-                            $('#village_id_to').append('<option value="">Select Village</option>');
+                            $('#village_id_to').append(
+                                '<option value="">Select Village</option>');
                         }
                         $('#father_name_to').val(response.farming.father_name);
                     }
                 });
             });
+            $('#product_id').on('change', function() {
+                var product_id = $(this).val();
+
+                $.ajax({
+                    url: "{{ route('admin.seedstock.get_seed_stock_detail') }}",
+                    method: 'post',
+                    data: {
+                        product_id: product_id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        $('#unit_price').val(response.sale_price);
+                    }
+                });
+            })
             $('#quantity').on('keyup', function() {
                 var quantity = $(this).val();
                 var product_id = $('#product_id').val();
@@ -106,8 +149,8 @@
                         <hr>
                         <div class="col-md-6">
                             <div class="form-group">
-                                {{ Form::label('g_code', __('G.Code'), ['class' => 'form-label']) }}
-                                {{ Form::text('g_code_from', '', ['class' => 'form-control', 'required' => 'required']) }}
+                                {{ Form::label('registration_year', __('Registration Year'), ['class' => 'form-label']) }}
+                                {{ Form::text('registration_year', '', ['class' => 'form-control', 'required' => 'required', 'id' => 'registration_year']) }}
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -117,11 +160,13 @@
                                     <option value="">{{ __('Select Farmer') }}</option>
                                 </select>
                             </div>
+                            <input type="hidden" name="g_code_from" id="g_code_from">
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('father_name', __('Father Name'), ['class' => 'form-label']) }}
-                                <input type="text" class="form-control" name="father_name_from" id="father_name_from" readonly>
+                                <input type="text" class="form-control" name="father_name_from" id="father_name_from"
+                                    readonly>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -137,7 +182,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('g_code', __('G.Code'), ['class' => 'form-label']) }}
-                                {{ Form::text('g_code_to', '', ['class' => 'form-control', 'required' => 'required']) }}
+                                {{ Form::text('g_code', '', ['class' => 'form-control', 'required' => 'required']) }}
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -151,7 +196,8 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('father_name', __('Father Name'), ['class' => 'form-label']) }}
-                                <input type="text" class="form-control" name="father_name_to" id="father_name_to" readonly>
+                                <input type="text" class="form-control" name="father_name_to" id="father_name_to"
+                                    readonly>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -163,10 +209,14 @@
                             </div>
                         </div>
                         <hr>
+                        <div class="form-group col-md-6">
+                            {{ Form::label('invoice_no', __('Invoice No.'), ['class' => 'form-label']) }}
+                            {{ Form::text('invoice_no', '', ['id' => 'invoice_no', 'class' => 'form-control', 'required' => 'required', 'maxlength="5"']) }}
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('product_id', __('Product'), ['class' => 'form-label']) }}
-                                <select class="form-control select" name="product_id" id="product_id">
+                                <select class="form-control select" name="product_id[]" id="product_id">
                                     <option value="">{{ __('Select Product') }}</option>
                                     @foreach ($products as $product)
                                         <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -182,14 +232,20 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                {{ Form::label('quantity', __('Quantity'), ['class' => 'form-label']) }}
-                                <input type="number" class="form-control" name="quantity" id="quantity">
+                                {{ Form::label('unit_price', __('Unit Price'), ['class' => 'form-label']) }}
+                                <input type="number" class="form-control" name="unit_price[]" id="unit_price" readonly>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                {{ Form::label('quantity', __('Quantity'), ['class' => 'form-label']) }}
+                                <input type="number" class="form-control" name="quantity[]" id="quantity">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
                             <div class="form-group">
                                 {{ Form::label('amount', __('Amount'), ['class' => 'form-label']) }}
-                                <input type="text" class="form-control" name="amount" id="amount" readonly>
+                                <input type="text" class="form-control" name="amount[]" id="amount" readonly>
                             </div>
                         </div>
                     </div>

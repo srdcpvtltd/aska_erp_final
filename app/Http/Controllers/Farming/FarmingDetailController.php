@@ -189,6 +189,7 @@ class FarmingDetailController extends Controller
             $centerHtml = '<option value="' . $farming->center->id . '" selected>' . $farming->center->name . '</option>';
         }
         return response()->json([
+            'farming' => $farming,
             'blockHtml' => $blockHtml,
             'gpHtml' => $gpHtml,
             'villageHtml' => $villageHtml,

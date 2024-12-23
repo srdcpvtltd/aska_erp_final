@@ -27,7 +27,7 @@ class FarmerLoanController extends Controller
     public function index()
     {
         if (\Auth::user()->can('manage-allotment')) {
-            $loans = FarmerLoan::where('loan_category_id','!=',"11")->where('created_by', Auth::user()->id)->get();
+            $loans = FarmerLoan::where('loan_category_id', '!=', "11")->where('created_by', Auth::user()->id)->get();
             return view('admin.farmer.loan.index', compact('loans'));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
@@ -45,7 +45,7 @@ class FarmerLoanController extends Controller
                 ->where('farmings.created_by', Auth::user()->id)
                 ->orWhere('users.supervisor_id', Auth::user()->id)
                 ->get();
-            $categories = ProductServiceCategory::all();
+            $categories = ProductServiceCategory::where('id', '!=', "11")->get();
             return view('admin.farmer.loan.create', compact('categories', 'farmings'));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
@@ -275,28 +275,32 @@ class FarmerLoanController extends Controller
     {
         if (\Auth::user()->can('delete-allotment')) {
             $loan = FarmerLoan::find($id);
-            $count = count($loan->loan_type_id);
+            if($loan->loan_category_id != "11"){
+                $loan_type_id = json_decode($loan->loan_type_id);
+                $quantity = json_decode($loan->quantity);
+                $count = count($loan_type_id);
 
-            for ($i = 0; $i < $count; $i++) {
-                $product = ProductService::where('id', $loan->loan_type_id)->first();
-                $product->quantity = $product->quantity - $loan->quantity;
-                $product->save();
+                for ($i = 0; $i < $count; $i++) {
+                    $product = ProductService::where('id', $loan_type_id[$i])->first();
+                    $product->quantity = $product->quantity - $quantity[$i];
+                    $product->save();
 
-                if (isset($loan->loan_type_id) && $loan->warehouse_id !== null && $loan->loan_category_id !== "11") {
-                    $warehouse_product = WarehouseProduct::where('warehouse_id', $loan->warehouse_id)->where('product_id', $loan->loan_type_id)->first();
-                    $warehouse_product->quantity = $warehouse_product->quantity - $loan->quantity;
-                    $warehouse_product->save();
+                    if (isset($loan_type_id) && $loan->warehouse_id !== null && $loan->loan_category_id !== "11") {
+                        $warehouse_product = WarehouseProduct::where('warehouse_id', $loan->warehouse_id)->where('product_id', $loan_type_id[$i])->first();
+                        $warehouse_product->quantity = $warehouse_product->quantity - $quantity[$i];
+                        $warehouse_product->save();
 
-                    $description = $loan->quantity . ' quantity deducted by allotment';
+                        $description = $quantity[$i] . ' quantity deducted by allotment';
 
-                    $stock_report = StockReport::where('warehouse_id', $loan->warehouse_id)
-                        ->where('product_id', $loan->loan_type_id)
-                        ->where('quantity', $loan->quantity)
-                        ->where('type', "allotment")
-                        ->where('description', $description)
-                        ->first();
+                        $stock_report = StockReport::where('warehouse_id', $loan->warehouse_id)
+                            ->where('product_id', $loan_type_id[$i])
+                            ->where('quantity', $quantity[$i])
+                            ->where('type', "allotment")
+                            ->where('description', $description)
+                            ->first();
 
-                    $stock_report->delete();
+                        $stock_report->delete();
+                    }
                 }
             }
             $loan->delete();

@@ -330,35 +330,17 @@ class FarmingController extends Controller
     }
 
 
-    // public function search_filter(Request $request)
-    // {
-    //     $farmings = Farming::query()
-    //         ->select('farmings.*')
-    //         ->join('users', 'users.id', '=', 'farmings.created_by')
-    //         ->where(function ($query) use ($request) {
-    //             $query->where('farmings.created_by', Auth::user()->id);
-    //             // ->orWhere('users.supervisor_id', Auth::user()->id);
+    public function get_farmer(Request $request)
+    {
+        $farmings = Farming::query()
+            ->select('farmings.*')
+            ->join('users', 'users.id', '=', 'farmings.created_by')
+            ->where(function ($query) use ($request) {
+                $query->where('farmings.created_by', Auth::user()->id)
+                ->Where('farmings.registration_year', $request->registration_year);
+            })
+            ->get();
 
-    //             if (!empty($request->block_id)) {
-    //                 $query->where('farmings.block_id', $request->block_id);
-    //             }
-    //             if (!empty($request->grampanchyat_id)) {
-    //                 $query->where('farmings.gram_panchyat_id', $request->grampanchyat_id);
-    //             }
-    //             if (!empty($request->zone_id)) {
-    //                 $query->where('farmings.zone_id', $request->zone_id);
-    //             }
-    //             if (!empty($request->center_id)) {
-    //                 $query->where('farmings.center_id', $request->center_id);
-    //             }
-    //         })
-    //         ->get();
-
-    //     $blocks = Block::all()->pluck('name', 'id');
-    //     $blocks->prepend('Select Blocks', '');
-    //     $zones = Zone::all()->pluck('name', 'id');
-    //     $zones->prepend('Select Zones', '');
-
-    //     return view('admin.farmer.registration.index', compact('farmings', 'blocks', 'zones'));
-    // }
+        return response()->json($farmings);
+    }
 }

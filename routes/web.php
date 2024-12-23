@@ -492,6 +492,7 @@ Route::group([
                 Route::get('farming_registration/{id}/destroy', [FarmingController::class, 'destroy'])->name('farming_registration.destroy');
                 Route::post('registration_id', [FarmingController::class, 'registration_id'])->name('registration_id');
                 Route::post('search_filter', [FarmingController::class, 'search_filter'])->name('search_filter');
+                Route::post('get_farmer', [FarmingController::class, 'get_farmer'])->name('get_farmer');
 
                 //guarantor
                 Route::resource('guarantor', GuarantorController::class);
