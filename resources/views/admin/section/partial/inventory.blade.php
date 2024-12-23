@@ -47,11 +47,6 @@
                 <a class="nav-link {{ Request::route()->getName() == 'admin.challan.index' || Request::route()->getName() == 'admin.challan.create' || Request::route()->getName() == 'admin.challan.edit' ? ' active' : '' }}" href="{{ route('admin.challan.index') }}">{{ __('Challan') }}</a>
             </li>
             @endcan
-            @can('manage-seedstock')
-            <li class="nav-item">
-                <a class="nav-link {{ Request::route()->getName() == 'admin.seedstock.index' || Request::route()->getName() == 'admin.seedstock.create' || Request::route()->getName() == 'admin.seedstock.edit' ? ' active' : '' }}" href="{{ route('admin.seedstock.index') }}">{{ __('Seed Stock Entry') }}</a>
-            </li>
-            @endcan
         </ul>
     </div>
 </li>

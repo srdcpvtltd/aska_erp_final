@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FarmerLoan;
 use App\Models\Farming;
 use App\Models\FarmingPayment;
 use App\Models\ProductService;
@@ -21,8 +22,8 @@ class SeedStockController extends Controller
     public function index()
     {
         if (\Auth::user()->can('manage-seedstock')) {
-            $seedstocks = SeedStock::get();
-            return view('admin.seedstock.index', compact('seedstocks'));
+            $loans = FarmerLoan::where('loan_category_id','==',"11")->where('created_by', Auth::user()->id)->get();
+            return view('admin.seedstock.index', compact('loans'));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
         }
@@ -36,10 +37,9 @@ class SeedStockController extends Controller
     public function create()
     {
         if (\Auth::user()->can('create-seedstock')) {
-            $seedstocks = SeedStock::get();
             $farmers = Farming::get();
             $products = ProductService::where('category_id', "11")->get();
-            return view('admin.seedstock.create', compact('seedstocks', 'products', 'farmers'));
+            return view('admin.seedstock.create', compact('products', 'farmers'));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');
         }

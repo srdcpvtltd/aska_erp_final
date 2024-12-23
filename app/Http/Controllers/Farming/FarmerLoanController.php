@@ -27,7 +27,7 @@ class FarmerLoanController extends Controller
     public function index()
     {
         if (\Auth::user()->can('manage-allotment')) {
-            $loans = FarmerLoan::where('created_by', Auth::user()->id)->get();
+            $loans = FarmerLoan::where('loan_category_id','!=',"11")->where('created_by', Auth::user()->id)->get();
             return view('admin.farmer.loan.index', compact('loans'));
         } else {
             return redirect()->back()->with('error', 'Permission denied.');

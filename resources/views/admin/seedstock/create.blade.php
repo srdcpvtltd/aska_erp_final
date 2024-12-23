@@ -6,6 +6,60 @@
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
     <script>
         $(document).ready(function() {
+            $('#g_code_from').keyup(function() {
+                let g_code = $(this).val();
+                $.ajax({
+                    url: "{{ route('admin.farmer.get_detail') }}",
+                    method: 'post',
+                    data: {
+                        g_code: g_code,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        $('#farming_id_from').empty();
+                        if (response.farmerHtml) {
+                            $('#farming_id_from').append(response.farmerHtml);
+                        } else {
+                            $('#farming_id_from').append('<option value="">Select Farmer</option>');
+                        }
+                        if (response.villageHtml) {
+                            $('#village_id_from').append(response.villageHtml);
+                        } else {
+                            $('#village_id_from').append('<option value="">Select Village</option>');
+                        }
+                        $('#father_name_from').val(response.farming.father_name);
+                    }
+                });
+            });
+            $('#g_code_to').keyup(function() {
+                let g_code = $(this).val();
+                $.ajax({
+                    url: "{{ route('admin.farmer.get_detail') }}",
+                    method: 'post',
+                    data: {
+                        g_code: g_code,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        $('#farming_id_to').empty();
+                        if (response.farmerHtml) {
+                            $('#farming_id_to').append(response.farmerHtml);
+                        } else {
+                            $('#farming_id_to').append('<option value="">Select Farmer</option>');
+                        }
+                        if (response.villageHtml) {
+                            $('#village_id_to').append(response.villageHtml);
+                        } else {
+                            $('#village_id_to').append('<option value="">Select Village</option>');
+                        }
+                        $('#father_name_to').val(response.farming.father_name);
+                    }
+                });
+            });
             $('#quantity').on('keyup', function() {
                 var quantity = $(this).val();
                 var product_id = $('#product_id').val();
@@ -48,17 +102,67 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
+                        <label for=""><b>Seed From</b></label>
+                        <hr>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ Form::label('g_code', __('G.Code'), ['class' => 'form-label']) }}
+                                {{ Form::text('g_code_from', '', ['class' => 'form-control', 'required' => 'required']) }}
+                            </div>
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('farmer_id', __('Farmer'), ['class' => 'form-label']) }}
-                                <select class="form-control select" name="farmer_id" id="farmer_id">
+                                <select class="form-control select" name="farmer_id_from" id="farming_id_from">
                                     <option value="">{{ __('Select Farmer') }}</option>
-                                    @foreach ($farmers as $farmer)
-                                        <option value="{{ $farmer->id }}">{{ $farmer->name }}</option>
-                                    @endforeach
                                 </select>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ Form::label('father_name', __('Father Name'), ['class' => 'form-label']) }}
+                                <input type="text" class="form-control" name="father_name_from" id="father_name_from" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ Form::label('village', __('Village'), ['class' => 'form-label']) }}
+                                <select class="form-control select" name="village_id_from" id="village_id_from">
+                                    <option value="">{{ __('Select Village') }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <label for=""><b>Seed TO</b></label>
+                        <hr>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ Form::label('g_code', __('G.Code'), ['class' => 'form-label']) }}
+                                {{ Form::text('g_code_to', '', ['class' => 'form-control', 'required' => 'required']) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ Form::label('farmer_id', __('Farmer'), ['class' => 'form-label']) }}
+                                <select class="form-control select" name="farmer_id_to" id="farming_id_to">
+                                    <option value="">{{ __('Select Farmer') }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ Form::label('father_name', __('Father Name'), ['class' => 'form-label']) }}
+                                <input type="text" class="form-control" name="father_name_to" id="father_name_to" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ Form::label('village', __('Village'), ['class' => 'form-label']) }}
+                                <select class="form-control select" name="village_id_to" id="village_id_to">
+                                    <option value="">{{ __('Select Village') }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <hr>
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('product_id', __('Product'), ['class' => 'form-label']) }}

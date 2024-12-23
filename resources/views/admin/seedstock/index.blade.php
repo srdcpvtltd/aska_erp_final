@@ -73,7 +73,7 @@
     <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
         <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-            <li class="breadcrumb-item">{{ __('Seed Stock') }}</li>
+            <li class="breadcrumb-item">{{ __('Seed Allotment') }}</li>
         </ol>
         <div class="float-end">
             <button id="exportButton" class="btn btn-success">Export</button>
@@ -94,46 +94,112 @@
                         <table class="data_table table datatable" id="seedstock-table">
                             <thead>
                                 <tr>
-                                    <th>{{ __('Sl No.') }}</th>
-                                    <th>{{ __('Farmer') }}</th>
-                                    <th>{{ __('Product') }}</th>
-                                    <th>{{ __('Receive Date') }}</th>
+                                    <th>{{ __('G Code No') }}</th>
+                                    <th>{{ __('Farmer Name') }}</th>
+                                    <th>{{ __('Invoice No.') }}</th>
+                                    <th>{{ __('Date of Issue') }}</th>
+                                    <th>{{ __('Category') }}</th>
+                                    <th>{{ __('Type') }}</th>
+                                    <th>{{ __('Price') }}</th>
                                     <th>{{ __('Quantity') }}</th>
                                     <th>{{ __('Amount') }}</th>
-                                    {{-- <th class="text-center">{{ __('Action') }}</th> --}}
+                                    <th>{{ __('Round Amount') }}</th>
+                                    <th>{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($seedstocks as $key => $seedstock)
+                                @foreach ($loans as $loan)
+                                    @php
+                                        $loan_type_id = json_decode($loan->loan_type_id);
+                                        $price_kg = json_decode($loan->price_kg);
+                                        $quantity = json_decode($loan->quantity);
+                                        $total_amount = json_decode($loan->total_amount);
+                                        $count = count($loan_type_id);
+                                        $total = 0;
+                                    @endphp
+
                                     <tr class="font-style">
-                                        <td>{{ $key + 1 }}</td>
-                                        <td>{{ $seedstock->farmer->name }}</td>
-                                        <td>{{ $seedstock->product->name }}</td>
-                                        <td>{{ $seedstock->receive_date }}</td>
-                                        <td>{{ $seedstock->quantity }}</td>
-                                        <td>{{ $seedstock->amount }}</td>
-                                        {{-- <td class="Action">
+                                        <td>{{ $loan->farming->old_g_code }}</td>
+                                        <td>{{ $loan->farming->name }}</td>
+                                        <td>{{ $loan->invoice_no }}</td>
+                                        <td>{{ $loan->date }}</td>
+                                        <td>{{ $loan->category->name }}</td>
+
+                                        <td>
+                                            @for ($i = 0; $i < $count; $i++)
+                                                @php
+                                                    $product = App\Models\ProductService::where(
+                                                        'id',
+                                                        $loan_type_id[$i],
+                                                    )->first();
+                                                @endphp
+                                                {{ $product->name }}
+                                                @if ($i < $count - 1)
+                                                    <br>
+                                                @endif
+                                            @endfor
+                                        </td>
+                                        <td>
+                                            @for ($i = 0; $i < $count; $i++)
+                                                {{ $price_kg[$i] }}
+                                                @if ($i < $count - 1)
+                                                    <br>
+                                                @endif
+                                            @endfor
+                                        </td>
+                                        <td>
+                                            @for ($i = 0; $i < $count; $i++)
+                                                {{ $quantity[$i] }}
+                                                @if ($i < $count - 1)
+                                                    <br>
+                                                @endif
+                                            @endfor
+                                        </td>
+                                        <td>
+                                            @for ($i = 0; $i < $count; $i++)
+                                                {{ $total_amount[$i] }}
+                                                @if ($i < $count - 1)
+                                                    <br>
+                                                @endif
+                                            @endfor
+                                        </td>
+                                        <td>
+                                            @for ($i = 0; $i < $count; $i++)
+                                                @php
+                                                    $total += $total_amount[$i];
+                                                @endphp
+                                            @endfor
+                                            {{ round($total) }}
+                                        </td>
+
+                                        <td class="Action">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                                @can('edit-seedstock')
+                                                @can('edit-allotment')
+                                                    @if ($loan->invoice_generate_status == 0)
+                                                        <li class="me-2">
+                                                            <a href="{{ route('admin.farmer.loan.edit', $loan->id) }}">
+                                                                <i class="link-icon" data-feather="edit"></i>
+                                                            </a>
+                                                        </li>
+                                                    @endif
                                                     <li class="me-2">
-                                                        <a href="{{ route('admin.seedstock.edit', $seedstock->id) }}"
-                                                            data-bs-toggle="tooltip" title="{{ __('Edit') }}"
-                                                            data-title="{{ __('Edit Seed Stock') }}">
-                                                            <i class="link-icon" data-feather="edit"></i>
+                                                        <a href="{{ route('admin.farmer.loan.invoice_generate', $loan->id) }}"
+                                                            target="_blank">
+                                                            <i class="link-icon" data-feather="file-text"></i>
                                                         </a>
                                                     </li>
                                                 @endcan
-                                                @can('delete-seedstock')
+                                                @can('delete-allotment')
                                                     <li>
-                                                        <a class="deleteBtn" href="#"
-                                                            data-href="{{ route('admin.seedstock.destroy', $seedstock->id) }}"
+                                                        <a href="" class="deleteBtn"
+                                                            data-href="{{ route('admin.farmer.loan.destroy', $loan->id) }}"
                                                             data-bs-toggle="tooltip" title="{{ __('Delete') }}">
                                                             <i class="link-icon" data-feather="delete"></i>
                                                         </a>
                                                     </li>
                                                 @endcan
                                             </ul>
-                                        </td> --}}
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

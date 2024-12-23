@@ -66,6 +66,12 @@
                         </a>
                     </li>
                 @endcan
+                @can('manage-seedstock')
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::route()->getName() == 'admin.seedstock.index' || Request::route()->getName() == 'admin.seedstock.create' || Request::route()->getName() == 'admin.seedstock.edit' ? ' active' : '' }}"
+                            href="{{ route('admin.seedstock.index') }}">{{ __('Seed Allotment') }}</a>
+                    </li>
+                @endcan
             </ul>
         </div>
     </li>
