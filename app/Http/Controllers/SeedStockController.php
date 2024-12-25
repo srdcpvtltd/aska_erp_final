@@ -180,7 +180,7 @@ class SeedStockController extends Controller
     public function getSeedAmount(Request $request)
     {
         $product_service = ProductService::find($request->product_id);
-        $total_price = $product_service->purchase_price * $request->quantity;
+        $total_price = $product_service->sale_price * $request->quantity;
 
         return response()->json([
             'total_price' => $total_price,
@@ -190,7 +190,6 @@ class SeedStockController extends Controller
     public function getSeedStock(Request $request)
     {
         $product_service = ProductService::find($request->product_id);
-        // dd($product_service);
         return response()->json($product_service);
     }
 }

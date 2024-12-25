@@ -8,7 +8,6 @@
         $(document).ready(function() {
             $('#registration_year').keyup(function() {
                 let registration_year = $(this).val();
-                console.log(registration_year);
 
                 $.ajax({
                     url: "{{ route('admin.farmer.get_farmer') }}",
@@ -28,7 +27,6 @@
                             $('#farming_id_from').append('<option value="' + farmer[i]
                                 .id + '">' + farmer[i].name + '</option>');
                         }
-                        // $('#father_name_from').val(response.farming.father_name);
                     }
                 });
             });
@@ -44,8 +42,6 @@
                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     },
                     success: function(response) {
-                        console.log(response);
-
                         if (response.villageHtml) {
                             $('#village_id_from').append(response.villageHtml);
                         } else {
