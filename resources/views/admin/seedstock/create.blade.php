@@ -98,7 +98,7 @@
                         $('#unit_price').val(response.sale_price);
                     }
                 });
-            })
+            });
             $('#quantity').on('keyup', function() {
                 var quantity = $(this).val();
                 var product_id = $('#product_id').val();
@@ -117,7 +117,25 @@
                         $('#amount').val(response.total_price);
                     }
                 });
-            })
+            });
+            $('#quantity').on('keypress', function (e) {
+                var charCode = e.which || e.keyCode;
+                var charStr = String.fromCharCode(charCode);
+
+                // Allow digits (0-9) and dot (.)
+                if (!charStr.match(/[0-9.]/)) {
+                    e.preventDefault();
+                }
+            });
+
+            // Prevent multiple dots
+            $('#quantity').on('input', function () {
+                var value = $(this).val();
+                if ((value.match(/\./g) || []).length > 1) {
+                    $(this).val(value.replace(/\.(?=.*\.)/, '')); // Remove extra dots
+                }
+            });
+
         });
     </script>
 @endsection
@@ -235,7 +253,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 {{ Form::label('quantity', __('Quantity'), ['class' => 'form-label']) }}
-                                <input type="number" class="form-control" name="quantity[]" id="quantity">
+                                <input type="text" class="form-control" name="quantity[]" id="quantity">
                             </div>
                         </div>
                         <div class="col-md-3">
