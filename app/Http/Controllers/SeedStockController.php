@@ -114,6 +114,9 @@ class SeedStockController extends Controller
             if($farmer_loan->farming_payment_id != 0){
                 $farmers_from = Farming::where('id', $farmer_loan->farming_payment->farming_id)->get();
                 $villages_from = Village::where('id', $farmer_loan->farming_payment->farming->village_id)->get();
+            } else {
+                $farmers_from = [];
+                $villages_from = [];
             }
             
             $farmers = Farming::where('id', $farmer_loan->farming_id)->get();
@@ -138,21 +141,21 @@ class SeedStockController extends Controller
         if (\Auth::user()->can('edit-seedstock')) {
             $amount = $request->amount;
 
-            $seedstock = FarmerLoan::findorfail($id);
-            $seedstock->farming_id = $request->farmer_id_to;
-            $seedstock->invoice_no = $request->invoice_no;
-            $seedstock->loan_category_id = '11';
-            $seedstock->loan_type_id = json_encode($request->product_id);
-            $seedstock->price_kg = json_encode($request->unit_price);
-            $seedstock->date = $request->receive_date;
-            $seedstock->quantity = json_encode($request->quantity);
-            $seedstock->total_amount = json_encode($amount);
-            $seedstock->bill_amount = $amount[0];
-            $seedstock->round_amount = round($amount[0]);
-            $seedstock->created_by = Auth::user()->id;
-            $seedstock->save();
+            $farmer_loan = FarmerLoan::findorfail($id);
+            $farmer_loan->farming_id = $request->farmer_id_to;
+            $farmer_loan->invoice_no = $request->invoice_no;
+            $farmer_loan->loan_category_id = '11';
+            $farmer_loan->loan_type_id = json_encode($request->product_id);
+            $farmer_loan->price_kg = json_encode($request->unit_price);
+            $farmer_loan->date = $request->receive_date;
+            $farmer_loan->quantity = json_encode($request->quantity);
+            $farmer_loan->total_amount = json_encode($amount);
+            $farmer_loan->bill_amount = $amount[0];
+            $farmer_loan->round_amount = round($amount[0]);
+            $farmer_loan->created_by = Auth::user()->id;
+            $farmer_loan->save();
 
-            $client = FarmingPayment::where('id', $seedstock->farming_payment_id)->first();
+            $client = FarmingPayment::where('id', $farmer_loan->farming_payment_id)->first();
             $client->farming_id = $request->farmer_id_from;
             $client->g_code = $request->g_code_from;
             $client->date = $request->receive_date;
