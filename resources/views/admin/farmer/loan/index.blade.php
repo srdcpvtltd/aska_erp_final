@@ -3,58 +3,60 @@
     {{ __('Farmer Allotments') }}
 @endsection
 @section('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
-<script>
-    document.getElementById('exportButton').addEventListener('click', function() {
-        // Get the DataTable instance
-        var table = $('#allotment-table').DataTable();
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
+    <script>
+        document.getElementById('exportButton').addEventListener('click', function() {
+            // Get the DataTable instance
+            var table = $('#allotment-table').DataTable();
 
-        // Define the index of the "Action" column to exclude from the export
-        var actionColumnIndex = table.column(':contains(Action)')
-            .index(); // Automatically detect the "Action" column index based on header text
+            // Define the index of the "Action" column to exclude from the export
+            var actionColumnIndex = table.column(':contains(Action)')
+        .index(); // Automatically detect the "Action" column index based on header text
 
-        // Create a new workbook
-        var wb = XLSX.utils.book_new();
+            // Create a new workbook
+            var wb = XLSX.utils.book_new();
 
-        // Create an array to store rows of data
-        var ws_data = [];
+            // Create an array to store rows of data
+            var ws_data = [];
 
-        // Get headers from the table, excluding the "Action" column
-        var headers = [];
-        $('#allotment-table thead tr th').each(function(index) {
-            if (index !== actionColumnIndex) {
-                headers.push($(this).text()); // Add header if it's not the "Action" column
-            }
-        });
-        ws_data.push(headers); // Add headers to ws_data
-
-        // Add rows of data from the DataTable, excluding the "Action" column
-        table.rows({
-            search: 'applied'
-        }).every(function(rowIdx, tableLoop, rowLoop) {
-            var rowData = this.data();
-            var filteredRow = [];
-
-            // Loop through each cell in the row, adding only non-"Action" columns
-            Object.keys(rowData).forEach(function(key, index) {
+            // Get headers from the table, excluding the "Action" column
+            var headers = [];
+            $('#allotment-table thead tr th').each(function(index) {
                 if (index !== actionColumnIndex) {
-                    filteredRow.push(rowData[key]);
+                    headers.push($(this).text()); // Add header if it's not the "Action" column
                 }
             });
+            ws_data.push(headers); // Add headers to ws_data
 
-            ws_data.push(filteredRow); // Add filtered row to ws_data
+            // Add rows of data from the DataTable, excluding the "Action" column
+            table.rows({
+                search: 'applied'
+            }).every(function(rowIdx, tableLoop, rowLoop) {
+                var rowData = this.data();
+                var filteredRow = [];
+
+                // Loop through each cell in the row, adding only non-"Action" columns
+                Object.keys(rowData).forEach(function(key, index) {
+                    if (index !== actionColumnIndex) {
+                        // Replace <br> tags with newlines
+                        var cellData = rowData[key].replace(/<br\s*\/?>/g, '\n');
+                        filteredRow.push(cellData);
+                    }
+                });
+
+                ws_data.push(filteredRow); // Add filtered row to ws_data
+            });
+
+            // Convert the data array to a worksheet
+            var ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+            // Append the worksheet to the workbook
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+            // Export the workbook to an Excel file
+            XLSX.writeFile(wb, 'allotment.xlsx');
         });
-
-        // Convert the data array to a worksheet
-        var ws = XLSX.utils.aoa_to_sheet(ws_data);
-
-        // Append the worksheet to the workbook
-        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-
-        // Export the workbook to an Excel file
-        XLSX.writeFile(wb, 'allotment.xlsx');
-    });
-</script>
+    </script>
 @endsection
 @section('main-content')
     @include('admin.section.flash_message')
@@ -120,32 +122,40 @@
                                                     )->first();
                                                 @endphp
                                                 {{ $product->name }}
-                                                @if($i < $count - 1)<br>@endif
+                                                @if ($i < $count - 1)
+                                                    <br>
+                                                @endif
                                             @endfor
                                         </td>
                                         <td>
                                             @for ($i = 0; $i < $count; $i++)
                                                 {{ $price_kg[$i] }}
-                                                @if($i < $count - 1)<br>@endif
+                                                @if ($i < $count - 1)
+                                                    <br>
+                                                @endif
                                             @endfor
                                         </td>
                                         <td>
                                             @for ($i = 0; $i < $count; $i++)
                                                 {{ $quantity[$i] }}
-                                                @if($i < $count - 1)<br>@endif
+                                                @if ($i < $count - 1)
+                                                    <br>
+                                                @endif
                                             @endfor
                                         </td>
                                         <td>
                                             @for ($i = 0; $i < $count; $i++)
                                                 {{ $total_amount[$i] }}
-                                                @if($i < $count - 1)<br>@endif
+                                                @if ($i < $count - 1)
+                                                    <br>
+                                                @endif
                                             @endfor
                                         </td>
                                         <td>
                                             @for ($i = 0; $i < $count; $i++)
-                                            @php
-                                                $total += $total_amount[$i];
-                                            @endphp
+                                                @php
+                                                    $total += $total_amount[$i];
+                                                @endphp
                                             @endfor
                                             {{ round($total) }}
                                         </td>

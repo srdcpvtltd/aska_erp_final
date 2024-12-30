@@ -6,8 +6,6 @@ use App\Models\FarmerLoan;
 use App\Models\Farming;
 use App\Models\FarmingPayment;
 use App\Models\ProductService;
-use App\Models\SeedStock;
-use App\Models\Utility;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
