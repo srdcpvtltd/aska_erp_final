@@ -196,13 +196,13 @@
                                         <td class="Action">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                                 @can('edit-allotment')
-                                                    {{-- @if ($loan->invoice_generate_status == 0)
+                                                    @if ($loan->invoice_generate_status == 0)
                                                         <li class="me-2">
-                                                            <a href="{{ route('admin.farmer.loan.edit', $loan->id) }}">
+                                                            <a href="{{ route('admin.seedstock.edit', $loan->id) }}">
                                                                 <i class="link-icon" data-feather="edit"></i>
                                                             </a>
                                                         </li>
-                                                    @endif --}}
+                                                    @endif
                                                     <li class="me-2">
                                                         <a href="{{ route('admin.farmer.loan.invoice_generate', $loan->id) }}"
                                                             target="_blank">
@@ -213,7 +213,7 @@
                                                 @can('delete-allotment')
                                                     <li>
                                                         <a href="" class="deleteBtn"
-                                                            data-href="{{ route('admin.farmer.loan.destroy', $loan->id) }}"
+                                                            data-href="{{ route('admin.seedstock.destroy', $loan->id) }}"
                                                             data-bs-toggle="tooltip" title="{{ __('Delete') }}">
                                                             <i class="link-icon" data-feather="delete"></i>
                                                         </a>

@@ -40,4 +40,9 @@ class FarmerLoan extends Model
         return $this->belongsTo(Farming::class,'farming_id');
     }
 
+    public function farming_payment()
+    {
+        return $this->belongsTo(FarmingPayment::class,'farming_payment_id');
+    }
+
 }

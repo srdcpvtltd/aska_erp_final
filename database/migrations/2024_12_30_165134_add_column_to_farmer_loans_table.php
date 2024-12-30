@@ -13,14 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('seed_stocks', function (Blueprint $table) {
-            $table->id();
-            $table->string('farmer_id');
-            $table->integer('product_id');
-            $table->string('receive_date');
-            $table->string('quantity');
-            $table->string('amount');
-            $table->timestamps();
+        Schema::table('farmer_loans', function (Blueprint $table) {
+            $table->integer('farming_payment_id')->nullable()->default('0')->after('invoice_generate_status');
         });
     }
 
@@ -31,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('seed_stocks');
+        Schema::table('farmer_loans', function (Blueprint $table) {
+            $table->integer('farming_payment_id')->nullable()->default('0')->after('invoice_generate_status');
+        });
     }
 };

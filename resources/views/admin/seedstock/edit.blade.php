@@ -6,6 +6,99 @@
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
     <script>
         $(document).ready(function() {
+            $('#registration_year').keyup(function() {
+                let registration_year = $(this).val();
+
+                $.ajax({
+                    url: "{{ route('admin.farmer.get_farmer') }}",
+                    method: 'post',
+                    data: {
+                        registration_year: registration_year,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        farmer = response;
+                        $('#farming_id_from').empty();
+                        $('#farming_id_from').append(
+                            '<option value="">Select Farmer</option>');
+                        for (i = 0; i < farmer.length; i++) {
+                            $('#farming_id_from').append('<option value="' + farmer[i]
+                                .id + '">' + farmer[i].name + '</option>');
+                        }
+                    }
+                });
+            });
+            $('#farming_id_from').change(function() {
+                let farmer_id = $(this).val();
+                $.ajax({
+                    url: "{{ route('admin.farmer.farming.get_detail') }}",
+                    method: 'post',
+                    data: {
+                        farming_id: farmer_id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        if (response.villageHtml) {
+                            $('#village_id_from').append(response.villageHtml);
+                        } else {
+                            $('#village_id_from').append(
+                                '<option value="">Select Village</option>');
+                        }
+                        $('#father_name_from').val(response.farming.father_name);
+                        $('#g_code_from').val(response.farming.old_g_code);
+                    }
+                });
+            });
+            $('#g_code').keyup(function() {
+                let g_code = $(this).val();
+                $.ajax({
+                    url: "{{ route('admin.farmer.get_detail') }}",
+                    method: 'post',
+                    data: {
+                        g_code: g_code,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        $('#farming_id_to').empty();
+                        if (response.farmerHtml) {
+                            $('#farming_id_to').append(response.farmerHtml);
+                        } else {
+                            $('#farming_id_to').append(
+                                '<option value="">Select Farmer</option>');
+                        }
+                        if (response.villageHtml) {
+                            $('#village_id_to').append(response.villageHtml);
+                        } else {
+                            $('#village_id_to').append(
+                                '<option value="">Select Village</option>');
+                        }
+                        $('#father_name_to').val(response.farming.father_name);
+                    }
+                });
+            });
+            $('#product_id').on('change', function() {
+                var product_id = $(this).val();
+
+                $.ajax({
+                    url: "{{ route('admin.seedstock.get_seed_stock_detail') }}",
+                    method: 'post',
+                    data: {
+                        product_id: product_id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        $('#unit_price').val(response.sale_price);
+                    }
+                });
+            });
             $('#quantity').on('keyup', function() {
                 var quantity = $(this).val();
                 var product_id = $('#product_id').val();
@@ -24,7 +117,25 @@
                         $('#amount').val(response.total_price);
                     }
                 });
-            })
+            });
+            $('#quantity').on('keypress', function(e) {
+                var charCode = e.which || e.keyCode;
+                var charStr = String.fromCharCode(charCode);
+
+                // Allow digits (0-9) and dot (.)
+                if (!charStr.match(/[0-9.]/)) {
+                    e.preventDefault();
+                }
+            });
+
+            // Prevent multiple dots
+            $('#quantity').on('input', function() {
+                var value = $(this).val();
+                if ((value.match(/\./g) || []).length > 1) {
+                    $(this).val(value.replace(/\.(?=.*\.)/, '')); // Remove extra dots
+                }
+            });
+
         });
     </script>
 @endsection
@@ -46,53 +157,145 @@
     </nav>
 
     <div class="row">
-        {{ Form::model($seedstock, ['route' => ['admin.seedstock.update', $seedstock->id], 'method' => 'PUT']) }}
+        {{ Form::model($farmer_loan, ['route' => ['admin.seedstock.update', $farmer_loan->id], 'method' => 'PUT']) }}
+        @php
+            $product_id = json_decode($farmer_loan->loan_type_id);
+            $unit_price = json_decode($farmer_loan->price_kg);
+            $quantity = json_decode($farmer_loan->quantity);
+            $amount = json_decode($farmer_loan->total_amount);
+        @endphp
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
+                        <label for=""><b>Seed From</b></label>
+                        <hr>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ Form::label('registration_year', __('Registration Year'), ['class' => 'form-label']) }}
+                                {{ Form::text('registration_year', @$farmer_loan->farming_payment->farming->registration_year, ['class' => 'form-control', 'required' => 'required', 'id' => 'registration_year']) }}
+                            </div>
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('farmer_id', __('Farmer'), ['class' => 'form-label']) }}
-                                <select class="form-control select" name="farmer_id" id="farmer_id">
+                                <select class="form-control select" name="farmer_id_from" id="farming_id_from">
+                                    <option value="">{{ __('Select Farmer') }}</option>
+                                    @foreach ($farmers_from as $farmer)
+                                        <option value="{{ $farmer->id }}"
+                                            {{ $farmer->id == @$farmer_loan->farming_payment->farming_id ? 'selected' : '' }}>
+                                            {{ $farmer->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <input type="hidden" name="g_code_from" id="g_code_from"
+                                value="{{ @$farmer_loan->farming_payment->farming->old_g_code }}">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ Form::label('father_name', __('Father Name'), ['class' => 'form-label']) }}
+                                <input type="text" class="form-control" name="father_name_from" id="father_name_from"
+                                    value="{{ @$farmer_loan->farming_payment->farming->father_name }}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ Form::label('village', __('Village'), ['class' => 'form-label']) }}
+                                <select class="form-control select" name="village_id_from" id="village_id_from">
+                                    <option value="">{{ __('Select Village') }}</option>
+                                    @foreach ($villages_from as $village)
+                                        <option value="{{ $village->id }}"
+                                            {{ $village->id == @$farmer_loan->farming_payment->farming->village_id ? 'selected' : '' }}>
+                                            {{ $village->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <label for=""><b>Seed TO</b></label>
+                        <hr>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ Form::label('g_code', __('G.Code'), ['class' => 'form-label']) }}
+                                {{ Form::text('g_code', $farmer_loan->farming->old_g_code, ['class' => 'form-control', 'required' => 'required']) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ Form::label('farmer_id', __('Farmer'), ['class' => 'form-label']) }}
+                                <select class="form-control select" name="farmer_id_to" id="farming_id_to">
                                     <option value="">{{ __('Select Farmer') }}</option>
                                     @foreach ($farmers as $farmer)
-                                        <option value="{{ $farmer->id }}" {{ $seedstock->farmer_id == $farmer->id ? 'selected' : '' }}>{{ $farmer->name }}</option>
+                                        <option value="{{ $farmer->id }}"
+                                            {{ $farmer->id == $farmer_loan->farming_id ? 'selected' : '' }}>
+                                            {{ $farmer->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
+                                {{ Form::label('father_name', __('Father Name'), ['class' => 'form-label']) }}
+                                <input type="text" class="form-control" name="father_name_to" id="father_name_to"
+                                    value="{{ $farmer_loan->farming->father_name }}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ Form::label('village', __('Village'), ['class' => 'form-label']) }}
+                                <select class="form-control select" name="village_id_to" id="village_id_to">
+                                    <option value="">{{ __('Select Village') }}</option>
+                                    @foreach ($villages as $village)
+                                        <option value="{{ $village->id }}"
+                                            {{ $village->id == $farmer_loan->farming->village_id ? 'selected' : '' }}>
+                                            {{ $village->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="form-group col-md-6">
+                            {{ Form::label('invoice_no', __('Invoice No.'), ['class' => 'form-label']) }}
+                            {{ Form::text('invoice_no', $farmer_loan->invoice_no, ['id' => 'invoice_no', 'class' => 'form-control', 'required' => 'required', 'maxlength="5"']) }}
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 {{ Form::label('product_id', __('Product'), ['class' => 'form-label']) }}
-                                <select class="form-control select" name="product_id" id="product_id" disabled>
+                                <select class="form-control select" name="product_id[]" id="product_id">
                                     <option value="">{{ __('Select Product') }}</option>
                                     @foreach ($products as $product)
                                         <option value="{{ $product->id }}"
-                                            {{ $seedstock->product_id == $product->id ? 'selected' : '' }}>
-                                            {{ $product->name }}</option>
+                                            {{ $product_id[0] == $product->id ? 'selected' : '' }}>{{ $product->name }}
+                                        </option>
                                     @endforeach
                                 </select>
-                                <input type="hidden" name="product_id" value="{{ $seedstock->product_id }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 {{ Form::label('receive_date', __('Receive Date'), ['class' => 'form-label']) }}
                                 <input type="date" class="form-control" name="receive_date"
-                                    value="{{ $seedstock->receive_date }}">
+                                    value="{{ $farmer_loan->date }}">
                             </div>
                         </div>
                         <div class="col-md-6">
+                            <div class="form-group">
+                                {{ Form::label('unit_price', __('Unit Price'), ['class' => 'form-label']) }}
+                                <input type="number" class="form-control" name="unit_price[]" id="unit_price"
+                                    value="{{ $unit_price[0] }}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
                             <div class="form-group">
                                 {{ Form::label('quantity', __('Quantity'), ['class' => 'form-label']) }}
-                                <input type="text" class="form-control" name="quantity" id="quantity" value="{{ $seedstock->quantity }}">
+                                <input type="text" class="form-control" name="quantity[]" id="quantity"
+                                    value="{{ $quantity[0] }}">
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 {{ Form::label('amount', __('Amount'), ['class' => 'form-label']) }}
-                                <input type="text" class="form-control" name="amount" id="amount" value="{{ $seedstock->amount }}" readonly>
+                                <input type="text" class="form-control" name="amount[]" id="amount"
+                                    value="{{ $amount[0] }}" readonly>
                             </div>
                         </div>
                     </div>
