@@ -13,6 +13,10 @@
             var actionColumnIndex = table.column(':contains(Action)')
                 .index(); // Automatically detect the "Action" column index based on header text
 
+            // Specify the index of the "Round Amount" column to convert its values to numbers
+            var roundAmountColumnIndex = table.column(':contains(Round Amount)')
+                .index(); // Adjust the column header name accordingly
+
             // Create a new workbook
             var wb = XLSX.utils.book_new();
 
@@ -38,7 +42,14 @@
                 // Loop through each cell in the row, adding only non-"Action" columns
                 Object.keys(rowData).forEach(function(key, index) {
                     if (index !== actionColumnIndex) {
-                        filteredRow.push(rowData[key]);
+                        var cellData = rowData[key];
+
+                        // Automatically convert "Round Amount" column data to a number
+                        if (index === roundAmountColumnIndex) {
+                            cellData = parseFloat(cellData.replace(/,/g, '')) ||
+                                0; // Remove commas and parse as float
+                        }
+                        filteredRow.push(cellData);
                     }
                 });
 
@@ -47,6 +58,16 @@
 
             // Convert the data array to a worksheet
             var ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+            // Ensure "Round Amount" column is set to numeric in Excel
+            Object.keys(ws).forEach(function(cell) {
+                if (cell.match(/^[A-Z]+\d+$/)) { // Check for valid cell reference
+                    var colIndex = XLSX.utils.decode_cell(cell).c; // Get column index
+                    if (colIndex === roundAmountColumnIndex) {
+                        ws[cell].t = 'n'; // Set cell type to numeric
+                    }
+                }
+            });
 
             // Append the worksheet to the workbook
             XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
