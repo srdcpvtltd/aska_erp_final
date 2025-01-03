@@ -195,11 +195,11 @@
                                         </td>
                                         <td>
                                             @for ($i = 0; $i < $count; $i++)
-                                                @php
-                                                    $total += $total_amount[$i];
-                                                @endphp
+                                                {{ round($total_amount[$i]) }}
+                                                @if ($i < $count - 1)
+                                                    <br>
+                                                @endif
                                             @endfor
-                                            {{ round($total) }}
                                         </td>
 
                                         <td class="Action">
