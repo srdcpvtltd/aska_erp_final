@@ -3,6 +3,9 @@
     {{ __('Manage Bills') }}
 @endsection
 @section('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <script>
         $('.copy_link').click(function(e) {
             e.preventDefault();
@@ -15,6 +18,25 @@
 
             document.execCommand('copy');
             show_toastr('success', 'Url copied to clipboard', 'success');
+        });
+        
+        $(document).ready(function() {
+            $('#daterangepicker').daterangepicker({
+                locale: {
+                    format: 'YYYY-MM-DD',
+                },
+                autoUpdateInput: false,
+            });
+            // On Apply event: Update the input field with the selected date
+            $('#daterangepicker').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('YYYY-MM-DD') + ' to ' + picker.endDate.format(
+                    'YYYY-MM-DD'));
+            });
+
+            // On Cancel event: Clear the input field
+            $('#daterangepicker').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val(''); // Set the value to empty
+            });
         });
     </script>
 @endsection
@@ -53,7 +75,7 @@
                                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 month">
                                         <div class="btn-box">
                                             {{ Form::label('bill_date', __('Bill Date'), ['class' => 'form-label']) }}
-                                            {{ Form::text('bill_date', isset($_GET['bill_date']) ? $_GET['bill_date'] : null, ['class' => 'form-control month-btn', 'id' => 'pc-daterangepicker-1', 'readonly']) }}
+                                            {{ Form::text('bill_date', isset($_GET['bill_date']) ? $_GET['bill_date'] : null, ['class' => 'form-control month-btn', 'id' => 'daterangepicker']) }}
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">

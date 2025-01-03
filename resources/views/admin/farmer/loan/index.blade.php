@@ -6,60 +6,80 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
     <script>
         document.getElementById('exportButton').addEventListener('click', function() {
-            // Get the DataTable instance
             var table = $('#allotment-table').DataTable();
 
-            // Define the index of the "Action" column to exclude from the export
-            var actionColumnIndex = table.column(':contains(Action)')
-                .index(); // Automatically detect the "Action" column index based on header text
+            // Get the index of the "Action" column to exclude
+            var actionColumnIndex = table.column(':contains(Action)').index();
 
-            // Specify the index of the "Round Amount" column to convert its values to numbers
-            var roundAmountColumnIndex = table.column(':contains(Round Amount)')
-                .index(); // Adjust the column header name accordingly
+            // Get the index of the "Round Amount" column for numeric conversion
+            var roundAmountColumnIndex = table.column(':contains(Round Amount)').index();
+
+            // Get the index of the "Type" column (column with multiple values)
+            var typeColumnIndex = table.column(':contains(Type)')
+                .index(); // Replace "Type" with the actual column name
 
             // Create a new workbook
             var wb = XLSX.utils.book_new();
 
-            // Create an array to store rows of data
+            // Array to store rows of data
             var ws_data = [];
 
             // Get headers from the table, excluding the "Action" column
             var headers = [];
             $('#allotment-table thead tr th').each(function(index) {
                 if (index !== actionColumnIndex) {
-                    headers.push($(this).text()); // Add header if it's not the "Action" column
+                    headers.push($(this).text());
                 }
             });
             ws_data.push(headers); // Add headers to ws_data
 
-            // Add rows of data from the DataTable, excluding the "Action" column
+            // Process rows
             table.rows({
                 search: 'applied'
             }).every(function(rowIdx, tableLoop, rowLoop) {
                 var rowData = this.data();
-                var filteredRow = [];
+                var typeData = rowData[typeColumnIndex]?.split('<br>') ||
+            []; // Split "Type" values into an array
 
-                // Loop through each cell in the row, adding only non-"Action" columns
-                Object.keys(rowData).forEach(function(key, index) {
-                    if (index !== actionColumnIndex) {
-                        var cellData = rowData[key];
-
-                        // Automatically convert "Round Amount" column data to a number
-                        if (index === roundAmountColumnIndex) {
-                            cellData = parseFloat(cellData.replace(/,/g, '')) ||
-                                0; // Remove commas and parse as float
+                // If the "Type" column has multiple values, create a new row for each value
+                if (typeData.length > 0) {
+                    typeData.forEach(function(typeValue) {
+                        var newRow = [];
+                        Object.keys(rowData).forEach(function(key, index) {
+                            if (index !== actionColumnIndex) {
+                                var cellData = rowData[key];
+                                if (index === roundAmountColumnIndex) {
+                                    cellData = parseFloat(cellData.replace(/,/g, '')) ||
+                                        0; // Parse as numeric
+                                }
+                                cellData = cellData.toString().replace(/<br\s*\/?>/g, '\n');
+                                if (index === typeColumnIndex) {
+                                    cellData = typeValue
+                                        .trim(); // Use the split "Type" value
+                                }
+                                newRow.push(cellData);
+                            }
+                        });
+                        ws_data.push(newRow); // Add the new row
+                    });
+                } else {
+                    // If no multiple values, process normally
+                    var newRow = [];
+                    Object.keys(rowData).forEach(function(key, index) {
+                        if (index !== actionColumnIndex) {
+                            var cellData = rowData[key];
+                            if (index === roundAmountColumnIndex) {
+                                cellData = parseFloat(cellData.replace(/,/g, '')) || 0;
+                            }
+                            cellData = cellData.toString().replace(/<br\s*\/?>/g, '\n');
+                            newRow.push(cellData);
                         }
-
-                        // Replace <br> tags with newlines for all cells
-                        cellData = cellData.toString().replace(/<br\s*\/?>/g, '\n');
-                        filteredRow.push(cellData);
-                    }
-                });
-
-                ws_data.push(filteredRow); // Add filtered row to ws_data
+                    });
+                    ws_data.push(newRow);
+                }
             });
 
-            // Convert the data array to a worksheet
+            // Convert data array to worksheet
             var ws = XLSX.utils.aoa_to_sheet(ws_data);
 
             // Ensure "Round Amount" column is set to numeric in Excel
@@ -72,10 +92,10 @@
                 }
             });
 
-            // Append the worksheet to the workbook
+            // Append worksheet to workbook
             XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
-            // Export the workbook to an Excel file
+            // Export workbook to an Excel file
             XLSX.writeFile(wb, 'allotment.xlsx');
         });
     </script>

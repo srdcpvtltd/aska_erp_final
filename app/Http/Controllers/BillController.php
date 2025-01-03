@@ -31,17 +31,17 @@ class BillController extends Controller
     public function index(Request $request)
     {
         if (\Auth::user()->can('manage bill')) {
-
+            
             $vender = Vender::where('created_by', '=', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $vender->prepend('Select Vendor', '');
-
+            
             $status = Bill::$statues;
 
             $query = Bill::where('type', '=', 'Bill')->where('created_by', '=', \Auth::user()->creatorId());
             if (!empty($request->vender)) {
                 $query->where('vender_id', '=', $request->vender);
             }
-
+            
             if (count(explode('to', $request->bill_date)) > 1) {
                 $date_range = explode(' to ', $request->bill_date);
                 $query->whereBetween('bill_date', $date_range);

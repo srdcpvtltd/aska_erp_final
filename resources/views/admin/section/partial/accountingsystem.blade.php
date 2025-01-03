@@ -97,78 +97,81 @@
                     </div>
                 </li>
                 {{-- @if (Gate::check('manage invoice') || Gate::check('manage revenue') || Gate::check('manage credit note')) --}}
-                    {{-- <li
-                        class="nav-item">
-                        <a class="nav-link {{ Request::segment(2) == 'customer' || Request::segment(2) == 'proposal' || Request::segment(2) == 'invoice' || Request::segment(2) == 'revenue' || Request::segment(2) == 'credit-note' ? 'active' : '' }}" data-bs-toggle="collapse" href="#sales" data-href="#" role="button"
-                            aria-expanded="false"><span>{{ __('Sales') }}</span><i class="link-arrow"
-                                data-feather="chevron-down"></i></a>
-                        <div class="{{ Request::segment(2) == 'customer' || Request::segment(2) == 'proposal' || Request::segment(2) == 'invoice' || Request::segment(2) == 'revenue' || Request::segment(2) == 'credit-note' ? '' : 'collapse' }}" id="sales">
-                            <ul class="nav sub-menu">
-                                @if (Gate::check('manage customer'))
-                                    <li class="nav-item">
-                                        <a class="nav-link {{ Request::segment(2) == 'customer' ? 'active' : '' }}"
-                                            href="{{ route('admin.customer.index') }}">{{ __('Customer') }}</a>
-                                    </li>
-                                @endif
-                                @if (Gate::check('manage proposal'))
-                                    <li class="nav-item">
-                                        <a class="nav-link {{ Request::segment(2) == 'proposal' ? 'active' : '' }}"
-                                            href="{{ route('admin.proposal.index') }}">{{ __('Estimate') }}</a>
-                                    </li>
-                                @endif
-                                <li
-                                    class="nav-item">
-                                    <a class="nav-link {{ Request::route()->getName() == 'admin.invoice.index' || Request::route()->getName() == 'admin.invoice.create' || Request::route()->getName() == 'admin.invoice.edit' || Request::route()->getName() == 'admin.invoice.show' ? ' active' : '' }}" href="{{ route('admin.invoice.index') }}">{{ __('Invoice') }}</a>
-                                </li> --}}
-                                {{--
-                                <li
-                                    class="nav-item {{ Request::route()->getName() == 'admin.revenue.index' || Request::route()->getName() == 'admin.revenue.create' || Request::route()->getName() == 'admin.revenue.edit' ? ' active' : '' }}">
-                                    <a class="nav-link" href="{{ route('admin.revenue.index') }}">{{ __('Revenue') }}</a>
-                                </li>
-                                <li
-                                    class="nav-item {{ Request::route()->getName() == 'admin.credit.note' ? ' active' : '' }}">
-                                    <a class="nav-link"
-                                        href="{{ route('admin.credit.note') }}">{{ __('Credit Note') }}</a>
-                                </li> --}}
-                            {{-- </ul>
-                        </div>
-                    </li> --}}
-                {{-- @endif --}}
-                
-            @if (Gate::check('manage bill') || Gate::check('manage payment') || Gate::check('manage debit note') || Gate::check('manage-vender'))
-                <li
-                    class="nav-item">
-                    <a class="nav-link {{ Request::segment(2) == 'bill' || Request::segment(2) == 'vender' || Request::segment(2) == 'expense' || Request::segment(2) == 'payment' || Request::segment(2) == 'debit-note' ? 'active' : '' }}" data-bs-toggle="collapse" href="#purchase" data-href="#" role="button"
-                        aria-expanded="false"><span>{{ __('Purchases') }}</span><i class="link-arrow"
+                {{-- <li class="nav-item">
+                    <a class="nav-link {{ Request::segment(2) == 'customer' || Request::segment(2) == 'proposal' || Request::segment(2) == 'invoice' || Request::segment(2) == 'revenue' || Request::segment(2) == 'credit-note' ? 'active' : '' }}"
+                        data-bs-toggle="collapse" href="#sales" data-href="#" role="button"
+                        aria-expanded="false"><span>{{ __('Sales') }}</span><i class="link-arrow"
                             data-feather="chevron-down"></i></a>
-                    <div class="{{ Request::segment(2) == 'bill' || Request::segment(2) == 'vender' || Request::segment(2) == 'expense' || Request::segment(2) == 'payment' || Request::segment(2) == 'debit-note' ? '' : 'collapse' }}" id="purchase">
+                    <div class="{{ Request::segment(2) == 'customer' || Request::segment(2) == 'proposal' || Request::segment(2) == 'invoice' || Request::segment(2) == 'revenue' || Request::segment(2) == 'credit-note' ? '' : 'collapse' }}"
+                        id="sales">
                         <ul class="nav sub-menu">
-                            @if (Gate::check('manage-vender'))
+                            @if (Gate::check('manage customer'))
                                 <li class="nav-item">
-                                    <a class="nav-link {{ Request::segment(2) == 'vender' ? 'active' : '' }}"
-                                        href="{{ route('admin.vender.index') }}">{{ __('Vender') }}</a>
+                                    <a class="nav-link {{ Request::segment(2) == 'customer' ? 'active' : '' }}"
+                                        href="{{ route('admin.customer.index') }}">{{ __('Customer') }}</a>
                                 </li>
                             @endif
-                            {{-- <li
-                                class="nav-item">
-                                <a class="nav-link {{ Request::route()->getName() == 'admin.bill.index' || Request::route()->getName() == 'admin.bill.create' || Request::route()->getName() == 'admin.bill.edit' || Request::route()->getName() == 'admin.bill.show' ? ' active' : '' }}" href="{{ route('admin.bill.index') }}">{{ __('Bill') }}</a>
-                            </li>
-                            <li
-                                class="nav-item">
-                                <a class="nav-link {{ Request::route()->getName() == 'expense.index' || Request::route()->getName() == 'expense.create' || Request::route()->getName() == 'expense.edit' || Request::route()->getName() == 'expense.show' ? ' active' : '' }}" href="{{ route('admin.expense.index') }}">{{ __('Expense') }}</a>
-                            </li>
-                            <li
-                                class="nav-item">
-                                <a class="nav-link {{ Request::route()->getName() == 'payment.index' || Request::route()->getName() == 'payment.create' || Request::route()->getName() == 'payment.edit' ? ' active' : '' }}" href="{{ route('admin.payment.index') }}">{{ __('Payment') }}</a>
-                            </li>
+                            @if (Gate::check('manage proposal'))
+                                <li class="nav-item">
+                                    <a class="nav-link {{ Request::segment(2) == 'proposal' ? 'active' : '' }}"
+                                        href="{{ route('admin.proposal.index') }}">{{ __('Estimate') }}</a>
+                                </li>
+                            @endif
                             <li class="nav-item">
-                                <a class="nav-link {{ Request::route()->getName() == 'debit.note' ? ' active' : '' }}" href="{{ route('admin.debit.note') }}">{{ __('Debit Note') }}</a>
-                            </li> --}}
+                                <a class="nav-link {{ Request::route()->getName() == 'admin.invoice.index' || Request::route()->getName() == 'admin.invoice.create' || Request::route()->getName() == 'admin.invoice.edit' || Request::route()->getName() == 'admin.invoice.show' ? ' active' : '' }}"
+                                    href="{{ route('admin.invoice.index') }}">{{ __('Invoice') }}</a>
+                            </li>
+                            <li
+                                class="nav-item {{ Request::route()->getName() == 'admin.revenue.index' || Request::route()->getName() == 'admin.revenue.create' || Request::route()->getName() == 'admin.revenue.edit' ? ' active' : '' }}">
+                                <a class="nav-link" href="{{ route('admin.revenue.index') }}">{{ __('Revenue') }}</a>
+                            </li>
+                            <li class="nav-item {{ Request::route()->getName() == 'admin.credit.note' ? ' active' : '' }}">
+                                <a class="nav-link" href="{{ route('admin.credit.note') }}">{{ __('Credit Note') }}</a>
+                            </li>
                         </ul>
                     </div>
-                </li>
-            @endif
-            {{--
+                </li> --}}
+                {{-- @endif --}}
+
+                @if (Gate::check('manage bill') ||
+                        Gate::check('manage payment') ||
+                        Gate::check('manage debit note') ||
+                        Gate::check('manage-vender'))
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::segment(2) == 'bill' || Request::segment(2) == 'vender' || Request::segment(2) == 'expense' || Request::segment(2) == 'payment' || Request::segment(2) == 'debit-note' ? 'active' : '' }}"
+                            data-bs-toggle="collapse" href="#purchase" data-href="#" role="button"
+                            aria-expanded="false"><span>{{ __('Purchases') }}</span><i class="link-arrow"
+                                data-feather="chevron-down"></i></a>
+                        <div class="{{ Request::segment(2) == 'bill' || Request::segment(2) == 'vender' || Request::segment(2) == 'expense' || Request::segment(2) == 'payment' || Request::segment(2) == 'debit-note' ? '' : 'collapse' }}"
+                            id="purchase">
+                            <ul class="nav sub-menu">
+                                @if (Gate::check('manage-vender'))
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ Request::segment(2) == 'vender' ? 'active' : '' }}"
+                                            href="{{ route('admin.vender.index') }}">{{ __('Vender') }}</a>
+                                    </li>
+                                @endif
+                                <li class="nav-item">
+                                    <a class="nav-link {{ Request::route()->getName() == 'admin.bill.index' || Request::route()->getName() == 'admin.bill.create' || Request::route()->getName() == 'admin.bill.edit' || Request::route()->getName() == 'admin.bill.show' ? ' active' : '' }}"
+                                        href="{{ route('admin.bill.index') }}">{{ __('Bill') }}</a>
+                                </li>
+                                {{-- <li class="nav-item">
+                                    <a class="nav-link {{ Request::route()->getName() == 'expense.index' || Request::route()->getName() == 'expense.create' || Request::route()->getName() == 'expense.edit' || Request::route()->getName() == 'expense.show' ? ' active' : '' }}"
+                                        href="{{ route('admin.expense.index') }}">{{ __('Expense') }}</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ Request::route()->getName() == 'payment.index' || Request::route()->getName() == 'payment.create' || Request::route()->getName() == 'payment.edit' ? ' active' : '' }}"
+                                        href="{{ route('admin.payment.index') }}">{{ __('Payment') }}</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ Request::route()->getName() == 'debit.note' ? ' active' : '' }}"
+                                        href="{{ route('admin.debit.note') }}">{{ __('Debit Note') }}</a>
+                                </li> --}}
+                            </ul>
+                        </div>
+                    </li>
+                @endif
+                {{--
             @if (Gate::check('manage chart of account') || Gate::check('manage journal entry') || Gate::check('balance sheet report') || Gate::check('ledger report') || Gate::check('trial balance report'))
                 <li
                     class="nav-item {{ Request::segment(2) == 'chart-of-account' || Request::segment(2) == 'journal-entry' || Request::segment(2) == 'ledger' || Request::segment(2) == 'balance-sheet' || Request::segment(2) == 'trial-balance' ? 'active' : '' }}">
