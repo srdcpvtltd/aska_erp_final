@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-    {{ __('Edit Farmer Security Deposit') }}
+    {{ __('Farmer Reimbursement Edit') }}
 @endsection
 
 @section('scripts')

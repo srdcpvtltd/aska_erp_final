@@ -11,12 +11,10 @@
             // Get the index of the "Action" column to exclude
             var actionColumnIndex = table.column(':contains(Action)').index();
 
-            // Get the index of the "Round Amount" column for numeric conversion
-            var roundAmountColumnIndex = table.column(':contains(Round Amount)').index();
-
-            // Get the index of the "Type" column (column with multiple values)
-            var typeColumnIndex = table.column(':contains(Type)')
-                .index(); // Replace "Type" with the actual column name
+            // Define columns with potential multiple values
+            var multiValueColumns = ['Type', 'Price', 'Quantity', 'Amount', 'Round Amount'];
+            var multiValueColumnIndices = multiValueColumns.map(column => table.column(`:contains(${column})`)
+                .index());
 
             // Create a new workbook
             var wb = XLSX.utils.book_new();
@@ -38,40 +36,35 @@
                 search: 'applied'
             }).every(function(rowIdx, tableLoop, rowLoop) {
                 var rowData = this.data();
-                var typeData = rowData[typeColumnIndex]?.split('<br>') ||
-            []; // Split "Type" values into an array
 
-                // If the "Type" column has multiple values, create a new row for each value
-                if (typeData.length > 0) {
-                    typeData.forEach(function(typeValue) {
-                        var newRow = [];
-                        Object.keys(rowData).forEach(function(key, index) {
-                            if (index !== actionColumnIndex) {
-                                var cellData = rowData[key];
-                                if (index === roundAmountColumnIndex) {
-                                    cellData = parseFloat(cellData.replace(/,/g, '')) ||
-                                        0; // Parse as numeric
-                                }
-                                cellData = cellData.toString().replace(/<br\s*\/?>/g, '\n');
-                                if (index === typeColumnIndex) {
-                                    cellData = typeValue
-                                        .trim(); // Use the split "Type" value
-                                }
-                                newRow.push(cellData);
-                            }
-                        });
-                        ws_data.push(newRow); // Add the new row
-                    });
-                } else {
-                    // If no multiple values, process normally
+                // Extract multiple values for each multi-value column
+                var multiValueData = multiValueColumnIndices.map(index => {
+                    return rowData[index]?.split('<br>') || []; // Split values into arrays
+                });
+
+                // Find the maximum number of rows needed
+                var maxRows = Math.max(...multiValueData.map(values => values.length));
+
+                // Create new rows for each value in multi-value columns
+                for (var i = 0; i < maxRows; i++) {
                     var newRow = [];
                     Object.keys(rowData).forEach(function(key, index) {
                         if (index !== actionColumnIndex) {
                             var cellData = rowData[key];
-                            if (index === roundAmountColumnIndex) {
+                            cellData = (cellData?.toString().replace(/<br\s*\/?>/g, '\n') || '').trim();
+
+                            // If the column is a multi-value column, use the respective value
+                            if (multiValueColumnIndices.includes(index)) {
+                                var columnIndex = multiValueColumnIndices.indexOf(index);
+                                cellData = (multiValueData[columnIndex][i] ||
+                                    '').trim();
+                            }
+
+                            // If the column is "Round Amount", parse it as numeric
+                            if (index === table.column(':contains(Round Amount)').index()) {
                                 cellData = parseFloat(cellData.replace(/,/g, '')) || 0;
                             }
-                            cellData = cellData.toString().replace(/<br\s*\/?>/g, '\n');
+
                             newRow.push(cellData);
                         }
                     });
@@ -86,7 +79,7 @@
             Object.keys(ws).forEach(function(cell) {
                 if (cell.match(/^[A-Z]+\d+$/)) { // Check for valid cell reference
                     var colIndex = XLSX.utils.decode_cell(cell).c; // Get column index
-                    if (colIndex === roundAmountColumnIndex) {
+                    if (colIndex === table.column(':contains(Round Amount)').index()) {
                         ws[cell].t = 'n'; // Set cell type to numeric
                     }
                 }
