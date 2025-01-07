@@ -220,6 +220,7 @@ class FarmingPaymentController extends Controller
             // }
             try {
                 $validator = Validator::make($request->all(), [
+                    'invoice_no' => 'required',
                     'g_code' => 'required',
                     'farming_id' => 'required',
                     'created_by' => 'required',
@@ -236,6 +237,7 @@ class FarmingPaymentController extends Controller
                 }
 
                 $client = new FarmingPayment;
+                $client->invoice_no = $request->invoice_no;
                 $client->farming_id = $request->farming_id;
                 $client->registration_number = $request->registration_number;
                 $client->g_code = $request->g_code;
@@ -293,6 +295,7 @@ class FarmingPaymentController extends Controller
         if (\Auth::user()->can('edit-reimbursement')) {
             try {
                 $farmingPayment = FarmingPayment::find($id);
+                $farmingPayment->invoice_no = $request->invoice_no;
                 $farmingPayment->farming_id = $request->farming_id;
                 $farmingPayment->registration_number = $request->registration_number;
                 $farmingPayment->g_code = $request->g_code;
@@ -315,7 +318,6 @@ class FarmingPaymentController extends Controller
 
                 return redirect()->to(route('admin.farmer.reimbursement.index'))->with('success', 'Farming Payment Updated Successfully.');
             } catch (Exception $e) {
-                dd($e);
                 return redirect()->back()->with('danger', $e->getMessage());
             }
         } else {
@@ -328,7 +330,7 @@ class FarmingPaymentController extends Controller
         if (\Auth::user()->can('delete-reimbursement')) {
             $farmingPayment = FarmingPayment::find($id);
             $farmingPayment->delete();
-            
+
             return redirect()->back()->with('success', 'Farming Payment Deleted Successfully.');
         } else {
             return redirect()->back()->with('danger', 'Permission denied.');

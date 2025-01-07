@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('challans', function (Blueprint $table) {
-            $table->integer('vendor_id')->default('0')->after('warehouse_id');
+        Schema::table('farming_payments', function (Blueprint $table) {
+            $table->string('invoice_no')->nullable()->after('g_code');
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('challans', function (Blueprint $table) {
-            $table->dropColumn('vendor_id');
+        Schema::table('farming_payments', function (Blueprint $table) {
+            $table->dropColumn('invoice_no');
         });
     }
 };

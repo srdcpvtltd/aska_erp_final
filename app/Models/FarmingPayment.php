@@ -33,4 +33,14 @@ class FarmingPayment extends Model
     {
         return $this->belongsTo(Farming::class,'farming_id');
     }
+
+    public function bank_detail()
+    {
+        return $this->belongsTo(Bank::class,'bank');
+    }
+    
+    public function branch_detail()
+    {
+        return $this->belongsTo(Bank_branch::class,'branch');
+    }
 }

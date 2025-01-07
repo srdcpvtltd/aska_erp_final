@@ -27,8 +27,13 @@
                             <thead>
                                 <tr>
                                     <th>{{ __('Farmer Name') }}</th>
-                                    <th>{{ __('Registration No.') }}</th>
+                                    <th>{{ __('Invoice No.') }}</th>
+                                    <th>{{ __('G Code.') }}</th>
                                     <th>{{ __('Date') }}</th>
+                                    <th>{{ __('Bank') }}</th>
+                                    <th>{{ __('Branch') }}</th>
+                                    <th>{{ __('Account No.') }}</th>
+                                    <th>{{ __('IFSC Code') }}</th>
                                     <th>{{ __('Amount') }}</th>
                                     <th>{{ __('Action') }}</th>
                                 </tr>
@@ -37,8 +42,13 @@
                                 @foreach ($payments as $payment)
                                     <tr class="font-style">
                                         <td>{{ $payment->farming->name }}</td>
-                                        <td>{{ $payment->registration_number }}</td>
+                                        <td>{{ $payment->invoice_no }}</td>
+                                        <td>{{ $payment->g_code }}</td>
                                         <td>{{ $payment->date }}</td>
+                                        <td>{{ @$payment->bank_detail->name }}</td>
+                                        <td>{{ @$payment->branch_detail->name }}</td>
+                                        <td>{{ $payment->loan_account_number }}</td>
+                                        <td>{{ $payment->ifsc }}</td>
                                         <td>{{ $payment->amount }}</td>
 
                                         <td class="Action">

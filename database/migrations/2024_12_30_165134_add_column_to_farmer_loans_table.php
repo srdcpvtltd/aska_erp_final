@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('farmer_loans', function (Blueprint $table) {
-            $table->integer('farming_payment_id')->nullable()->default('0')->after('invoice_generate_status');
+            $table->dropColumn('farming_payment_id');
         });
     }
 };

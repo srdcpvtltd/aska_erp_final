@@ -97,6 +97,10 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="form-group col-md-6">
+                            {{ Form::label('invoice_no', __('Invoice No.'), ['class' => 'form-label']) }}
+                            {{ Form::text('invoice_no', '', ['class' => 'form-control', 'required' => 'required']) }}
+                        </div>
+                        <div class="form-group col-md-6">
                             {{ Form::label('g_code', __('G_Code No.'), ['class' => 'form-label']) }}
                             {{ Form::text('g_code', '', ['class' => 'form-control', 'required' => 'required']) }}
                         </div>
@@ -154,14 +158,13 @@
                         </div>
                     </div>
                 </div>
+                <div class="card-footer">
+                    <input type="button" value="{{ __('Cancel') }}"
+                        onclick="location.href = '{{ route('admin.farmer.reimbursement.index') }}';" class="btn btn-light">
+                    <input type="submit" value="{{ __('Create') }}" class="btn  btn-primary">
+                </div>
             </div>
-
-            <div class="modal-footer">
-                <input type="button" value="{{ __('Cancel') }}"
-                    onclick="location.href = '{{ route('admin.farmer.reimbursement.index') }}';" class="btn btn-light">
-                <input type="submit" value="{{ __('Create') }}" class="btn  btn-primary">
-            </div>
-            {{ Form::close() }}
         </div>
+        {{ Form::close() }}
     </div>
 @endsection

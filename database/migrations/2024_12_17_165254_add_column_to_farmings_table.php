@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('farmings', function (Blueprint $table) {
-            $table->integer('registration_year')->nullable()->default('0')->after('created_by');
+            $table->dropColumn('registration_year');
         });
     }
 };
