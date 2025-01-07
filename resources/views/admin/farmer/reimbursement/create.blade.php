@@ -150,7 +150,7 @@
                         </div>
                         <div class="form-group col-md-6 bank_detail_fields">
                             {{ Form::label('ifsc_code', __('IFSC Code'), ['class' => 'form-label']) }}
-                            {{ Form::text('ifsc_code', '', ['class' => 'form-control']) }}
+                            {{ Form::text('ifsc_code', '', ['class' => 'form-control', 'readonly']) }}
                         </div>
                         <div class="form-group col-md-6">
                             {{ Form::label('amount', __('Amount'), ['class' => 'form-label']) }}

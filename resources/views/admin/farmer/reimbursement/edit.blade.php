@@ -83,9 +83,9 @@
         <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
             <li class="breadcrumb-item"><a
-                    href="{{ route('admin.farmer.payment.index') }}">{{ __('Farmer Security Deposit') }}</a>
+                    href="{{ route('admin.farmer.reimbursement.index') }}">{{ __('Farmer Reimbursement') }}</a>
             </li>
-            <li class="breadcrumb-item">{{ __('Edit Farmer Security Deposit') }}</li>
+            <li class="breadcrumb-item">{{ __('Farmer Reimbursement Edit') }}</li>
         </ol>
     </nav>
     <div class="row">
@@ -158,7 +158,7 @@
                         </div>
                         <div class="form-group col-md-6 bank_detail_fields">
                             {{ Form::label('ifsc_code', __('IFSC Code'), ['class' => 'form-label']) }}
-                            {{ Form::text('ifsc_code', $payment->ifsc, ['class' => 'form-control']) }}
+                            {{ Form::text('ifsc_code', $payment->ifsc, ['class' => 'form-control', 'readonly']) }}
                         </div>
                         <div class="form-group col-md-6">
                             {{ Form::label('amount', __('Amount'), ['class' => 'form-label']) }}
