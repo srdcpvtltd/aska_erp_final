@@ -26,10 +26,8 @@
                         <table class="data_table table datatable">
                             <thead>
                                 <tr>
-                                    <th>{{ __('Type') }}</th>
                                     <th>{{ __('Farmer Name') }}</th>
                                     <th>{{ __('Registration No.') }}</th>
-                                    <th>{{ __('Agreement No.') }}</th>
                                     <th>{{ __('Date') }}</th>
                                     <th>{{ __('Amount') }}</th>
                                     <th>{{ __('Action') }}</th>
@@ -38,25 +36,23 @@
                             <tbody>
                                 @foreach ($payments as $payment)
                                     <tr class="font-style">
-                                        <td>{{ $payment->type }}</td>
                                         <td>{{ $payment->farming->name }}</td>
                                         <td>{{ $payment->registration_number }}</td>
-                                        <td>{{ $payment->agreement_number }}</td>
                                         <td>{{ $payment->date }}</td>
                                         <td>{{ $payment->amount }}</td>
 
                                         <td class="Action">
-                                            <ul class="d-flex list-unstyled mb-0 justify-content-center">
+                                            <ul class="d-flex list-unstyled mb-0">
                                                 @can('edit-reimbursement')
                                                     <li class="me-2">
-                                                        <a href="{{ route('admin.farmer.payment.edit', $payment->id) }}">
+                                                        <a href="{{ route('admin.farmer.reimbursement.edit', $payment->id) }}">
                                                             <i class="link-icon" data-feather="edit"></i>
                                                         </a>
                                                     </li>
                                                 @endcan
                                                 @can('delete-reimbursement')
                                                     <li>
-                                                        <a data-href="{{ route('admin.farmer.payment.destroy', $payment->id) }}"
+                                                        <a href="" data-href="{{ route('admin.farmer.reimbursement.delete', $payment->id) }}" class="deleteBtn"
                                                             data-bs-toggle="tooltip" title="{{ __('Delete') }}"><i class="link-icon" data-feather="delete"></i></a>
                                                         {!! Form::close() !!}
                                                     </li>

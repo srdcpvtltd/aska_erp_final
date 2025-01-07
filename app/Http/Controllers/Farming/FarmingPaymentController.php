@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Farming;
 use App\Models\Farming;
 use App\Models\FarmingPayment;
 use App\Http\Controllers\Controller;
+use App\Models\Bank;
+use App\Models\Bank_branch;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -66,7 +68,7 @@ class FarmingPaymentController extends Controller
                         'created_by' => 'required',
                     ]);
                 }
-                
+
                 if ($validator->fails()) {
                     return redirect()->back()->withErrors($validator);
                 }
@@ -181,6 +183,7 @@ class FarmingPaymentController extends Controller
             return redirect()->back()->with('danger', 'Permission denied.');
         }
     }
+
     public function reimbursement()
     {
         if (\Auth::user()->can('show-reimbursement')) {
@@ -192,6 +195,7 @@ class FarmingPaymentController extends Controller
             return redirect()->back()->with('danger', 'Permission denied.');
         }
     }
+
     public function reimbursementCreate()
     {
         if (\Auth::user()->can('create-reimbursement')) {
@@ -200,16 +204,131 @@ class FarmingPaymentController extends Controller
                 ->where('farmings.created_by', Auth::user()->id)
                 ->orWhere('users.supervisor_id', Auth::user()->id)
                 ->get();
-            return view('admin.farmer.reimbursement.create', compact('farmings'));
+            $banks = Bank::all();
+            return view('admin.farmer.reimbursement.create', compact('farmings', 'banks'));
         } else {
             return redirect()->back()->with('danger', 'Permission denied.');
         }
     }
+
+    public function reimbursementStore(Request $request)
+    {
+        if (\Auth::user()->can('create-reimbursement')) {
+            // $farming_payment = FarmingPayment::where('farming_id', $request->farming_id)->where('type', "Security Deposit")->get();
+            // if (count($farming_payment) > 0) {
+            //     return redirect()->route('admin.farmer.payment.index')->with('danger', 'Payment Already Added.');
+            // }
+            try {
+                $validator = Validator::make($request->all(), [
+                    'g_code' => 'required',
+                    'farming_id' => 'required',
+                    'created_by' => 'required',
+                    'date' => 'required',
+                    'bank' => 'required',
+                    'branch' => 'required',
+                    'account_number' => 'required',
+                    'ifsc_code' => 'required',
+                    'amount' => 'required|integer',
+                ]);
+
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
+                }
+
+                $client = new FarmingPayment;
+                $client->farming_id = $request->farming_id;
+                $client->registration_number = $request->registration_number;
+                $client->g_code = $request->g_code;
+                $client->date = $request->date;
+                $client->amount = $request->amount;
+                $client->type = $request->type;
+                $client->bank = $request->bank;
+                $client->branch = $request->branch;
+                $client->loan_account_number = $request->account_number;
+                $client->ifsc = $request->ifsc_code;
+                $client->created_by = Auth::user()->id;
+                $client->save();
+
+                $farming = Farming::where('id', $request->farming_id)->first();
+                $farming->bank = $request->bank;
+                $farming->branch = $request->branch;
+                $farming->account_number = $request->account_number;
+                $farming->ifsc_code = $request->ifsc_code;
+                $farming->save();
+
+                return redirect()->to(route('admin.farmer.reimbursement.index'))->with('success', 'Reimbursement Added Successfully.');
+            } catch (Exception $e) {
+                return redirect()->back()->with('danger', $e->getMessage());
+            }
+        } else {
+            return redirect()->back()->with('danger', 'Permission denied.');
+        }
+    }
+
+    public function reimbursementEdit($id)
+    {
+        if (\Auth::user()->can('edit-reimbursement')) {
+            $payment = FarmingPayment::find($id);
+            $farmings = Farming::query()->select('farmings.*')->join('users', 'users.id', 'farmings.created_by')
+                // ->where('farmings.is_validate', 1)
+                ->where('farmings.created_by', Auth::user()->id)
+                ->orWhere('users.supervisor_id', Auth::user()->id)
+                ->get();
+            $banks = Bank::all();
+            $branchs = Bank_branch::where('bank_id', $payment->bank)->get();
+
+            return view('admin.farmer.reimbursement.edit', compact(
+                'payment',
+                'farmings',
+                'banks',
+                'branchs',
+            ));
+        } else {
+            return redirect()->back()->with('danger', 'Permission denied.');
+        }
+    }
+
+    public function reimbursementUpdate(Request $request, $id)
+    {
+        if (\Auth::user()->can('edit-reimbursement')) {
+            try {
+                $farmingPayment = FarmingPayment::find($id);
+                $farmingPayment->farming_id = $request->farming_id;
+                $farmingPayment->registration_number = $request->registration_number;
+                $farmingPayment->g_code = $request->g_code;
+                $farmingPayment->date = $request->date;
+                $farmingPayment->amount = $request->amount;
+                $farmingPayment->type = $request->type;
+                $farmingPayment->bank = $request->bank;
+                $farmingPayment->branch = $request->branch;
+                $farmingPayment->loan_account_number = $request->account_number;
+                $farmingPayment->ifsc = $request->ifsc_code;
+                $farmingPayment->created_by = Auth::user()->id;
+                $farmingPayment->save();
+
+                $farming = Farming::where('id', $request->farming_id)->first();
+                $farming->bank = $request->bank;
+                $farming->branch = $request->branch;
+                $farming->account_number = $request->account_number;
+                $farming->ifsc_code = $request->ifsc_code;
+                $farming->save();
+
+                return redirect()->to(route('admin.farmer.reimbursement.index'))->with('success', 'Farming Payment Updated Successfully.');
+            } catch (Exception $e) {
+                dd($e);
+                return redirect()->back()->with('danger', $e->getMessage());
+            }
+        } else {
+            return redirect()->back()->with('danger', 'Permission denied.');
+        }
+    }
+
     public function reimbursement_delete($id)
     {
         if (\Auth::user()->can('delete-reimbursement')) {
             $farmingPayment = FarmingPayment::find($id);
             $farmingPayment->delete();
+            
             return redirect()->back()->with('success', 'Farming Payment Deleted Successfully.');
         } else {
             return redirect()->back()->with('danger', 'Permission denied.');

@@ -519,6 +519,9 @@ Route::group([
                 //reimbursement
                 Route::get('reimbursement/create', [FarmingPaymentController::class, 'reimbursementCreate'])->name('reimbursement.create');
                 Route::get('reimbursement', [FarmingPaymentController::class, 'reimbursement'])->name('reimbursement.index');
+                Route::post('reimbursement/store', [FarmingPaymentController::class, 'reimbursementStore'])->name('reimbursement.store');
+                Route::get('reimbursement/{id}/edit', [FarmingPaymentController::class, 'reimbursementEdit'])->name('reimbursement.edit');
+                Route::put('reimbursement/{id}/update', [FarmingPaymentController::class, 'reimbursementUpdate'])->name('reimbursement.update');
                 Route::get('reimbursement/{id}/delete', [FarmingPaymentController::class, 'reimbursement_delete'])->name('reimbursement.delete');
 
                 Route::resource('seed_category', SeedCategoryController::class);
@@ -753,7 +756,7 @@ Route::group([
         Route::post('bill/{id}/debit-note', [DebitNoteController::class, 'store'])->name('bill.debit.note');
         Route::get('bill/{id}/debit-note/edit/{cn_id}', [DebitNoteController::class, 'edit'])->name('bill.edit.debit.note');
         Route::post('bill/{id}/debit-note/edit/{cn_id}', [DebitNoteController::class, 'update'])->name('bill.edit.debit.note');
-        Route::delete('bill/{id}/debit-note/delete/{cn_id}', [DebitNoteController::class, 'destroy'])->name('bill.delete.debit.note');
+        Route::get('bill/{id}/debit-note/delete/{cn_id}', [DebitNoteController::class, 'destroy'])->name('bill.delete.debit.note');
         //chart-of-account
         Route::resource('chart-of-account', ChartOfAccountController::class);
         //journal-entry

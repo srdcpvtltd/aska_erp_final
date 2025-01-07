@@ -96,7 +96,6 @@
             $('#non_loan_branch').change(function() {
                 let branch_id = $(this).val();
                 let ifsc = $('#non_loan_ifsc_code').val();
-                console.log(ifsc);
 
                 $.ajax({
                     url: "{{ route('admin.farmer.location.get_branch_ifsc_code') }}",
@@ -188,8 +187,7 @@
                         <div class="col-md-6 finance_category_fields" style="display:none;">
                             <div class="form-group">
                                 {{ Form::label('loan_type', __('Loan Type'), ['class' => 'form-label']) }}
-                                <select class="form-control select" name="loan_type" id="loan_type"
-                                    placeholder="Select Loan Type">
+                                <select class="form-control select" name="loan_type" id="loan_type">
                                     <option value="">{{ __('Select') }}</option>
                                     <option value="Bank">Bank</option>
                                 </select>
