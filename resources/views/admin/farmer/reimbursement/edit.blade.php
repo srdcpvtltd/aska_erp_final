@@ -97,7 +97,7 @@
                     <div class="row">
                         <div class="form-group col-md-6">
                             {{ Form::label('invoice_no', __('Invoice No.'), ['class' => 'form-label']) }}
-                            {{ Form::text('invoice_no', '', ['class' => 'form-control', 'required' => 'required']) }}
+                            {{ Form::text('invoice_no', null, ['class' => 'form-control', 'required' => 'required']) }}
                         </div>
                         <div class="form-group col-md-6">
                             {{ Form::label('g_code', __('G_Code No.'), ['class' => 'form-label']) }}
