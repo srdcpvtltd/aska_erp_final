@@ -31,17 +31,17 @@ class BillController extends Controller
     public function index(Request $request)
     {
         if (\Auth::user()->can('manage bill')) {
-            
+
             $vender = Vender::where('created_by', '=', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $vender->prepend('Select Vendor', '');
-            
+
             $status = Bill::$statues;
 
             $query = Bill::where('type', '=', 'Bill')->where('created_by', '=', \Auth::user()->creatorId());
             if (!empty($request->vender)) {
                 $query->where('vender_id', '=', $request->vender);
             }
-            
+
             if (count(explode('to', $request->bill_date)) > 1) {
                 $date_range = explode(' to ', $request->bill_date);
                 $query->whereBetween('bill_date', $date_range);
@@ -264,7 +264,7 @@ class BillController extends Controller
     {
         if (\Auth::user()->can('show bill')) {
             try {
-                $id       = Crypt::decrypt($ids);
+                $id = Crypt::decrypt($ids);
             } catch (\Throwable $th) {
                 return redirect()->back()->with('error', __('Bill Not Found.'));
             }
@@ -340,7 +340,7 @@ class BillController extends Controller
                     ->pluck('code_name', 'id');
                 $chartAccounts->prepend('Select Account', '');
 
-
+                $vender = Vender::where('id', $bill->vender_id)->first();
                 //for item and account show in repeater
                 $item      = $bill->items;
                 $accounts  = $bill->accounts;
@@ -364,6 +364,7 @@ class BillController extends Controller
                 }
 
                 return view('admin.bill.edit', compact(
+                    'vender',
                     'venders',
                     'product_services',
                     'bill',
@@ -383,7 +384,7 @@ class BillController extends Controller
 
     public function update(Request $request, Bill $bill)
     {
-
+        dd($request->all());
         if (\Auth::user()->can('edit bill')) {
 
             if ($bill->created_by == \Auth::user()->creatorId()) {

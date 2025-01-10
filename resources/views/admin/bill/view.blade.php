@@ -558,7 +558,7 @@
                                     @endif
                                 </tr>
                             </thead>
-                            @forelse($bill->debitNote as $key =>$debitNote)
+                            @foreach($bill->debitNote as $key =>$debitNote)
                                 <tr>
                                     <td>{{ \Auth::user()->dateFormat($debitNote->date) }}</td>
                                     <td>{{ \Auth::user()->priceFormat($debitNote->amount) }}</td>
@@ -584,13 +584,7 @@
                                         </ul>
                                     </td>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="text-center text-dark">
-                                        <p>{{ __('No Data Found') }}</p>
-                                    </td>
-                                </tr>
-                            @endforelse
+                            @endforeach
                         </table>
                     </div>
                 </div>

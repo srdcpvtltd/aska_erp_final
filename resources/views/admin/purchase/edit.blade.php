@@ -36,7 +36,6 @@
                         $('#vender_detail').addClass('d-none');
                     }
                 },
-
             });
         });
         $(document).on('click', '#remove', function() {
@@ -284,11 +283,8 @@
 
             $('.subTotal').html(totalItemPrice.toFixed(2));
             $('.totalTax').html(totalItemTaxPrice.toFixed(2));
-
             $('.totalAmount').html((parseFloat(subTotal)).toFixed(2));
             $('.totalDiscount').html(totalItemDiscountPrice.toFixed(2));
-
-
         })
 
         $(document).on('click', '.add_more_btn', function() {
