@@ -149,8 +149,8 @@
             var totalItemTaxRate = $(el.find('.itemTaxRate')).val();
             var itemTaxPrice = parseFloat((totalItemTaxRate / 100) * (totalItemPrice));
             $(el.find('.itemTaxPrice')).val(itemTaxPrice.toFixed(2));
-
-            $(el.find('.amount')).html(parseFloat(itemTaxPrice) + parseFloat(amount));
+            var Tot_amount = parseFloat(itemTaxPrice) + parseFloat(amount);
+            $(el.find('.amount')).html(Tot_amount.toFixed(2));
 
             var totalItemTaxPrice = 0;
             var itemTaxPriceInput = $('.itemTaxPrice');
@@ -177,58 +177,58 @@
             $('.totalTax').html(totalItemTaxPrice.toFixed(2));
 
             $('.totalAmount').html((parseFloat(subTotal)).toFixed(2));
-
+            $('input[name=total_amount]').val((parseFloat(amount)).toFixed(2));
         })
 
-        $(document).on('keyup change', '.price', function() {
+        // $(document).on('keyup change', '.price', function() {
 
-            var el = $(this).parent().parent().parent().parent();
-            var price = $(this).val();
-            var quantity = $(el.find('.quantity')).val();
-            var discount = $(el.find('.discount')).val();
-            if (discount.length <= 0) {
-                discount = 0;
-            }
-
-
-            var totalItemPrice = (quantity * price) - discount;
-
-            var amount = (totalItemPrice);
-
-            var totalItemTaxRate = $(el.find('.itemTaxRate')).val();
-            var itemTaxPrice = parseFloat((totalItemTaxRate / 100) * (totalItemPrice));
-            $(el.find('.itemTaxPrice')).val(itemTaxPrice.toFixed(2));
-
-            $(el.find('.amount')).html(parseFloat(itemTaxPrice) + parseFloat(amount));
-
-            var totalItemTaxPrice = 0;
-            var itemTaxPriceInput = $('.itemTaxPrice');
-            for (var j = 0; j < itemTaxPriceInput.length; j++) {
-                totalItemTaxPrice += parseFloat(itemTaxPriceInput[j].value);
-            }
+        //     var el = $(this).parent().parent().parent().parent();
+        //     var price = $(this).val();
+        //     var quantity = $(el.find('.quantity')).val();
+        //     var discount = $(el.find('.discount')).val();
+        //     if (discount.length <= 0) {
+        //         discount = 0;
+        //     }
 
 
-            var totalItemPrice = 0;
-            var inputs_quantity = $(".quantity");
+        //     var totalItemPrice = (quantity * price) - discount;
 
-            var priceInput = $('.price');
-            for (var j = 0; j < priceInput.length; j++) {
-                totalItemPrice += (parseFloat(priceInput[j].value) * parseFloat(inputs_quantity[j].value));
-            }
+        //     var amount = (totalItemPrice);
 
-            var inputs = $(".amount");
+        //     var totalItemTaxRate = $(el.find('.itemTaxRate')).val();
+        //     var itemTaxPrice = parseFloat((totalItemTaxRate / 100) * (totalItemPrice));
+        //     $(el.find('.itemTaxPrice')).val(itemTaxPrice.toFixed(2));
 
-            var subTotal = 0;
-            for (var i = 0; i < inputs.length; i++) {
-                subTotal = parseFloat(subTotal) + parseFloat($(inputs[i]).html());
-            }
+        //     $(el.find('.amount')).html(parseFloat(itemTaxPrice) + parseFloat(amount));
 
-            $('.subTotal').html(totalItemPrice.toFixed(2));
-            $('.totalTax').html(totalItemTaxPrice.toFixed(2));
+        //     var totalItemTaxPrice = 0;
+        //     var itemTaxPriceInput = $('.itemTaxPrice');
+        //     for (var j = 0; j < itemTaxPriceInput.length; j++) {
+        //         totalItemTaxPrice += parseFloat(itemTaxPriceInput[j].value);
+        //     }
 
-            $('.totalAmount').html((parseFloat(subTotal)).toFixed(2));
 
-        })
+        //     var totalItemPrice = 0;
+        //     var inputs_quantity = $(".quantity");
+
+        //     var priceInput = $('.price');
+        //     for (var j = 0; j < priceInput.length; j++) {
+        //         totalItemPrice += (parseFloat(priceInput[j].value) * parseFloat(inputs_quantity[j].value));
+        //     }
+
+        //     var inputs = $(".amount");
+
+        //     var subTotal = 0;
+        //     for (var i = 0; i < inputs.length; i++) {
+        //         subTotal = parseFloat(subTotal) + parseFloat($(inputs[i]).html());
+        //     }
+
+        //     $('.subTotal').html(totalItemPrice.toFixed(2));
+        //     $('.totalTax').html(totalItemTaxPrice.toFixed(2));
+
+        //     $('.totalAmount').html((parseFloat(subTotal)).toFixed(2));
+
+        // })
 
         $(document).on('keyup change', '.discount', function() {
             var el = $(this).parent().parent().parent();
@@ -285,6 +285,7 @@
             $('.totalTax').html(totalItemTaxPrice.toFixed(2));
             $('.totalAmount').html((parseFloat(subTotal)).toFixed(2));
             $('.totalDiscount').html(totalItemDiscountPrice.toFixed(2));
+            $('input[name=total_amount]').val((parseFloat(amount)).toFixed(2));
         })
 
         $(document).on('click', '.add_more_btn', function() {
@@ -505,12 +506,11 @@
                                         <td>
                                             <div class="form-group price-input input-group search-form">
                                                 {{ Form::text('quantity[]', $iteam->quantity, ['class' => 'form-control quantity', 'required' => 'required', 'placeholder' => __('Qty'), 'required' => 'required']) }}
-                                                <span class="unit input-group-text bg-transparent"></span>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group price-input input-group search-form">
-                                                {{ Form::text('price[]', $iteam->price, ['class' => 'form-control price', 'required' => 'required', 'placeholder' => __('Price'), 'required' => 'required']) }}
+                                                {{ Form::text('price[]', $iteam->price, ['class' => 'form-control price', 'required' => 'required', 'placeholder' => __('Price'), 'readonly' => 'readonly']) }}
                                                 <span
                                                     class="input-group-text bg-transparent">{{ \Auth::user()->currencySymbol() }}</span>
                                             </div>
@@ -559,12 +559,18 @@
                                                 @php
                                                     $totalTaxPrice = 0;
                                                 @endphp
+                                                {{ Form::hidden('tax[]', 0, ['class' => 'form-control tax']) }}
                                                 {{ Form::hidden('itemTaxPrice[]', 0, ['class' => 'form-control itemTaxPrice']) }}
                                                 {{ Form::hidden('itemTaxRate[]', 0, ['class' => 'form-control itemTaxRate']) }}
                                             @endif
                                         </td>
-                                        <td class="text-end amount">
-                                            {{ \Auth::user()->priceFormat($iteam->price * $iteam->quantity - $iteam->discount + $totalTaxPrice) }}
+                                        @php
+                                            $Total_Amount = $iteam->price * $iteam->quantity - $iteam->discount + $totalTaxPrice;
+                                        @endphp
+                                        <td class="text-end">{{ \Auth::user()->currencySymbol() }}
+                                            <span class="amount">
+                                                {{ number_format($Total_Amount, 2, '.', ',') }}
+                                            </span>
                                         </td>
                                         <td>
                                             @if ($key != 0)
@@ -591,8 +597,11 @@
                                     <td></td>
                                     <td><strong>{{ __('Sub Total') }} ({{ \Auth::user()->currencySymbol() }})</strong>
                                     </td>
-                                    <td class="text-end subTotal">
-                                        {{ \Auth::user()->priceFormat($purchase->getSubTotal()) }}</td>
+                                    <td class="text-end">{{ \Auth::user()->currencySymbol() }}
+                                        <span class="subTotal">
+                                            {{ number_format($purchase->getSubTotal(), 2, '.', ',') }}
+                                        </span>
+                                    </td>
                                     <td></td>
                                 </tr>
                                 <tr>
@@ -601,8 +610,10 @@
                                     <td>&nbsp;</td>
                                     <td></td>
                                     <td><strong>{{ __('Discount') }} ({{ \Auth::user()->currencySymbol() }})</strong></td>
-                                    <td class="text-end totalDiscount">
-                                        {{ \Auth::user()->priceFormat($purchase->getTotalDiscount()) }}</td>
+                                    <td class="text-end">{{ \Auth::user()->currencySymbol() }}
+                                        <span class="totalDiscount">
+                                            {{ number_format($purchase->getTotalDiscount(), 2, '.', ',') }}</td>
+                                        </span>
                                     <td></td>
                                 </tr>
                                 @if (!empty($taxesData))
@@ -618,8 +629,10 @@
                                     <td>&nbsp;</td>
                                     <td></td>
                                     <td><strong>{{ __('Tax') }} ({{ \Auth::user()->currencySymbol() }})</strong></td>
-                                    <td class="text-end totalTax">
-                                        {{ \Auth::user()->priceFormat($totalTax) }}
+                                    <td class="text-end">{{ \Auth::user()->currencySymbol() }}
+                                        <span class="totalTax">
+                                        {{ number_format($totalTax, 2, '.', ',') }}
+                                        </span>
                                     </td>
                                     <td></td>
                                 </tr>
@@ -630,8 +643,11 @@
                                     <td>&nbsp;</td>
                                     <td class="blue-text"><strong>{{ __('Total Amount') }}
                                             ({{ \Auth::user()->currencySymbol() }})</strong></td>
-                                    <td class="blue-text text-end totalAmount">
-                                        {{ \Auth::user()->priceFormat($purchase->total_price) }}</td>
+                                    <td class="blue-text text-end">{{ \Auth::user()->currencySymbol() }}
+                                        <span class="totalAmount">
+                                        {{ number_format($Total_Amount, 2, '.', ',') }}
+                                        </span>
+                                    </td>
                                     <td></td>
                                 </tr>
                             </tfoot>
@@ -640,7 +656,7 @@
                         <input type="hidden" class="Total_discount" value="{{ $purchase->getTotalDiscount() }}">
                         <input type="hidden" class="Total_tax" value="{{ $totalTax }}">
                         <input type="hidden" class="Sub_Total" value="{{ $purchase->getSubTotal() }}">
-                        <input type="hidden" class="Total_Amount" value="{{ $purchase->total_price }}">
+                        <input type="hidden" class="Total_Amount" value="{{ $iteam->price * $iteam->quantity - $iteam->discount + $totalTaxPrice }}">
                     </div>
                 </div>
             </div>

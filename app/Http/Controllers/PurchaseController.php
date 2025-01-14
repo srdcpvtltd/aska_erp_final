@@ -227,7 +227,6 @@ class PurchaseController extends Controller
      */
     public function update(Request $request, Purchase $purchase)
     {
-        // dd($request->all()); 
         if (\Auth::user()->can('edit-purchase')) {
             if ($purchase->created_by == \Auth::user()->creatorId()) {
                 $validator = \Validator::make(
@@ -244,8 +243,8 @@ class PurchaseController extends Controller
                     return redirect()->route('admin.purchase.index')->with('error', $messages->first());
                 }
                 $purchase->vender_id      = $request->vender_id;
-                $purchase->purchase_date      = $request->purchase_date;
-                // $purchase->discount_apply = isset($request->discount_apply) ? 1 : 0;
+                $purchase->purchase_date  = $request->purchase_date;
+                $purchase->total_price    = $request->total_amount;
                 $purchase->category_id    = $request->category_id;
                 $purchase->save();
                 $products = $request;
@@ -262,39 +261,37 @@ class PurchaseController extends Controller
 
                         Utility::total_quantity('minus', $purchaseProduct->quantity, $purchaseProduct->product_id);
                     }
-
                     if (isset($products['item'][$i])) {
                         $purchaseProduct->product_id = $products['item'][$i];
                     }
 
                     $purchaseProduct->quantity    = $products['quantity'][$i];
                     $purchaseProduct->tax         = $products['tax'][$i];
-                    // $purchaseProduct->discount    = isset($products[$i]['discount']) ? $products[$i]['discount'] : 0;
                     $purchaseProduct->discount    = $products['discount'][$i];
                     $purchaseProduct->price       = $products['price'][$i];
-                    $purchaseProduct->description = $products['description'][$i];
+                    $purchaseProduct->description = $products['description'];
                     $purchaseProduct->save();
 
                     if ($products['id'][$i] > 0) {
-                        Utility::total_quantity('plus', $products[$i]['quantity'], $purchaseProduct->product_id);
+                        Utility::total_quantity('plus', $products['quantity'][$i], $purchaseProduct->product_id);
                     }
 
                     //Product Stock Report
                     $type = 'purchase';
                     $type_id = $purchase->id;
                     StockReport::where('type', '=', 'purchase')->where('type_id', '=', $purchase->id)->delete();
-                    $description = $products[$i]['quantity'] . '  ' . __(' quantity add in purchase') . ' ' . \Auth::user()->purchaseNumberFormat($purchase->purchase_id);
+                    $description = $products['quantity'][$i] . '  ' . __(' quantity add in purchase') . ' ' . \Auth::user()->purchaseNumberFormat($purchase->purchase_id);
 
-                    if (isset($products[$i]['item'])) {
-                        Utility::addProductStock($products[$i]['item'], $products[$i]['quantity'], $type, $description, $type_id);
+                    if (isset($products['item'][$i])) {
+                        Utility::addProductStock($products['item'][$i], $products['quantity'][$i], $type, $description, $type_id);
                     }
 
                     //Warehouse Stock Report
                     $new_qty = $purchaseProduct->quantity;
                     $total_qty = $new_qty - $old_qty;
-                    if (isset($products[$i]['item'])) {
+                    if (isset($products['item'][$i])) {
 
-                        Utility::addWarehouseStock($products[$i]['item'], $total_qty, $request->warehouse_id);
+                        Utility::addWarehouseStock($products['item'][$i], $total_qty, $request->warehouse_id);
                     }
                 }
 

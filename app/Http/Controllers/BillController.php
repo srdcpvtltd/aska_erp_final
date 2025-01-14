@@ -384,7 +384,6 @@ class BillController extends Controller
 
     public function update(Request $request, Bill $bill)
     {
-        dd($request->all());
         if (\Auth::user()->can('edit bill')) {
 
             if ($bill->created_by == \Auth::user()->creatorId()) {
@@ -405,86 +404,87 @@ class BillController extends Controller
                 $bill->bill_date      = $request->bill_date;
                 $bill->due_date       = $request->due_date;
                 $bill->order_number   = $request->order_number;
-                $bill->user_type         =  'vendor';
+                $bill->user_type      = 'vendor';
                 $bill->category_id    = $request->category_id;
                 $bill->save();
+                
                 CustomField::saveData($bill, $request->customField);
-                $products = $request->items;
+                $products = $request;
                 $total_amount = 0;
 
-                for ($i = 0; $i < count($products); $i++) {
-                    $billProduct = BillProduct::find($products[$i]['id']);
+                for ($i = 0; $i < count($products->id); $i++) {
+                    $billProduct = BillProduct::find($products['id'][$i]);
                     if ($billProduct == null) {
                         $billProduct             = new BillProduct();
                         $billProduct->bill_id    = $bill->id;
 
-                        if (isset($products[$i]['items'])) {
-                            Utility::total_quantity('plus', $products[$i]['quantity'], $products[$i]['items']);
+                        if (isset($products['item'][$i])) {
+                            Utility::total_quantity('plus', $products['quantity'][$i], $products['item'][$i]);
                         }
 
-                        $updatePrice = ($products[$i]['price'] * $products[$i]['quantity']) + ($products[$i]['itemTaxPrice']) - ($products[$i]['discount']);
+                        $updatePrice = ($products['price'][$i] * $products['quantity'][$i]) + ($products['itemTaxPrice'][$i]) - ($products['discount'][$i]);
                         Utility::updateUserBalance('vendor', $request->vender_id, $updatePrice, 'debit');
                     } else {
 
                         Utility::total_quantity('minus', $billProduct->quantity, $billProduct->product_id);
                     }
 
-                    if (isset($products[$i]['items'])) {
-                        $billProduct->product_id = $products[$i]['items'];
-                        $billProduct->quantity    = $products[$i]['quantity'];
-                        $billProduct->tax         = $products[$i]['tax'];
-                        $billProduct->discount    = $products[$i]['discount'];
-                        $billProduct->price       = $products[$i]['price'];
-                        $billProduct->description = $products[$i]['description'];
+                    if (isset($products['item'][$i])) {
+                        $billProduct->product_id = $products['item'][$i];
+                        $billProduct->quantity    = $products['quantity'][$i];
+                        $billProduct->tax         = $products['tax'][$i];
+                        $billProduct->discount    = $products['discount'][$i];
+                        $billProduct->price       = $products['price'][$i];
+                        $billProduct->description = $products['description'][$i];
                         $billProduct->save();
                     }
 
 
                     $billTotal = 0;
-                    if (!empty($products[$i]['chart_account_id'])) {
-                        $billAccount = BillAccount::find($products[$i]['id']);
+                    if (!empty($products['chart_account_id'][$i])) {
+                        $billAccount = BillAccount::find($products['id'][$i]);
 
                         if ($billAccount == null) {
                             $billAccount                    = new BillAccount();
-                            $billAccount->chart_account_id = $products[$i]['chart_account_id'];
+                            $billAccount->chart_account_id = $products['chart_account_id'][$i];
                         } else {
-                            $billAccount->chart_account_id = $products[$i]['chart_account_id'];
+                            $billAccount->chart_account_id = $products['chart_account_id'][$i];
                         }
-                        $billAccount->price             = $products[$i]['amount'];
-                        $billAccount->description       = $products[$i]['description'];
+                        $billAccount->price             = $products['amount'][$i];
+                        $billAccount->description       = $products['description'][$i];
                         $billAccount->type              = 'Bill';
                         $billAccount->ref_id            = $bill->id;
                         $billAccount->save();
                         $billTotal = $billAccount->price;
                     }
 
-                    if ($products[$i]['id'] > 0) {
-                        Utility::total_quantity('plus', $products[$i]['quantity'], $billProduct->product_id);
+                    if ($products['id'][$i] > 0) {
+                        Utility::total_quantity('plus', $products['quantity'][$i], $billProduct->product_id);
                     }
 
                     //Product Stock Report
                     $type = 'bill';
                     $type_id = $bill->id;
                     StockReport::where('type', '=', 'bill')->where('type_id', '=', $bill->id)->delete();
-                    $description = $products[$i]['quantity'] . '  ' . __(' quantity purchase in bill') . ' ' . \Auth::user()->billNumberFormat($bill->bill_id);
+                    $description = $products['quantity'][$i] . '  ' . __(' quantity purchase in bill') . ' ' . \Auth::user()->billNumberFormat($bill->bill_id);
 
-                    if (isset($products[$i]['items'])) {
-                        Utility::addProductStock($products[$i]['items'], $products[$i]['quantity'], $type, $description, $type_id);
+                    if (isset($products['item'][$i])) {
+                        Utility::addProductStock($products['item'][$i], $products['quantity'][$i], $type, $description, $type_id);
                     }
 
-                    $total_amount += ($billProduct->quantity * $billProduct->price) + $billTotal;
-                }
+                    $total_amount += ($billProduct->quantity * $billProduct->price) + $billTotal - $billProduct->discount;
 
-                if (!empty($request->chart_account_id)) {
-                    $billaccount = ProductServiceCategory::find($request->category_id);
-                    $chart_account = ChartOfAccount::find($billaccount->chart_account_id);
-                    $billAccount                    = new BillAccount();
-                    $billAccount->chart_account_id  = $chart_account['id'];
-                    $billAccount->price             = $total_amount;
-                    $billAccount->description       = $request->description;
-                    $billAccount->type              = 'Bill Category';
-                    $billAccount->ref_id            = $bill->id;
-                    $billAccount->save();
+                    if (!empty($request->chart_account_id)) {
+                        // $billaccount = ProductServiceCategory::find($request->category_id);
+                        $chart_account = ChartOfAccount::find($request->chart_account_id[$i]);
+                        $billAccount                    = new BillAccount();
+                        $billAccount->chart_account_id  = $chart_account->id;
+                        $billAccount->price             = $total_amount;
+                        $billAccount->description       = $request->description[$i];
+                        $billAccount->type              = 'Bill Category';
+                        $billAccount->ref_id            = $bill->id;
+                        $billAccount->save();
+                    }
                 }
 
                 return redirect()->route('admin.bill.index')->with('success', __('Bill successfully updated.'));
