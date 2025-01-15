@@ -496,12 +496,12 @@ class BillController extends Controller
         }
     }
 
-    public function destroy(Bill $bill)
+    public function destroy($id)
     {
         if (\Auth::user()->can('delete bill')) {
+            $bill = Bill::find($id);
             if ($bill->created_by == \Auth::user()->creatorId()) {
                 $billpayments = $bill->payments;
-
                 foreach ($billpayments as $key => $value) {
                     Utility::bankAccountBalance($value->account_id, $value->amount, 'credit');
                     $transaction = Transaction::where('payment_id', $value->id)->first();
